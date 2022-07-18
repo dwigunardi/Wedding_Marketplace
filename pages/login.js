@@ -12,6 +12,8 @@ import { useRouter } from "next/router"
 
 const { useBreakpoint } = Grid;
 const { Content } = Layout
+
+
 export default function Login() {
     const screens = useBreakpoint();
     const contentStyle = {
@@ -66,20 +68,20 @@ export default function Login() {
         <>
             <Fragment>
                 <div style={{ position: "relative" }} className="min-h-screen min-w-full">
-                    <Image src={Background} layout="fill" />
-                    <div style={{ width: "768px" }} className="min-h-screen align-middle">
+                    <Image src={Background} layout="fill" priority={true} />
+                    <div className="min-h-screen align-middle">
                         <Row gutter={{
                             xs: 8,
                             sm: 16,
                             md: 32,
                             lg: 32,
-                        }} align="middle" className="justify-between" >
+                        }} align="middle" className="justify-between" style={{ width: "50%" }} >
                             {Object.entries(screens)
                                 .filter((screen) => !!screen[1])
                                 .map((screen) => (
                                     screen[0]
                                 ))}
-                            <Col offset={3} span={10} className="pt-5  align-middle">
+                            <Col lg={{ span: 10 }} offset={1} className="pt-5  align-middle">
 
                                 <h1 className="text-pink-500 text-3xl">Login</h1>
 
@@ -90,8 +92,8 @@ export default function Login() {
                             </Col>
 
                         </Row>
-                        <Row align="middle" className="justify-between">
-                            <Col span={20} offset={3}>
+                        <Row align="middle" className="justify-between" style={{ width: "50%" }}>
+                            <Col lg={{ span: 16 }} offset={4}>
                                 <form className="mt-5">
                                     <div className="mb-10">
                                         <input

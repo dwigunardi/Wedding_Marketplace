@@ -1,7 +1,7 @@
 import Background from "../public/Image/banner-wed-5.png"
 import Image from "next/image"
 import Logo from "../public/Image/sahin-love.png"
-import { Col, Row, Grid, Layout, Button } from "antd"
+import { Col, Row, Grid, Layout } from "antd"
 import "antd/dist/antd.css"
 import "tailwindcss/tailwind.css"
 import { useState, Fragment } from "react"
@@ -13,7 +13,7 @@ import { useRouter } from "next/router"
 const { useBreakpoint } = Grid;
 const { Content } = Layout
 
-function authLanding() {
+function opsiDaftar() {
     // @refresh reset
 
     const screens = useBreakpoint();
@@ -32,7 +32,7 @@ function authLanding() {
 
                             <Col lg={{ span: 10 }} offset={4} className="pt-5  align-middle">
 
-                                <h1 className="text-pink-500 text-3xl">Sign Up</h1>
+                                <h1 className="text-pink-500 text-3xl">Daftar</h1>
 
 
                             </Col>
@@ -47,24 +47,28 @@ function authLanding() {
                             md: 32,
                             lg: 32,
                         }} align="middle" className="justify-between" style={{ width: "50%" }}>
-                            <Col lg={{ span: 20 }} offset={4}>
+                            <Col lg={{ span: 16 }} offset={4}>
                                 <div className="mt-5">
                                     <div className="mb-10">
-                                        <button
-                                            className="inline-block px-6 py-2.5 text-white bg-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
+                                        <Link href="/daftarMerchant">
+                                            <button
+                                                className="inline-block px-6 py-2.5 text-white bg-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
                                             hover:bg-pink-700 hover:text-white hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg 
                                             transition duration-150 ease-in-out w-full mb-3">
-                                            Daftar sebagai Merchant
-                                        </button>
+                                                Daftar sebagai Merchant
+                                            </button>
+                                        </Link>
+
                                     </div>
                                     <div className="mb-10">
-                                        <button
-
-                                            className="inline-block px-6 py-2.5 text-white bg-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
+                                        <Link href="/daftar">
+                                            <button
+                                                className="inline-block px-6 py-2.5 text-white bg-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
                                             hover:bg-pink-700 hover:text-white hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg 
                                             transition duration-150 ease-in-out w-full mb-3">
-                                            Daftar sebagai customer
-                                        </button>
+                                                Daftar sebagai customer
+                                            </button>
+                                        </Link>
                                     </div>
 
                                     <div className="flex items-center justify-between pb-6">
@@ -81,4 +85,4 @@ function authLanding() {
     )
 }
 
-export default authLanding
+export default opsiDaftar
