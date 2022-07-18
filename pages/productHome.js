@@ -1,16 +1,26 @@
 
 import { Tabs } from 'antd';
-import { Col, Row } from 'antd';
+import { Col, Row, Grid } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
+import cardImg1 from '../public/Image/card-product/aminta-hotel.webp'
+import cardImg2 from '../public/Image/card-product/asmara.jpg'
+import cardImg3 from '../public/Image/card-product/Daima Norwood Hotel Menteng.webp'
+import cardImg4 from '../public/Image/card-product/Fieris Hotel Rawamangun.webp'
+import cardImg from '../public/Image/card-product/Mang Kabayan Vida Bekasi.webp'
+import Image from 'next/image'
 import React from 'react';
+import "tailwindcss/tailwind.css"
+import "antd/dist/antd.css"
+const { useBreakpoint } = Grid;
 const { TabPane } = Tabs;
 const styleTab = {
     fontWeight: "bold",
     fontSize: "50pt",
     borderRight: "solid red 5px"
 }
-function ProductHome() {
 
+function ProductHome() {
+    const screens = useBreakpoint();
     return (
         <>
             <div className="text-center mt-5 py-10">
@@ -19,7 +29,7 @@ function ProductHome() {
                 </h1>
                 <p className="text-lg mt-3">Harga sudah termasuk biaya vendor (dekorasi, katering, etc.) dan dapat disesuaikan dengan kebutuhan</p>
             </div>
-            <div className="max-h-screen bg-[#FFF2F5] pb-10">
+            <div className="h-full bg-[#FFF2F5] pb-10">
                 <ul
                     className="nav nav-tabs flex flex-col md:flex-row flex-wrap list-none border-b-0 pl-0 pt-5 mb-4 justify-center"
                     id="tabs-tab"
@@ -40,7 +50,7 @@ function ProductHome() {
                             py-3
                             my-2
                              hover:bg-pink-500 hover:text-white
-                             text-xl mr-5"
+                             text-xl "
                             id="tabs-jakarta-tab"
                             data-bs-toggle="pill"
                             data-bs-target="#tabs-jakarta"
@@ -66,7 +76,7 @@ function ProductHome() {
                             py-3
                             my-2
                             hover:text-white
-                             text-xl mr-5
+                             text-xl 
                             hover:bg-pink-500
                             "
                             id="tabs-bogor-tab"
@@ -95,7 +105,7 @@ function ProductHome() {
                                 my-2
                                  hover:bg-pink-500
                                  hover:text-white
-                                 text-xl mr-5"
+                                 text-xl "
                             id="tabs-depok-tab"
                             data-bs-toggle="pill"
                             data-bs-target="#tabs-depok"
@@ -122,7 +132,7 @@ function ProductHome() {
                             my-2
                              hover:bg-pink-500
                              hover:text-white
-                             text-xl mr-5"
+                             text-xl "
                             id="tabs-tanggerang-tab"
                             data-bs-toggle="pill"
                             data-bs-target="#tabs-tanggerang"
@@ -171,109 +181,95 @@ function ProductHome() {
 
 
                         {/* card product */}
-                        <Content>
-                            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 22 }} justify="center">
-                                <Col span={4} className="mx-4 pt-5">
+
+                        <Row justify="center space-x-5">
+                            {Object.entries(screens)
+                                .filter((screen) => !!screen[1])
+                                .map((screen) => (
+                                    console.log(screen[0])
+                                ))}
+                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
 
 
-                                    <div className="rounded-lg shadow-lg bg-white ">
-                                        <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
-                                            <img
-                                                className="rounded-t-lg"
-                                                src="https://mdbootstrap.com/img/new/standard/nature/182.jpg"
-                                                alt=""
-                                            />
-                                        </a>
-                                        <div className="p-6">
-                                            <h5 className="text-gray-900 text-xl font-medium mb-2">Card title</h5>
-                                            <p className="text-gray-700 text-base mb-4">
-                                                Some quick example text to build on the card title and make up the bulk
-                                                of the card's content.
-                                            </p>
-                                            <button
-                                                type="button"
-                                                className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                                            >
-                                                Button
-                                            </button>
-                                        </div>
-                                    </div>
+                                <div className="rounded-lg shadow-lg bg-white ">
+                                    <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                        <Image
+                                            className="rounded-t-lg"
+                                            src={cardImg1}
+                                            alt=""
+                                        />
+                                    </a>
+                                    <div className="p-6">
+                                        <h5 className="text-gray-900 text-xl font-medium mb-2">Aminta Hall</h5>
+                                        <p className="text-gray-700 text-base mb-4">
+                                            Rp. 70,600,000
+                                        </p>
 
-                                </Col>
-                                <Col span={4} className="mx-4 pt-5">
-                                    <div className="rounded-lg shadow-lg bg-white ">
-                                        <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
-                                            <img
-                                                className="rounded-t-lg"
-                                                src="https://mdbootstrap.com/img/new/standard/nature/182.jpg"
-                                                alt=""
-                                            />
-                                        </a>
-                                        <div className="p-6">
-                                            <h5 className="text-gray-900 text-xl font-medium mb-2">Card title</h5>
-                                            <p className="text-gray-700 text-base mb-4">
-                                                Some quick example text to build on the card title and make up the bulk
-                                                of the card's content.
-                                            </p>
-                                            <button
-                                                type="button"
-                                                className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                                            >
-                                                Button
-                                            </button>
-                                        </div>
                                     </div>
-                                </Col>
-                                <Col span={4} className="mx-4 pt-5">
-                                    <div className="rounded-lg shadow-lg bg-white ">
-                                        <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
-                                            <img
-                                                className="rounded-t-lg"
-                                                src="https://mdbootstrap.com/img/new/standard/nature/182.jpg"
-                                                alt=""
-                                            />
-                                        </a>
-                                        <div className="p-6">
-                                            <h5 className="text-gray-900 text-xl font-medium mb-2">Card title</h5>
-                                            <p className="text-gray-700 text-base mb-4">
-                                                Some quick example text to build on the card title and make up the bulk
-                                                of the card's content.
-                                            </p>
-                                            <button
-                                                type="button"
-                                                className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                                            >
-                                                Button
-                                            </button>
-                                        </div>
+                                </div>
+
+                            </Col>
+                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className=" pt-5">
+                                <div className="rounded-lg shadow-lg bg-white ">
+                                    <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                        <Image
+                                            className="rounded-t-lg"
+                                            src={cardImg2}
+                                            alt=""
+                                        />
+                                    </a>
+                                    <div className="p-6">
+                                        <h5 className="text-gray-900 text-xl font-medium mb-2">Daima Norwood Hotel</h5>
+                                        <p className="text-gray-700 text-base mb-4">
+                                            Rp. 63,600,000
+                                        </p>
+
                                     </div>
-                                </Col>
-                                <Col span={4} className="mx-4 pt-5">
-                                    <div className="rounded-lg shadow-lg bg-white max-w-sm">
-                                        <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
-                                            <img
-                                                className="rounded-t-lg"
-                                                src="https://mdbootstrap.com/img/new/standard/nature/182.jpg"
-                                                alt=""
-                                            />
-                                        </a>
-                                        <div className="p-6">
-                                            <h5 className="text-gray-900 text-xl font-medium mb-2">Card title</h5>
-                                            <p className="text-gray-700 text-base mb-4">
-                                                Some quick example text to build on the card title and make up the bulk
-                                                of the card's content.
-                                            </p>
-                                            <button
-                                                type="button"
-                                                className=" inline-block px-6 py-2.5 bg-blue-600 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-blue-700 hover:shadow-lg focus:bg-blue-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-blue-800 active:shadow-lg transition duration-150 ease-in-out"
-                                            >
-                                                Button
-                                            </button>
-                                        </div>
+                                </div>
+                            </Col>
+                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
+
+
+                                <div className="rounded-lg shadow-lg bg-white ">
+                                    <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                        <Image
+                                            className="rounded-t-lg"
+                                            src={cardImg3}
+                                            alt=""
+                                        />
+                                    </a>
+                                    <div className="p-6">
+                                        <h5 className="text-gray-900 text-xl font-medium mb-2">Mang kabayan vida Bekasi</h5>
+                                        <p className="text-gray-700 text-base mb-4">
+                                            Rp. 50,000,000
+                                        </p>
+
                                     </div>
-                                </Col>
-                            </Row>
-                        </Content>
+                                </div>
+
+                            </Col>
+                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
+
+
+                                <div className="rounded-lg shadow-lg bg-white ">
+                                    <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                        <Image
+                                            className="rounded-t-lg"
+                                            src={cardImg4}
+                                            alt=""
+                                        />
+                                    </a>
+                                    <div className="p-6">
+                                        <h5 className="text-gray-900 text-xl font-medium mb-2">Fieris Hotel Rawamangun</h5>
+                                        <p className="text-gray-700 text-base mb-4">
+                                            Rp. 66,600,000
+                                        </p>
+
+                                    </div>
+                                </div>
+
+                            </Col>
+                        </Row>
 
 
                     </div>
