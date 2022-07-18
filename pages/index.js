@@ -7,6 +7,7 @@ import CarouselAuto from './carousel'
 import ContentMain from './content'
 
 import dynamic from 'next/dynamic'
+import FooterCustomer from './footer'
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <Navigasi />
       <CarouselAuto />
       <ContentMain />
+      <FooterCustomer />
     </>
 
 
