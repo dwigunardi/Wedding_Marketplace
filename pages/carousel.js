@@ -24,7 +24,7 @@ function CarouselAuto() {
     return (
         <>
 
-            <Carousel afterChange={onChange} effect="fade" className=" text-black" dotPosition={dotPosition} autoplay>
+            <Carousel afterChange={onChange} effect="fade" className=" text-black" autoplay>
 
                 <div>
                     <div style={contentStyle}>
