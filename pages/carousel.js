@@ -5,9 +5,10 @@ import banner1 from "../public/Image/banner-wed-1.png"
 import banner2 from "../public/Image/banner-wed-2.png"
 import banner3 from "../public/Image/banner-wed-4.png"
 import { useState } from "react";
+import "antd/dist/antd.css"
 const contentStyle = {
     height: '100vh',
-    color: '#CC5A80',
+
     lineHeight: '100px',
     textAlign: 'center',
     position: 'relative',
@@ -24,12 +25,12 @@ function CarouselAuto() {
     return (
         <>
 
-            <Carousel afterChange={onChange} effect="fade" className=" text-black" dotPosition={dotPosition} autoplay>
+            <Carousel afterChange={onChange} effect="fade" className=" text-black" autoplay>
 
                 <div>
                     <div style={contentStyle}>
                         <Image src={banner1} layout="fill" className="" />
-                        <Divider orientation="left">Horizontal</Divider>
+
                         <Row align="middle" style={{
                             position: "absolute",
                             top: 0,
@@ -59,7 +60,7 @@ function CarouselAuto() {
                 <div>
                     <div style={contentStyle}>
                         <Image src={banner2} layout="fill" className="" />
-                        <Divider orientation="left">Horizontal</Divider>
+
                         <Row align="middle" style={{
                             position: "absolute",
                             top: 0,
@@ -90,7 +91,7 @@ function CarouselAuto() {
                 <div>
                     <div style={contentStyle}>
                         <Image src={banner3} layout="fill" className="" />
-                        <Divider orientation="left">Horizontal</Divider>
+
                         <Row align="middle" style={{
                             position: "absolute",
                             top: 0,
@@ -122,6 +123,7 @@ function CarouselAuto() {
             </Carousel>
 
         </>
+
     )
 }
 

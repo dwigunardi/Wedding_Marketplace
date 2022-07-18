@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 import 'antd/dist/antd.css'
 import 'tailwindcss/tailwind.css'
 import Image from 'next/image';
-import logo from '../../public/Image/sahin-love.png'
+import logo from '../../../public/Image/sahin-love.png'
 const { Header, Sider, Content } = Layout;
 
 const NavbarAdmin = () => {

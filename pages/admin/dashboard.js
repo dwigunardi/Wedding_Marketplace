@@ -1,4 +1,4 @@
-import NavbarAdmin from "./layoutHeader"
+import NavbarAdmin from "./layout/layoutHeader"
 
 
 function Dashboard() {

@@ -1,7 +1,9 @@
 import { Col, Row, Space } from 'antd';
 import Image from 'next/image';
 import React, { useState } from 'react';
-import Coupleimg from "../../public/Image/couple1.png"
+import Coupleimg from "../public/Image/couple1.png"
+import "antd/dist/antd.css"
+import "tailwindcss/tailwind.css"
 
 
 function ReviewerSection() {
@@ -13,7 +15,7 @@ function ReviewerSection() {
                     Real Couples. Real Love. Real Weddings.
                 </h1>
             </div>
-            <Row className="flex justify-center w-10/12 ml-20 pl-20">
+            <Row className=" justify-center w-10/12 ml-20 pl-20">
                 <Col span={6} className="ml-20 pt-5">
                     <Image
 
@@ -33,7 +35,7 @@ function ReviewerSection() {
                 </Col>
                 <Col span={6} className="mx-4 pt-5">
                     <Image
-                        className='max-w-sm h-auto transition-shadow ease-in-out duration-300 shadow-none hover:shadow-xl'
+                        className=' h-auto transition-shadow ease-in-out duration-300 shadow-none hover:shadow-xl'
                         src={Coupleimg}
                         layout="responsive"
                         objectFit='contain'
