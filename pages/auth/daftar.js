@@ -1,6 +1,6 @@
-import Background from "../public/Image/banner-wed-5.png"
+import Background from "../../public/Image/banner-wed-5.png"
 import Image from "next/image"
-import Logo from "../public/Image/sahin-love.png"
+import Logo from "../../public/Image/sahin-love.png"
 import { Col, Row, Grid, Layout, message, Upload, Button, Checkbox, Form, Input } from "antd"
 import "antd/dist/antd.css"
 import "tailwindcss/tailwind.css"
@@ -220,7 +220,7 @@ export default function Daftar() {
 
                                 </div>
 
-                                <p className="mb-0 mr-2">Sudah punya akun? <Link href="/login"><a className="text-pink-500">Login disini</a></Link></p>
+                                <p className="mb-0 mr-2">Sudah punya akun? <Link href="/auth/login"><a className="text-pink-500">Login disini</a></Link></p>
 
 
                             </form>

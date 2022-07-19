@@ -3,6 +3,8 @@ import logo from "../public/Image/sahin-love2.png";
 import { Layout, Col, Row } from "antd";
 import React from "react";
 import Link from "next/link";
+import "antd/dist/antd.css"
+import "tailwindcss/tailwind.css"
 const { Header, Footer, Sider, Content } = Layout
 
 function FooterCustomer() {

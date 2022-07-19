@@ -1,7 +1,7 @@
+import 'antd/dist/antd.css'
 import "tailwindcss/tailwind.css"
-import "antd/dist/antd.css"
 import Image from "next/image";
-import GambarKanan from "../public/Image/content-pic1.png"
+import GambarKanan from "../../public/Image/content-pic1.png"
 import ProductHome from "./productHome";
 import ReviewerSection from "./reviewerHome";
 import { Col, Row, Grid, Space } from "antd";
@@ -45,8 +45,7 @@ function ContentMain() {
                 </Col>
             </Row>
 
-            <ProductHome />
-            <ReviewerSection />
+
 
         </>
     )

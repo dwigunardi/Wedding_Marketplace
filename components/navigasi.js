@@ -91,7 +91,8 @@ export default function Navigasi() {
                             </a>
                             <a
                                 href=""
-                                className="inline-block w-full px-4 py-2 my-2 text-center text-pink-800 border-solid border-2 border-pink-500 rounded-md shadow hover:bg-pink-500 hover:text-white"
+                                className="inline-block w-full px-4 py-2 my-2 text-center text-pink-800 border-solid border-2
+                                 border-pink-500 rounded-md shadow hover:bg-pink-500 hover:text-white"
                             >
                                 Daftar
                             </a>
@@ -101,19 +102,21 @@ export default function Navigasi() {
 
 
                     <div className="hidden space-x-2 md:inline-block">
-                        <Link href="/login">
-                            <a
-                                className="transition ease-in-out hover:-translate-x-2 hover:scale-110 delay-150 px-5 py-2  text-pink-500 mr-4 border-solid border-pink-500 border-2 rounded-full shadow hover:bg-pink-500 hover:text-white ..."
+                        <Link href="/auth/login">
+                            <button
+                                className="transition ease-in-out hover:-translate-x-2 hover:scale-110 delay-150 px-5 py-2 
+                                 text-pink-500 mr-4 border-solid border-pink-500 border-2 rounded-full shadow hover:bg-pink-500
+                                  hover:text-white ..."
                             >
                                 Login
-                            </a>
+                            </button>
                         </Link>
-                        <Link href="/landingOpsi">
-                            <a
+                        <Link href="/auth/landingOpsi">
+                            <button
                                 className="transition ease-in-out hover:-translate-x-2 hover:scale-110 delay-150 px-5 py-2 text-pink-500 bg-white rounded-md shadow hover:bg-pink-500 hover:text-white ..."
                             >
                                 Daftar
-                            </a>
+                            </button>
                         </Link>
 
 

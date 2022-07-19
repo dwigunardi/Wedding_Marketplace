@@ -1,15 +1,15 @@
+import 'antd/dist/antd.css'
+import "tailwindcss/tailwind.css"
 import { Col, Row, Space, Grid, Carousel } from 'antd';
 import Image from 'next/image';
 import React, { useState } from 'react';
-import Coupleimg from "../public/Image/couple1.png"
-import Coupleimg2 from "../public/Image/couple3.webp"
-import Coupleimg3 from "../public/Image/couple3-2.webp"
-import Coupleimg4 from "../public/Image/couple4.jpg"
-import Coupleimg5 from "../public/Image/couple4-3.jpg"
-import "antd/dist/antd.css"
-import "tailwindcss/tailwind.css"
+import Coupleimg from "../../public/Image/couple1.png"
+import Coupleimg2 from "../../public/Image/couple3.webp"
+import Coupleimg3 from "../../public/Image/couple3-2.webp"
+import Coupleimg4 from "../../public/Image/couple4.jpg"
+import Coupleimg5 from "../../public/Image/couple4-3.jpg"
 import CoupleSlide from './coupleSlide';
-import BookingBg from './bgBooking';
+import BookingBg from '../../components/customer/bgBooking';
 const { useBreakpoint } = Grid;
 
 

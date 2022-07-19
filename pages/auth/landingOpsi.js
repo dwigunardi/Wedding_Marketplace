@@ -1,6 +1,6 @@
-import Background from "../public/Image/banner-wed-5.png"
+import Background from "../../public/Image/banner-wed-5.png"
 import Image from "next/image"
-import Logo from "../public/Image/sahin-love.png"
+import Logo from "../../public/Image/sahin-love.png"
 import { Col, Row, Grid, Layout } from "antd"
 import "antd/dist/antd.css"
 import "tailwindcss/tailwind.css"
@@ -49,7 +49,7 @@ function opsiDaftar() {
                             <Col lg={{ span: 16 }} offset={4}>
                                 <div className="mt-5">
                                     <div className="mb-10">
-                                        <Link href="/daftarMerchant">
+                                        <Link href="/auth/daftarMerchant">
                                             <button
                                                 className="inline-block px-6 py-2.5 text-white bg-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
                                             hover:bg-pink-700 hover:text-white hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg 
@@ -60,7 +60,7 @@ function opsiDaftar() {
 
                                     </div>
                                     <div className="mb-10">
-                                        <Link href="/daftar">
+                                        <Link href="/auth/daftar">
                                             <button
                                                 className="inline-block px-6 py-2.5 text-white bg-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
                                             hover:bg-pink-700 hover:text-white hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg 
@@ -71,7 +71,7 @@ function opsiDaftar() {
                                     </div>
 
                                     <div className="flex items-center justify-between pb-6">
-                                        <p className="mb-0 mr-2">Sudah punya akun? <Link href="/login"><a className="text-pink-500">Login disini</a></Link></p>
+                                        <p className="mb-0 mr-2">Sudah punya akun? <Link href="/auth/login"><a className="text-pink-500">Login disini</a></Link></p>
 
                                     </div>
                                 </div>

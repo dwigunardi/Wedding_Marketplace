@@ -2,15 +2,15 @@
 import { Tabs } from 'antd';
 import { Col, Row, Grid } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
-import cardImg1 from '../public/Image/card-product/aminta-hotel.webp'
-import cardImg2 from '../public/Image/card-product/asmara.jpg'
-import cardImg3 from '../public/Image/card-product/Daima Norwood Hotel Menteng.webp'
-import cardImg4 from '../public/Image/card-product/Fieris Hotel Rawamangun.webp'
-import cardImg from '../public/Image/card-product/Mang Kabayan Vida Bekasi.webp'
+import cardImg1 from '../../public/Image/card-product/aminta-hotel.webp'
+import cardImg2 from '../../public/Image/card-product/asmara.jpg'
+import cardImg3 from '../../public/Image/card-product/Daima Norwood Hotel Menteng.webp'
+import cardImg4 from '../../public/Image/card-product/Fieris Hotel Rawamangun.webp'
+import cardImg from '../../public/Image/card-product/Mang Kabayan Vida Bekasi.webp'
 import Image from 'next/image'
 import React from 'react';
+import 'antd/dist/antd.css'
 import "tailwindcss/tailwind.css"
-import "antd/dist/antd.css"
 const { useBreakpoint } = Grid;
 const { TabPane } = Tabs;
 const styleTab = {
