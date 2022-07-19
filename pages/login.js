@@ -12,6 +12,11 @@ import { useRouter } from "next/router"
 
 const { useBreakpoint } = Grid;
 const { Content } = Layout
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> be39ec6d4f44635aebf471badedc02234eb2adff
 export default function Login() {
     const screens = useBreakpoint();
     const contentStyle = {
@@ -66,20 +71,33 @@ export default function Login() {
         <>
             <Fragment>
                 <div style={{ position: "relative" }} className="min-h-screen min-w-full">
+<<<<<<< HEAD
                     <Image src={Background} layout="fill" />
                     <div style={{ width: "768px" }} className="min-h-screen align-middle">
+=======
+                    <Image src={Background} layout="fill" priority={true} />
+                    <div className="min-h-screen align-middle">
+>>>>>>> be39ec6d4f44635aebf471badedc02234eb2adff
                         <Row gutter={{
                             xs: 8,
                             sm: 16,
                             md: 32,
                             lg: 32,
+<<<<<<< HEAD
                         }} align="middle" className="justify-between" >
+=======
+                        }} align="middle" className="justify-between" style={{ width: "50%" }} >
+>>>>>>> be39ec6d4f44635aebf471badedc02234eb2adff
                             {Object.entries(screens)
                                 .filter((screen) => !!screen[1])
                                 .map((screen) => (
                                     screen[0]
                                 ))}
+<<<<<<< HEAD
                             <Col offset={3} span={10} className="pt-5  align-middle">
+=======
+                            <Col lg={{ span: 10 }} offset={1} className="pt-5  align-middle">
+>>>>>>> be39ec6d4f44635aebf471badedc02234eb2adff
 
                                 <h1 className="text-pink-500 text-3xl">Login</h1>
 
@@ -90,8 +108,13 @@ export default function Login() {
                             </Col>
 
                         </Row>
+<<<<<<< HEAD
                         <Row align="middle" className="justify-between">
                             <Col span={20} offset={3}>
+=======
+                        <Row align="middle" className="justify-between" style={{ width: "50%" }}>
+                            <Col lg={{ span: 16 }} offset={4}>
+>>>>>>> be39ec6d4f44635aebf471badedc02234eb2adff
                                 <form className="mt-5">
                                     <div className="mb-10">
                                         <input
