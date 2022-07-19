@@ -11,28 +11,9 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import axios from "axios"
 
 
-// const getBase64 = (img, callback) => {
-//     const reader = new FileReader();
-//     reader.addEventListener('load', () => callback(reader.result));
-//     reader.readAsDataURL(img);
-// };
-// const beforeUpload = (file) => {
-//     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-
-//     if (!isJpgOrPng) {
-//         message.error('You can only upload JPG/PNG file!');
-//     }
-
-//     const isLt2M = file.size / 1024 / 1024 < 2;
-
-//     if (!isLt2M) {
-//         message.error('Image must smaller than 2MB!');
-//     }
-
-//     return isJpgOrPng && isLt2M;
-// };
 const { useBreakpoint } = Grid;
 const { Content } = Layout
+
 export default function Daftar() {
     const screens = useBreakpoint();
     const contentStyle = {
@@ -49,6 +30,8 @@ export default function Daftar() {
     const [roleId, setRoleid] = useState('0c71d432-7e87-44a1-b0f1-08080bd71a55')
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState('')
+
+
 
 
     const onChangeName = (e) => {
@@ -89,6 +72,7 @@ export default function Daftar() {
     }
 
     const router = useRouter()
+
     const submitDaftar = async () => {
 
         try {

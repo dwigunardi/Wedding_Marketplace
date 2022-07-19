@@ -9,7 +9,6 @@ import { Col, Row, Grid, Layout } from "antd"
 import "antd/dist/antd.css"
 import "tailwindcss/tailwind.css"
 import { useState, Fragment } from "react"
-import axios from "axios";
 import Link from "next/link"
 import { useRouter } from "next/router"
 
