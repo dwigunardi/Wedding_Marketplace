@@ -13,7 +13,7 @@ import "tailwindcss/tailwind.css"
 function CoupleSlide() {
 
     const styleCarousel = {
-        height: '300px',
+
         lineHeight: '30px',
         textAlign: 'start',
     }

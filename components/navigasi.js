@@ -75,7 +75,7 @@ export default function Navigasi() {
                                 <Link href="/"><a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-6 px-5 text-lg'>Home</a></Link>
                             </li>
                             <li className="text-pink-500 ">
-                                <Link href="/customer/product">
+                                <Link href="/product">
                                     <a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-6 px-5 text-lg'>Product</a>
                                 </Link>
                             </li>

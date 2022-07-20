@@ -18,7 +18,8 @@ export default function Beranda() {
             <ContentMain />
             <ProductHome />
             <ReviewerSection />
-
+            <CoupleSlide />
+            <BookingBg />
         </>
     )
 }

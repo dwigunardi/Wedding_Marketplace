@@ -125,9 +125,9 @@ function ReviewerSection() {
 
 
                 {/* carousel section */}
-                <CoupleSlide />
+
             </div>
-            <BookingBg />
+
         </>
     )
 }
