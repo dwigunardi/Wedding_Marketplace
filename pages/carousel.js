@@ -38,7 +38,7 @@ function CarouselAuto() {
                             left: 0,
                             right: 0
                         }}>
-                            <Col span={10} offset={3}>
+                            <Col span={10} offset={2}>
                                 <p className="text-pink-500 text-5xl w-10/12">
                                     Pay Less For More Happines
                                 </p>
@@ -47,6 +47,7 @@ function CarouselAuto() {
                                         type="button"
                                         className=" focus:outline-none text-white bg-pink-500
                                          hover:bg-pink-600 focus:ring-4 focus:ring-pink-300 font-medium 
+                                         hover:translate-x-2  hover:scale-110 delay-150 transition ease-in-out
                                          rounded-lg text-sm px-10 py-2.5 mr-20 mb-2 dark:focus:ring-pink-900"
                                     >
                                         Book Now

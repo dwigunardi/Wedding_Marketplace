@@ -14,13 +14,13 @@ export default function Navigasi() {
         <>
 
 
-            <div className="w-full bg-white shadow" style={{ position: "fixed", zIndex: "1" }}>
+            <div className="w-full bg-white drop-shadow-md" style={{ position: "fixed", zIndex: "1" }}>
                 <div className="justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8">
 
                     <div className="flex items-center justify-between md:block">
                         <Link href="/">
                             <a>
-                                <Image src={logo} width={150} height={75} objectFit='contain' />
+                                <Image src={logo} width={150} height={65} objectFit='contain' />
                             </a>
                         </Link>
 
@@ -70,15 +70,17 @@ export default function Navigasi() {
                             }`}
                     >
 
-                        <ul className="items-center justify-center space-y-8 md:flex md:space-x-6 md:space-y-0">
+                        <ul className="items-center justify-center  md:flex md:space-x-6 md:space-y-0">
                             <li className="text-pink-500 ">
-                                <Link href=""><a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-5 px-5 text-lg'>Home</a></Link>
+                                <Link href="/"><a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-6 px-5 text-lg'>Home</a></Link>
                             </li>
                             <li className="text-pink-500 ">
-                                <Link href=""><a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-5 px-5 text-lg'>Product</a></Link>
+                                <Link href="/customer/product">
+                                    <a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-6 px-5 text-lg'>Product</a>
+                                </Link>
                             </li>
                             <li className="text-pink-500 ">
-                                <Link href=""><a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-5 px-5 text-lg'>Transaksi</a></Link>
+                                <Link href=""><a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-6 px-5 text-lg'>Transaksi</a></Link>
                             </li>
                         </ul>
 
