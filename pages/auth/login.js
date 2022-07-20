@@ -119,7 +119,7 @@ export default function Login() {
                                         />
                                     </div>
                                     <div className="text-center pt-1 mb-12 pb-1">
-                                        <Button
+                                        <button
                                             className="inline-block px-6 py-2.5 text-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
                                     hover:bg-pink-700 hover:text-white hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg 
                                     transition duration-150 ease-in-out w-full mb-3"
@@ -130,7 +130,7 @@ export default function Login() {
                                             onClick={submitLogin}
                                         >
                                             Log in
-                                        </Button>
+                                        </button>
 
                                     </div>
                                     <div className="flex items-center justify-between pb-6">
