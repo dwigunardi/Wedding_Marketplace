@@ -1,32 +1,23 @@
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip } from 'antd';
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input } from 'antd';
 import { PoweroffOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useState } from 'react';
 import Link from "next/link";
+import React, { useRef, useState } from 'react';
+
 const { Header, Content, Sider } = Layout;
 
-
+const { Search } = Input;
 export default function KontenUsers() {
-    const [loadings, setLoadings] = useState([]);
 
-    const enterLoading = (index) => {
-        setTimeout(() => {
-            setLoadings((prevLoadings) => {
-                const newLoadings = [...prevLoadings];
-                newLoadings[index] = false;
-                return newLoadings;
-            });
-        }, 6000);
-    };
     const columns = [
         {
             title: 'No',
-            dataIndex: 'no',
-            key: 'no',
+            dataIndex: 'key',
+            key: 'key',
         },
         {
             title: 'Name',
             dataIndex: 'name',
-            key: 'detailUser',
+            key: 'name',
             render: (text) => <a>{text}</a>,
         },
         {
@@ -77,14 +68,11 @@ export default function KontenUsers() {
             render: (_, record) => (
                 <Space size="middle">
 
-                    <Link href={`/${record.detailUser}`}>
+                    <Link href={`/admin/${record.name}`}>
                         <Tooltip placement="left" title="Detail">
                             <Button
                                 style={{ color: "#4ade80", borderColor: "#4ade80" }}
-                                icon={<EyeOutlined />}
-                                loading={loadings[1]}
-                                onClick={() => enterLoading(1)}
-                                className="bg-green-300"
+                                icon={<PoweroffOutlined />}
                             >
 
                             </Button>
@@ -95,8 +83,6 @@ export default function KontenUsers() {
                             <Button
                                 type="danger"
                                 icon={<DeleteOutlined />}
-                                loading={loadings[1]}
-                                onClick={() => enterLoading(1)}
                                 danger={true}
                             >
                             </Button>
@@ -131,11 +117,24 @@ export default function KontenUsers() {
         },
     ];
 
+    const onSearch = (value) => console.log(value);
     return (
         <>
             <Content>
+                <Row className='mt-6 max-w-sm ml-20' justify='center'>
+                    <Col lg={{ span: 20 }} md={{ span: 20 }} sm={{ span: 22 }} xs={{ span: 24 }}>
+                        <Search
+                            placeholder="input search text"
+                            allowClear
+                            enterButton="Search"
+                            size="large"
+                            onSearch={onSearch}
 
+                        />
+                    </Col>
+                </Row>
                 <Row justify="center" align="middle" className='h-96'>
+
                     <Col lg={{ span: 20 }} md={{ span: 22 }} sm={{ span: 22 }} xs={{ span: 24 }} >
                         <Table columns={columns} dataSource={data} />
                     </Col>

@@ -6,7 +6,7 @@ import Navigasi from '../components/navigasi'
 import dynamic from 'next/dynamic'
 import FooterCustomer from '../components/footer'
 
-export default function Home() {
+export default function Home(props) {
   return (
 
     <>

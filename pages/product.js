@@ -66,7 +66,9 @@ const searchResult = (query) =>
 const onClick = ({ key }) => {
     message.info(`Click on item ${key}`);
 };
-export default function ProductPage() {
+
+
+export default function ProductPage(props) {
     const screens = useBreakpoint();
     const menu = (
         <Menu

@@ -1,5 +1,6 @@
 import 'antd/dist/antd.css'
 import 'tailwindcss/tailwind.css'
+import { useRouter } from 'next/router'
 import { Button, Layout, Menu, Divider } from 'antd';
 import { useState } from 'react';
 import {
@@ -25,7 +26,7 @@ export default function Sidebar() {
     const [collapsed, setCollapsed] = useState(false);
     const items = [
         {
-            label: <Link href="/admin/dashboard"><a className='w-full text-lg '>Dashboard</a></Link>, key: "dashboard", icon: <DesktopOutlined />,
+            label: <Link href="/admin/dashboard" ><a className='w-full text-lg text-pink-500' > Dashboard</a></Link>, key: "dashboard", icon: <DesktopOutlined />,
             get: function getItem(label, key, icon, children) {
                 return {
                     key,
@@ -79,12 +80,13 @@ export default function Sidebar() {
                 }}
                 theme="light"
                 className='drop-shadow-md h-screen'>
-                <Image src={logo} layout="responsive" className="logo" />
+                <Image src={logo} layout="responsive" className="logo" priority={true} />
                 <Menu
                     theme="light"
                     mode="inline"
                     defaultSelectedKeys={['1']}
                     items={items}
+
                 />
             </Sider>
 

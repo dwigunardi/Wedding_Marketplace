@@ -1,7 +1,7 @@
 import 'tailwindcss/tailwind.css'
 /* This example requires Tailwind CSS v2.0+ */
 import { useState } from 'react'
-
+import { useRouter } from 'next/router'
 import Image from 'next/image'
 import logo from "../public/Image/sahin-love.png"
 import Link from 'next/link'
@@ -10,6 +10,8 @@ import Link from 'next/link'
 
 export default function Navigasi() {
     const [navbar, setNavbar] = useState(false);
+    const router = useRouter();
+    const currentRoute = router.pathname;
     return (
         <>
 
@@ -72,11 +74,17 @@ export default function Navigasi() {
 
                         <ul className="items-center justify-center  md:flex md:space-x-6 md:space-y-0">
                             <li className="text-pink-500 ">
-                                <Link href="/"><a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-6 px-5 text-lg'>Home</a></Link>
+                                <Link href="/">
+                                    <a className={`text-pink-500 hover:text-white hover:bg-pink-500 
+                                 pt-5 pb-6 px-5 text-lg ${currentRoute === "/" ? "active" : "non-active"}`}>
+                                        Home
+                                    </a>
+                                </Link>
                             </li>
                             <li className="text-pink-500 ">
                                 <Link href="/product">
-                                    <a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-6 px-5 text-lg'>Product</a>
+                                    <a className={`text-pink-500 hover:text-white hover:bg-pink-500 
+                                 pt-5 pb-6 px-5 text-lg ${currentRoute === "/product" ? "active" : "non-active"}`}>Product</a>
                                 </Link>
                             </li>
                             <li className="text-pink-500 ">
@@ -125,6 +133,17 @@ export default function Navigasi() {
                     </div>
                 </div>
             </div >
+            <style jsx>{`.non-active {
+                    color: #ec4899;
+                  }
+                  .non-active:hover {
+                    color : white
+                  }
+                  /* Specific styles for active links */
+                  .active {
+                    color: white;
+                    background: #ec4899;
+                  }`}</style>
         </>
     )
 };
