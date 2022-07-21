@@ -45,6 +45,7 @@ const NavbarAdmin = () => {
     const [collapsed, setCollapsed] = useState(false);
     const bgStyle = {
         backgroundColor: "white",
+
     }
 
     return (
@@ -52,7 +53,7 @@ const NavbarAdmin = () => {
             <Header
                 className="w-full drop-shadow-md text-2xl"
                 style={bgStyle}>
-                <Row justify='space-between' align='middle'>
+                <Row justify='space-between' align='middle' className='w-full'>
                     <Col><h1 className='text-pink-500'>Dashboard</h1></Col>
                     <Col>
                         <div className='text-center text-pink-500 space-x-2'>

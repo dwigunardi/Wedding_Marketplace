@@ -1,5 +1,5 @@
-import { Space, Table, Tag, Button, Layout, Row, Col } from 'antd';
-import { PoweroffOutlined, EyeOutlined } from '@ant-design/icons';
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip } from 'antd';
+import { PoweroffOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Link from "next/link";
 const { Header, Content, Sider } = Layout;
@@ -19,32 +19,47 @@ export default function KontenUsers() {
     };
     const columns = [
         {
+            title: 'No',
+            dataIndex: 'no',
+            key: 'no',
+        },
+        {
             title: 'Name',
             dataIndex: 'name',
             key: 'detailUser',
             render: (text) => <a>{text}</a>,
         },
         {
-            title: 'Age',
+            title: 'Username',
             dataIndex: 'age',
             key: 'age',
         },
         {
-            title: 'Address',
+            title: 'Email',
             dataIndex: 'address',
             key: 'address',
         },
         {
-            title: 'Tags',
+            title: 'Phone',
+            dataIndex: 'address',
+            key: 'address',
+        },
+        {
+            title: 'Role',
             key: 'tags',
             dataIndex: 'tags',
             render: (_, { tags }) => (
                 <>
                     {tags.map((tag) => {
-                        let color = tag.length > 5 ? 'geekblue' : 'green';
-
-                        if (tag === 'loser') {
+                        let color = ''
+                        if (tag === 'Admin') {
+                            color = 'geekblue';
+                        }
+                        else if (tag === 'Customer') {
                             color = 'volcano';
+                        }
+                        else if (tag === 'Merchant') {
+                            color = 'green'
                         }
 
                         return (
@@ -63,24 +78,29 @@ export default function KontenUsers() {
                 <Space size="middle">
 
                     <Link href={`/${record.detailUser}`}>
-                        <Button
-                            type="success"
-                            icon={<EyeOutlined />}
-                            loading={loadings[1]}
-                            onClick={() => enterLoading(1)}
-                        >
-                            Click me!
-                        </Button>
+                        <Tooltip placement="left" title="Detail">
+                            <Button
+                                style={{ color: "#4ade80", borderColor: "#4ade80" }}
+                                icon={<EyeOutlined />}
+                                loading={loadings[1]}
+                                onClick={() => enterLoading(1)}
+                                className="bg-green-300"
+                            >
+
+                            </Button>
+                        </Tooltip>
                     </Link>
                     <Link href={`/${record.deleteUser}`}>
-                        <Button
-                            type="danger"
-                            icon={<PoweroffOutlined />}
-                            loading={loadings[1]}
-                            onClick={() => enterLoading(1)}
-                        >
-                            Delete
-                        </Button>
+                        <Tooltip placement="right" title="Delete">
+                            <Button
+                                type="danger"
+                                icon={<DeleteOutlined />}
+                                loading={loadings[1]}
+                                onClick={() => enterLoading(1)}
+                                danger={true}
+                            >
+                            </Button>
+                        </Tooltip>
                     </Link>
 
                 </Space>
@@ -93,32 +113,31 @@ export default function KontenUsers() {
             name: 'John Brown',
             age: 32,
             address: 'New York No. 1 Lake Park',
-            tags: ['nice', 'developer'],
+            tags: ['Admin'],
         },
         {
             key: '2',
             name: 'Jim Green',
             age: 42,
             address: 'London No. 1 Lake Park',
-            tags: ['loser'],
+            tags: ['Customer'],
         },
         {
             key: '3',
             name: 'Joe Black',
             age: 32,
             address: 'Sidney No. 1 Lake Park',
-            tags: ['cool', 'teacher'],
+            tags: ['Merchant'],
         },
     ];
 
     return (
         <>
             <Content>
-                <Row justify="center" align="middle">
-                    <Col>
-                        <Space align='center'>
-                            <Table columns={columns} dataSource={data} />
-                        </Space>
+
+                <Row justify="center" align="middle" className='h-96'>
+                    <Col lg={{ span: 20 }} md={{ span: 22 }} sm={{ span: 22 }} xs={{ span: 24 }} >
+                        <Table columns={columns} dataSource={data} />
                     </Col>
                 </Row>
 

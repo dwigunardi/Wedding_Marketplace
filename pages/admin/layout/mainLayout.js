@@ -23,7 +23,11 @@ function MainLayout({ children }) {
 
                     <Footer
                         className="text-center"
-                        style={{ backgroundColor: "white" }}
+                        style={{
+                            backgroundColor: "white",
+
+                            width: "100%"
+                        }}
                     >
                         Ant Design ©2018 Created by Ant UED
                     </Footer>
