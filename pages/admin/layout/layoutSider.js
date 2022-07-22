@@ -27,50 +27,29 @@ export default function Sidebar() {
     const items = [
         {
             label: <Link href="/admin/dashboard" ><a className='w-full text-lg text-pink-500' > Dashboard</a></Link>, key: "dashboard", icon: <DesktopOutlined />,
-            get: function getItem(label, key, icon, children) {
-                return {
-                    key,
-                    icon,
-                    children,
-                    label,
-                };
-            }
+
         },
         {
             label: <Link href="/admin/users" ><a className='w-full text-lg'>Users</a></Link>, key: "users", icon: <TeamOutlined />,
-            get: function getItem(label, key, icon, children) {
-                return {
-                    key,
-                    icon,
-                    children,
-                    label,
-                };
-            }
+
         },
         {
             label: <Link href="/admin/product"><a className='w-full text-lg '>Product</a></Link>, key: "product", icon: <StockOutlined />,
-            get: function getItem(label, key, icon, children) {
-                return {
-                    key,
-                    icon,
-                    children,
-                    label,
-                };
-            }
+
         },
         {
             label: <Link href="/admin/transaksi"><a className='w-full text-lg '>Transaksi</a></Link>, key: "transaksi", icon: <SwapOutlined />,
-            get: function getItem(label, key, icon, children) {
-                return {
-                    key,
-                    icon,
-                    children,
-                    label,
-                };
-            }
+
         },
     ];
-
+    function getItem(label, key, icon, children) {
+        return {
+            key,
+            icon,
+            children,
+            label,
+        };
+    }
     return (
         <>
             <Sider collapsible collapsed={collapsed} onCollapse={(value) => setCollapsed(value)}

@@ -6,7 +6,11 @@ import Navigasi from '../components/navigasi'
 import dynamic from 'next/dynamic'
 import FooterCustomer from '../components/footer'
 
+import React, { useEffect, useLayoutEffect } from "react";
 export default function Home(props) {
+  if (typeof document === 'undefined') {
+    React.useLayoutEffect = React.useEffect;
+  }
   return (
 
     <>

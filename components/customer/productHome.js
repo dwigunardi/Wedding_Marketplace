@@ -197,6 +197,7 @@ function ProductHome() {
                                             className="rounded-t-lg"
                                             src={cardImg1}
                                             alt=""
+                                            placeholder='blur'
                                         />
                                     </a>
                                     <div className="p-6">
@@ -215,6 +216,7 @@ function ProductHome() {
                                         <Image
                                             className="rounded-t-lg"
                                             src={cardImg2}
+                                            placeholder='blur'
                                             alt=""
                                         />
                                     </a>
@@ -235,6 +237,7 @@ function ProductHome() {
                                         <Image
                                             className="rounded-t-lg"
                                             src={cardImg3}
+                                            placeholder='blur'
                                             alt=""
                                         />
                                     </a>
@@ -256,6 +259,7 @@ function ProductHome() {
                                         <Image
                                             className="rounded-t-lg"
                                             src={cardImg4}
+                                            placeholder='blur'
                                             alt=""
                                         />
                                     </a>

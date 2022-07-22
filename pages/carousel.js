@@ -29,7 +29,7 @@ function CarouselAuto() {
 
                 <div>
                     <div style={contentStyle}>
-                        <Image src={banner1} layout="fill" className="" />
+                        <Image src={banner1} layout="fill" className="" placeholder='blur' priority={true} />
 
                         <Row align="middle" style={{
                             position: "absolute",
@@ -60,7 +60,7 @@ function CarouselAuto() {
                 </div>
                 <div>
                     <div style={contentStyle}>
-                        <Image src={banner2} layout="fill" className="" />
+                        <Image src={banner2} layout="fill" className="" priority={true} placeholder='blur' />
 
                         <Row align="middle" style={{
                             position: "absolute",
@@ -91,7 +91,7 @@ function CarouselAuto() {
                 </div>
                 <div>
                     <div style={contentStyle}>
-                        <Image src={banner3} layout="fill" className="" />
+                        <Image src={banner3} layout="fill" className="" placeholder='blur' priority={true} />
 
                         <Row align="middle" style={{
                             position: "absolute",

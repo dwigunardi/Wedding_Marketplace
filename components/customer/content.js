@@ -41,7 +41,7 @@ function ContentMain() {
                 </Col>
                 {/* <Col lg={{ span: 2 }} sm={{ span: 22 }} xs={{ span: 22 }} className="gutter-row"></Col> */}
                 <Col lg={{ span: 8 }} md={{ span: 8 }} sm={{ span: 10 }} xs={{ span: 22 }} offset={2} className="gutter-row">
-                    <Image src={GambarKanan} width={500} height={600} />
+                    <Image src={GambarKanan} width={500} height={600} placeholder='blur' />
                 </Col>
             </Row>
 

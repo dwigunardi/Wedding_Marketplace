@@ -7,7 +7,7 @@ import {
     SettingOutlined,
     DownOutlined
 } from '@ant-design/icons';
-import { Button, Col, Layout, Menu, Row, Space, Dropdown } from 'antd';
+import { Button, Col, Layout, Menu, Row, Space, Dropdown, Link } from 'antd';
 import React, { useState } from 'react';
 import 'antd/dist/antd.css'
 import 'tailwindcss/tailwind.css'
@@ -19,22 +19,19 @@ const menu = (
     <Menu
         items={[
             {
+                label: '1st menu item',
                 key: '1',
-                label: (
-                    <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-                        1st menu item
-                    </a>
-                ),
+                icon: <UserOutlined />,
             },
             {
+                label: '2nd menu item',
                 key: '2',
-                label: (
-                    <a target="_blank" rel="noopener noreferrer" href="https://www.aliyun.com">
-                        2nd menu item (disabled)
-                    </a>
-                ),
-                icon: <SettingOutlined />,
-
+                icon: <UserOutlined />,
+            },
+            {
+                label: '3rd menu item',
+                key: '3',
+                icon: <UserOutlined />,
             },
         ]}
     />
@@ -58,7 +55,7 @@ const NavbarAdmin = () => {
                     <Col>
                         <div className='text-center text-pink-500 space-x-2'>
                             <UserOutlined className='mb-5' />
-                            <Dropdown overlay={menu}>
+                            <Dropdown overlay={menu} trigger={['click']}>
                                 <a onClick={(e) => e.preventDefault()}>
                                     <Space className='text-center '>
                                         Admin

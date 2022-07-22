@@ -24,40 +24,35 @@ function CoupleSlide() {
                 <div>
                     <div style={styleCarousel}>
                         <Row justify="center" className='space-x-5'>
-                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 11 }} xs={{ span: 11 }}
+                            <Col lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 11 }} xs={{ span: 11 }}
                                 className="pt-5">
                                 <div className="rounded-lg shadow-lg  ">
 
-                                    <Image className="rounded-t-lg" src={Coupleimg} alt="" />
+                                    <Image className="rounded-t-lg" src={Coupleimg} alt="" placeholder='blur' />
 
 
                                 </div>
                             </Col>
-                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 11 }} xs={{ span: 11 }}
+                            <Col lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 11 }} xs={{ span: 11 }}
                                 className="pt-5">
                                 <div className="rounded-lg shadow-lg  ">
 
-                                    <Image className="rounded-t-lg" src={Coupleimg6} alt="" />
+                                    <Image className="rounded-t-lg" src={Coupleimg6} alt="" placeholder='blur' />
 
 
                                 </div>
                             </Col>
-                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 11 }} xs={{ span: 11 }}
+                            <Col lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 11 }} xs={{ span: 11 }}
                                 className="pt-5">
                                 <div className="rounded-lg shadow-lg  ">
 
-                                    <Image className="rounded-t-lg" src={Coupleimg5} alt="" />
-
-
+                                    <Image className="rounded-t-lg" src={Coupleimg5} alt="" placeholder='blur' />
                                 </div>
                             </Col>
-                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 11 }} xs={{ span: 11 }}
+                            <Col lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 11 }} xs={{ span: 11 }}
                                 className="pt-5">
                                 <div className="rounded-lg shadow-lg  ">
-
-                                    <Image className="rounded-t-lg" src={Coupleimg4} alt="" />
-
-
+                                    <Image className="rounded-t-lg" src={Coupleimg4} alt="" placeholder='blur' />
                                 </div>
                             </Col>
                         </Row>
@@ -66,38 +61,33 @@ function CoupleSlide() {
                 <div>
                     <div style={styleCarousel}>
                         <Row justify="center" className='space-x-5'>
-                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 11 }} xs={{ span: 11 }}
+                            <Col lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 11 }} xs={{ span: 11 }}
+                                className="pt-5">
+                                <div className="rounded-lg shadow-lg  ">
+                                    <Image className="rounded-t-lg" src={Coupleimg} alt="" placeholder='blur' />
+                                </div>
+                            </Col>
+                            <Col lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 11 }} xs={{ span: 11 }}
                                 className="pt-5">
                                 <div className="rounded-lg shadow-lg  ">
 
-                                    <Image className="rounded-t-lg" src={Coupleimg} alt="" />
+                                    <Image className="rounded-t-lg" src={Coupleimg6} alt="" placeholder='blur' />
+                                </div>
+                            </Col>
+                            <Col lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 11 }} xs={{ span: 11 }}
+                                className="pt-5">
+                                <div className="rounded-lg shadow-lg  ">
+
+                                    <Image className="rounded-t-lg" src={Coupleimg5} alt="" placeholder='blur' />
 
 
                                 </div>
                             </Col>
-                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 11 }} xs={{ span: 11 }}
+                            <Col lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 11 }} xs={{ span: 11 }}
                                 className="pt-5">
                                 <div className="rounded-lg shadow-lg  ">
 
-                                    <Image className="rounded-t-lg" src={Coupleimg6} alt="" />
-
-
-                                </div>
-                            </Col>
-                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 11 }} xs={{ span: 11 }}
-                                className="pt-5">
-                                <div className="rounded-lg shadow-lg  ">
-
-                                    <Image className="rounded-t-lg" src={Coupleimg5} alt="" />
-
-
-                                </div>
-                            </Col>
-                            <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 11 }} xs={{ span: 11 }}
-                                className="pt-5">
-                                <div className="rounded-lg shadow-lg  ">
-
-                                    <Image className="rounded-t-lg" src={Coupleimg4} alt="" />
+                                    <Image className="rounded-t-lg" src={Coupleimg4} alt="" placeholder='blur' />
 
 
                                 </div>

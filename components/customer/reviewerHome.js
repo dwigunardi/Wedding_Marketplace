@@ -37,7 +37,7 @@ function ReviewerSection() {
                             src={Coupleimg}
                             layout="responsive"
                             objectFit='contain'
-
+                            placeholder='blur'
                         />
                     </Col>
                     <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 20 }} xs={{ span: 20 }} className="space-x-2 pt-5">
@@ -54,6 +54,7 @@ function ReviewerSection() {
                             src={Coupleimg}
                             layout="responsive"
                             objectFit='contain'
+                            placeholder='blur'
                         />
                     </Col>
                 </Row>
@@ -69,7 +70,7 @@ function ReviewerSection() {
                             src={Coupleimg2}
                             layout="responsive"
                             objectFit='contain'
-
+                            placeholder='blur'
                         />
                     </Col>
                     <Col lg={{ span: 3 }} md={{ span: 5 }} sm={{ span: 20 }} xs={{ span: 20 }} offset={1} className=" pt-5">
@@ -77,6 +78,7 @@ function ReviewerSection() {
                             className=' h-auto transition-shadow ease-in-out duration-300 shadow-none hover:shadow-xl'
                             src={Coupleimg3}
                             layout="responsive"
+                            placeholder='blur'
                             objectFit='contain'
                         />
                     </Col>
@@ -101,7 +103,7 @@ function ReviewerSection() {
                             src={Coupleimg4}
                             layout="responsive"
                             objectFit='contain'
-
+                            placeholder='blur'
                         />
                     </Col>
 
@@ -111,6 +113,7 @@ function ReviewerSection() {
                             src={Coupleimg5}
                             layout="responsive"
                             objectFit='contain'
+                            placeholder='blur'
                         />
                     </Col>
                     <Col lg={{ span: 4 }} md={{ span: 5 }} sm={{ span: 20 }} xs={{ span: 20 }} className="space-x-2 pt-5">

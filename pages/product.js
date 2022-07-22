@@ -1,10 +1,10 @@
 
 import Image from "next/image";
-import { DownOutlined, PushpinOutlined } from '@ant-design/icons';
+import { DownOutlined, PushpinOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import {
     Button, Carousel, Col, Row, Layout, Card,
     Dropdown, Menu, message, Space, AutoComplete,
-    Input, Grid, ConfigProvider, Pagination
+    Input, Grid, ConfigProvider, Pagination, BackTop
 } from "antd";
 import "tailwindcss/tailwind.css"
 import "antd/dist/antd.css"
@@ -129,7 +129,7 @@ export default function ProductPage(props) {
                 <Carousel autoplay>
                     <div>
                         <div style={contentStyle}>
-                            <Image src={heroImg} layout="fill" />
+                            <Image src={heroImg} layout="fill" placeholder='blur' priority={true} />
                             <Row justify="end" align="middle" style={contentStyle}>
                                 <Col span={10} offset={3}>
                                     <p className="text-pink-500 text-5xl w-10/12">
@@ -211,6 +211,7 @@ export default function ProductPage(props) {
                                                     className="rounded-t-lg"
                                                     src={cardImg1}
                                                     alt=""
+                                                    placeholder='blur'
                                                 />
                                             </a>
                                             <div className="p-6">
@@ -230,6 +231,7 @@ export default function ProductPage(props) {
                                                     className="rounded-t-lg"
                                                     src={cardImg2}
                                                     alt=""
+                                                    placeholder='blur'
                                                 />
                                             </a>
                                             <div className="p-6">
@@ -250,6 +252,7 @@ export default function ProductPage(props) {
                                                     className="rounded-t-lg"
                                                     src={cardImg3}
                                                     alt=""
+                                                    placeholder='blur'
                                                 />
                                             </a>
                                             <div className="p-6">
@@ -271,6 +274,7 @@ export default function ProductPage(props) {
                                                     className="rounded-t-lg"
                                                     src={cardImg4}
                                                     alt=""
+                                                    placeholder='blur'
                                                 />
                                             </a>
                                             <div className="p-6">
@@ -300,6 +304,17 @@ export default function ProductPage(props) {
             </Layout>
 
             <FooterCustomer />
+            <BackTop style={{
+                height: 40,
+                width: 40,
+                lineHeight: '30px',
+                borderRadius: "20px",
+                backgroundColor: '#EC4899',
+                color: '#fff',
+                textAlign: 'center',
+                fontSize: "12pt",
+                opacity: 0.7
+            }}><div className="hover:translate-y-3 ease-in-out transition-all"><ArrowUpOutlined /></div></BackTop>
         </>
     )
 }
