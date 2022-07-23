@@ -5,7 +5,9 @@ import "tailwindcss/tailwind.css"
 import Navigasi from '../components/navigasi'
 import dynamic from 'next/dynamic'
 import FooterCustomer from '../components/footer'
-
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+config.autoAddCss = false
 import React, { useEffect, useLayoutEffect } from "react";
 export default function Home(props) {
   if (typeof document === 'undefined') {

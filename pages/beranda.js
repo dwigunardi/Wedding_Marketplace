@@ -10,7 +10,8 @@ import "tailwindcss/tailwind.css"
 import ReviewerSection from "../components/customer/reviewerHome";
 import { BackTop } from "antd";
 import { ArrowUpOutlined } from '@ant-design/icons';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import '@fortawesome/fontawesome-svg-core/styles.css'
 export default function Beranda() {
 
     return (
@@ -18,9 +19,10 @@ export default function Beranda() {
 
             <CarouselAuto />
             <ContentMain />
+            <CoupleSlide />
             <ProductHome />
             <ReviewerSection />
-            <CoupleSlide />
+
             <BookingBg />
             <BackTop style={{
                 height: 40,

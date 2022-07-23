@@ -19,9 +19,10 @@ function CoupleSlide() {
     }
     return (
         <>
-
+            <div className='text-center text-pink-500 text-5xl transition-all ease-in-out delay-150 hover:scale-110 p-5'>Highlight Project kami</div>
             <Carousel autoplay>
                 <div>
+
                     <div style={styleCarousel}>
                         <Row justify="center" className='space-x-5'>
                             <Col lg={{ span: 4 }} md={{ span: 4 }} sm={{ span: 11 }} xs={{ span: 11 }}
