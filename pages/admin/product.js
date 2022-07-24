@@ -1,6 +1,5 @@
-import NavbarAdmin from "./layout/layoutHeader"
-import MainLayout from "./layout/mainLayout"
-import ContentProduct from "./konten/kontenProduct"
+import MainLayout from "../../components/admin/layout/mainLayout"
+import ContentProduct from "../../components/admin/konten/kontenProduct"
 
 function ProductAdmin() {
 

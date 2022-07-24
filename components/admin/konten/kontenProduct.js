@@ -1,0 +1,266 @@
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, } from 'antd';
+import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import Link from "next/link";
+import Image from 'next/image';
+import image1 from "../../../public/Image/card-product/aminta-hotel.webp"
+import image2 from "../../../public/Image/card-product/Fieris Hotel Rawamangun.webp"
+import image3 from "../../../public/Image/card-product/Mang Kabayan Vida Bekasi.webp"
+import React, { useState } from 'react';
+
+
+
+const { Header, Content, Sider } = Layout;
+
+const { Search } = Input;
+export default function ProductContent() {
+    const columns = [
+        {
+            title: 'No',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Product',
+            dataIndex: 'product',
+            key: 'product',
+
+        },
+        {
+            title: 'Venue',
+            dataIndex: 'venue',
+            key: 'venue',
+        },
+        {
+            title: 'Lokasi',
+            dataIndex: 'lokasi',
+            key: 'lokasi',
+        },
+        {
+            title: 'Varian',
+            dataIndex: 'varian',
+            key: 'varian',
+        },
+        {
+            title: 'Harga',
+            dataIndex: 'harga',
+            key: 'harga',
+        },
+        {
+            title: 'Foto',
+            dataIndex: 'foto',
+            key: 'foto',
+        },
+        {
+            title: 'Status',
+            key: 'status',
+            dataIndex: 'status',
+            render: (_, { status }) => (
+                <>
+                    {status.map((tag) => {
+                        let color = ''
+                        if (tag === 'Tersedia') {
+                            color = 'green';
+                        }
+                        else if (tag === 'Non-Tersedia') {
+                            color = 'volcano';
+                        }
+
+
+                        return (
+                            <Tag color={color} key={tag}>
+                                {tag.toUpperCase()}
+                            </Tag>
+                        );
+                    })}
+                </>
+            ),
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (_, record) => (
+                <Space size="middle">
+                    <Link href={`/admin/${record.id}`}>
+                        <Tooltip placement="left" title="Detail">
+                            <Button
+                                style={{ color: "#0d6efd", borderColor: "#0d6efd" }}
+                                icon={<EditOutlined />}
+                            >
+
+                            </Button>
+                        </Tooltip>
+                    </Link>
+
+                    <Link href={`/admin/detailProduct/${record.id}`}>
+                        <Tooltip placement="left" title="Detail">
+                            <Button
+                                style={{ color: "#4ade80", borderColor: "#4ade80" }}
+                                icon={<EyeOutlined />}
+                            >
+
+                            </Button>
+                        </Tooltip>
+                    </Link>
+                    <Link href={`/${record.deleteUser}`}>
+                        <Tooltip placement="right" title="Delete">
+                            <Button
+                                type="danger"
+                                icon={<DeleteOutlined />}
+                                danger={true}
+                            >
+                            </Button>
+                        </Tooltip>
+                    </Link>
+
+                </Space>
+            ),
+        },
+    ];
+    const data = [
+        {
+            id: '1',
+            product: 'WO',
+            venue: 'Aminta Hall',
+            lokasi: 'Jakarta',
+            varian: '100',
+            harga: 'Rp. 70,600,000',
+            foto: <Image src={image1} width={65} height={44} placeholder='blur' />,
+            status: ['Tersedia'],
+        },
+        {
+            id: '2',
+            product: 'WO',
+            venue: 'Fieris Hotel',
+            lokasi: 'Jakarta',
+            varian: '100',
+            harga: 'Rp. 66,600,000',
+            foto: <Image src={image2} width={65} height={44} placeholder='blur' />,
+            status: ['Tersedia'],
+        },
+        {
+            id: '3',
+            product: 'WO',
+            venue: 'Mang Kabayan Vida',
+            lokasi: 'Bekasi',
+            varian: '100',
+            harga: 'Rp. 45,900,000',
+            foto: <Image src={image3} width={65} height={44} placeholder='blur' />,
+            status: ['Non-Tersedia'],
+        },
+    ];
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const showModal = () => {
+        setVisible(true);
+    };
+
+    const handleOk = () => {
+        setLoading(true);
+        setTimeout(() => {
+            setLoading(false);
+            setVisible(false);
+        }, 2000);
+    };
+
+    const handleCancel = () => {
+        setVisible(false);
+    };
+    const onFinish = (values) => {
+        console.log('Success:', values);
+    };
+
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+
+    const onSearch = (value) => console.log(value);
+    return (
+        <>
+            <Content>
+                <h1 className='mt-6 ml-14 text-2xl'>Table Product</h1>
+                <div className="rounded-lg shadow-lg bg-white mx-10 py-4">
+
+                    <Row className='my-5 ' justify='space-between'>
+                        <Col lg={{ span: 5, offset: 2 }} md={{ span: 5, offset: 2 }} sm={{ span: 10 }} xs={{ span: 10 }} >
+                            <Search
+                                placeholder="input search text"
+                                allowClear
+                                enterButton
+                                size="large"
+                                onSearch={onSearch}
+
+                            />
+                        </Col>
+                        <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }}>
+                            <Button type="primary" onClick={showModal}>
+                                Tambah Product <PlusOutlined />
+                            </Button>
+                            <Modal title="Tambah Product"
+                                visible={visible}
+                                onOk={handleOk}
+                                onCancel={handleCancel}
+                                footer={[
+                                    <Button key="back" onClick={handleCancel}>
+                                        Return
+                                    </Button>,
+                                ]}>
+                                <Form
+                                    name="basic"
+                                    layout='vertical'
+
+
+                                    onFinish={onFinish}
+                                    onFinishFailed={onFinishFailed}
+                                    autoComplete="off"
+                                >
+                                    <Form.Item
+                                        label="Username"
+                                        name="username"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input your username!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input />
+                                    </Form.Item>
+
+                                    <Form.Item
+                                        label="Password"
+                                        name="password"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input your password!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input.Password />
+                                    </Form.Item>
+
+
+
+                                    <Form.Item
+
+                                    >
+                                        <Button type="primary" htmlType="submit">
+                                            Submit
+                                        </Button>
+                                    </Form.Item>
+                                </Form>
+                            </Modal>
+                        </Col>
+                    </Row>
+                    <Row justify="center" align="middle" className='h-96 ' style={{ overflow: "auto" }}>
+
+                        <Col lg={{ span: 20 }} md={{ span: 22 }}  >
+                            <Table columns={columns} dataSource={data} className="shadow-sm" />
+                        </Col>
+                    </Row>
+
+                </div>
+            </Content>
+        </>
+    )
+}

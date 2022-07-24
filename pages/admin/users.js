@@ -1,5 +1,5 @@
-import KontenUsers from "./konten/kontenUser";
-import MainLayout from "./layout/mainLayout";
+import KontenUsers from "../../components/admin/konten/kontenUser";
+import MainLayout from "../../components/admin/layout/mainLayout";
 
 
 
