@@ -1,4 +1,4 @@
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, } from 'antd';
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, Select, TreeSelect, } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
 import Link from "next/link";
 import Image from 'next/image';
@@ -6,12 +6,13 @@ import image1 from "../../../public/Image/card-product/aminta-hotel.webp"
 import image2 from "../../../public/Image/card-product/Fieris Hotel Rawamangun.webp"
 import image3 from "../../../public/Image/card-product/Mang Kabayan Vida Bekasi.webp"
 import React, { useState } from 'react';
+import TambahProduct from './tambahProduct';
 
 
 
 const { Header, Content, Sider } = Layout;
 
-const { Search } = Input;
+const { Search, TextArea } = Input;
 export default function ProductContent() {
     const columns = [
         {
@@ -148,30 +149,6 @@ export default function ProductContent() {
             status: ['Non-Tersedia'],
         },
     ];
-    const [visible, setVisible] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const showModal = () => {
-        setVisible(true);
-    };
-
-    const handleOk = () => {
-        setLoading(true);
-        setTimeout(() => {
-            setLoading(false);
-            setVisible(false);
-        }, 2000);
-    };
-
-    const handleCancel = () => {
-        setVisible(false);
-    };
-    const onFinish = (values) => {
-        console.log('Success:', values);
-    };
-
-    const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
-    };
 
     const onSearch = (value) => console.log(value);
     return (
@@ -192,64 +169,8 @@ export default function ProductContent() {
                             />
                         </Col>
                         <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }}>
-                            <Button type="primary" onClick={showModal}>
-                                Tambah Product <PlusOutlined />
-                            </Button>
-                            <Modal title="Tambah Product"
-                                visible={visible}
-                                onOk={handleOk}
-                                onCancel={handleCancel}
-                                footer={[
-                                    <Button key="back" onClick={handleCancel}>
-                                        Return
-                                    </Button>,
-                                ]}>
-                                <Form
-                                    name="basic"
-                                    layout='vertical'
-
-
-                                    onFinish={onFinish}
-                                    onFinishFailed={onFinishFailed}
-                                    autoComplete="off"
-                                >
-                                    <Form.Item
-                                        label="Username"
-                                        name="username"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input your username!',
-                                            },
-                                        ]}
-                                    >
-                                        <Input />
-                                    </Form.Item>
-
-                                    <Form.Item
-                                        label="Password"
-                                        name="password"
-                                        rules={[
-                                            {
-                                                required: true,
-                                                message: 'Please input your password!',
-                                            },
-                                        ]}
-                                    >
-                                        <Input.Password />
-                                    </Form.Item>
-
-
-
-                                    <Form.Item
-
-                                    >
-                                        <Button type="primary" htmlType="submit">
-                                            Submit
-                                        </Button>
-                                    </Form.Item>
-                                </Form>
-                            </Modal>
+                            {/* product modal form */}
+                            <TambahProduct />
                         </Col>
                     </Row>
                     <Row justify="center" align="middle" className='h-96 ' style={{ overflow: "auto" }}>

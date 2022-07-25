@@ -13,31 +13,31 @@ ConfigProvider.config({
 });
 function MainLayout({ children }) {
     return (
-        <ConfigProvider>
-            <Layout
-                hasSider
-            >
-                <Sidebar />
-                <Layout>
-                    <NavbarAdmin />
-                    <Layout>{children}
 
-                        <Footer
-                            className="text-center"
-                            style={{
-                                backgroundColor: "white",
+        <Layout
 
-                                width: "100%"
-                            }}
-                        >
-                            Sahin ©2022 Created by Dwi
-                        </Footer>
-                    </Layout>
+        >
+            <Sidebar />
+            <Layout>
+                <NavbarAdmin />
+                <Layout>{children}
 
+                    <Footer
+                        className="text-center"
+                        style={{
+                            backgroundColor: "white",
 
+                            width: "100%"
+                        }}
+                    >
+                        Sahin ©2022 Created by Dwi
+                    </Footer>
                 </Layout>
-            </Layout >
-        </ConfigProvider>
+
+
+            </Layout>
+        </Layout >
+
     );
 }
 
