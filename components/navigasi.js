@@ -75,7 +75,7 @@ export default function Navigasi() {
                         <ul className="items-center justify-center  md:flex md:space-x-6 md:space-y-0">
                             <li className="text-pink-500 ">
                                 <Link href="/">
-                                    <a className={`text-pink-500 hover:text-white hover:bg-pink-500 
+                                    <a className={`text-pink-500 hover:text-white active:bg-lime-500 
                                  pt-5 pb-6 px-5 text-lg ${currentRoute === "/" ? "active" : "non-active"}`}>
                                         Home
                                     </a>
