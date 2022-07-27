@@ -7,7 +7,7 @@ import "tailwindcss/tailwind.css"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useState } from "react"
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
+import { LoadingOutlined, PlusOutline, UploadOutlined } from '@ant-design/icons';
 import axios from "axios"
 
 
@@ -27,7 +27,7 @@ export default function Daftar() {
     const [username, setUsername] = useState('')
     const [no_telp, setNotel] = useState('')
     const [password, setPassword] = useState('')
-    const [roleId, setRoleid] = useState('0c71d432-7e87-44a1-b0f1-08080bd71a55')
+    const [roleId, setRoleid] = useState('55d6fa93-67e4-42a0-b302-e0bb1b312ba4')
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState('')
 
@@ -87,12 +87,18 @@ export default function Daftar() {
 
             console.log(data)
 
-            const res = await axios.post("https://094f-2001-448a-2062-2ea0-9cc9-4507-d7df-dd97.ap.ngrok.io/auth/register", data, {
+            const res = await axios.post("https://project-wo.herokuapp.com/auth/register", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 }
             }).then(result => {
-                console.log(result)
+                console.log(result.data.statusCode)
+                if (result.data.statusCode == 201 || result.data.statusCode == 200) {
+                    window.alert(result.data.message)
+                    router.push('/auth/login')
+                } else {
+                    window.alert("Gagal mendaftar")
+                }
 
             })
         } catch (error) {
@@ -117,12 +123,12 @@ export default function Daftar() {
 
                         <Col lg={{ span: 10 }} offset={4} className="pt-5  align-middle">
 
-                            <h1 className="text-pink-500 text-3xl">Daftar</h1>
+                            <h1 className="text-pink-500 text-3xl">Daftar Customer</h1>
 
 
                         </Col>
                         <Col span={8} offset={1} className="pt-5 mb-4 justify-self-end">
-                            <Image src={Logo} width={253} height={213} />
+                            <Image src={Logo} width={150} height={125} />
                         </Col>
 
                     </Row>
@@ -176,9 +182,21 @@ export default function Daftar() {
                                 <div className="mb-4">
                                     <input
                                         type="password"
-                                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 
-                                    bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
-                                    ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                                        className="form-control
+                                        block
+                                        w-full
+                                        px-3
+                                        py-1.5
+                                        text-base
+                                        font-normal
+                                        text-pink-700
+                                        bg-white bg-clip-padding
+                                        border border-solid border-pink-300
+                                        rounded
+                                        transition
+                                        ease-in-out
+                                        m-0
+                                        focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
                                         value={password} onChange={onChangePassword}
                                         placeholder="Password"
                                     />
@@ -195,13 +213,19 @@ export default function Daftar() {
                                 </div>
                                 <div className="mb-4">
                                     <input
+                                        id="img"
+                                        style={{ display: "none" }}
                                         type="file"
+                                        accept="image/*"
                                         className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
                                         onChange={onChangeImage}
-
                                     />
+
+                                    <button className="inline-block px-6 py-4 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                                        <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
+                                    </button>
 
                                 </div>
                                 <div className="text-center pt-1 mb-12 pb-1">

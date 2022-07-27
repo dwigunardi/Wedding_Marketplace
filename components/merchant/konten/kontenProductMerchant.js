@@ -6,13 +6,14 @@ import image1 from "../../../public/Image/card-product/aminta-hotel.webp"
 import image2 from "../../../public/Image/card-product/Fieris Hotel Rawamangun.webp"
 import image3 from "../../../public/Image/card-product/Mang Kabayan Vida Bekasi.webp"
 import React, { useState } from 'react';
+import TambahProduct from './tambahProduct';
 
 
 
 const { Header, Content, Sider } = Layout;
 
 const { Search, TextArea } = Input;
-export default function ProductContent() {
+export default function MerchantProduct() {
     const columns = [
         {
             title: 'No',
@@ -80,8 +81,19 @@ export default function ProductContent() {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
+                    <Link href={`/admin/${record.id}`}>
+                        <Tooltip placement="left" title="Update">
+                            <Button
+                                style={{ color: "#0d6efd", borderColor: "#0d6efd" }}
+                                icon={<EditOutlined />}
+                            >
+
+                            </Button>
+                        </Tooltip>
+                    </Link>
+
                     <Link href={`/admin/detailProduct/${record.id}`}>
-                        <Tooltip placement="left" title="Detail">
+                        <Tooltip placement="top" title="Detail">
                             <Button
                                 style={{ color: "#4ade80", borderColor: "#4ade80" }}
                                 icon={<EyeOutlined />}
@@ -156,7 +168,10 @@ export default function ProductContent() {
 
                             />
                         </Col>
-
+                        <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }}>
+                            {/* product modal form */}
+                            <TambahProduct />
+                        </Col>
                     </Row>
                     <Row justify="center" align="middle" className='h-96 ' style={{ overflow: "auto" }}>
 

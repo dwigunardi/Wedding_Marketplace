@@ -1,13 +1,14 @@
 import Background from "../../public/Image/banner-wed-5.png"
 import Image from "next/image"
 import Logo from "../../public/Image/sahin-love.png"
-import { Col, Row, Grid, Layout, Button } from "antd"
+import { Col, Row, Grid, Layout, Button, Input } from "antd"
 import "antd/dist/antd.css"
 import "tailwindcss/tailwind.css"
 import { useState, Fragment } from "react"
 import axios from "axios";
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 
 
 const { useBreakpoint } = Grid;
@@ -44,19 +45,19 @@ export default function Login() {
             }
             console.log(formData)
 
-            const request = await axios.post("https://85bc-2001-448a-2020-26fe-1051-3284-abb7-cd1b.ap.ngrok.io/auth/login", formData, {
+            const request = await axios.post("https://project-wo.herokuapp.com/auth/login", formData, {
                 headers: { 'content-type': 'application/json' }
             }).then(result => {
-                // console.log(result.data.token)
-                // localStorage.setItem('token_customer', result.data.token)
-                // window.alert(result.data.message)
-                if (result) {
-                    localStorage.setItem('token_customer', result.data.token)
-                    window.alert(result.data.message)
-                    router.push("/" + username)
-                } else {
-                    window.alert("username atau password salah")
-                }
+                console.log(result.data.token)
+                localStorage.setItem('token_customer', result.data.token)
+                window.alert(result.data.message)
+                // if (result) {
+                //     localStorage.setItem('token_customer', result.data.token)
+                //     window.alert(result.data.message)
+                //     router.push("/" + username)
+                // } else {
+                //     window.alert("username atau password salah")
+                // }
             })
         } catch (error) {
             console.error(error);
@@ -88,7 +89,7 @@ export default function Login() {
 
                             </Col>
                             <Col span={8} offset={1} className="pt-5 mb-10 justify-self-end">
-                                <Image src={Logo} width={253} height={213} />
+                                <Image src={Logo} width={150} height={125} />
                             </Col>
 
                         </Row>
@@ -101,19 +102,31 @@ export default function Login() {
                                             className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                            id="exampleFormControlInput1"
+
                                             placeholder="Masukan Username Anda"
                                             value={username} onChange={onChangeUsername}
 
                                         />
                                     </div>
                                     <div className="mb-10">
-                                        <input
+                                        <Input.Password
                                             type="password"
-                                            className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 
-                                    bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
-                                    ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                            id="exampleFormControlInput1"
+                                            className="form-control
+                                            block
+                                            w-full
+                                            px-3
+                                            py-1.5
+                                            text-base
+                                            font-normal
+                                            text-pink-700
+                                            bg-white bg-clip-padding
+                                            border border-solid border-pink-300
+                                            rounded
+                                            transition
+                                            ease-in-out
+                                            m-0
+                                            focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                                            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                                             placeholder="Password"
                                             value={password} onChange={onChangePassword}
                                         />
