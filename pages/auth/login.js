@@ -9,6 +9,7 @@ import axios from "axios";
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
+import jwt_decode from "jwt-decode";
 
 
 const { useBreakpoint } = Grid;
@@ -25,6 +26,7 @@ export default function Login() {
     };
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
+    const [token, setToken] = useState('')
     const onChangeUsername = (e) => {
         const value = e.target.value
         setUsername(value)
@@ -33,6 +35,9 @@ export default function Login() {
     const onChangePassword = (e) => {
         const value = e.target.value
         setPassword(value)
+    }
+    const onFormSubmit = (e) => {
+        e.preventDefault()
     }
 
     const router = useRouter()
@@ -48,16 +53,18 @@ export default function Login() {
             const request = await axios.post("https://project-wo.herokuapp.com/auth/login", formData, {
                 headers: { 'content-type': 'application/json' }
             }).then(result => {
-                console.log(result.data.token)
-                localStorage.setItem('token_customer', result.data.token)
-                window.alert(result.data.message)
-                // if (result) {
-                //     localStorage.setItem('token_customer', result.data.token)
-                //     window.alert(result.data.message)
-                //     router.push("/" + username)
-                // } else {
-                //     window.alert("username atau password salah")
-                // }
+
+                const decode = jwt_decode(result.data.token)
+                console.log(decode)
+                // localStorage.setItem('token_customer', result.data.token)
+                // window.alert(result.data.message)
+                if (result.status == 200 || result.status == 201) {
+                    localStorage.setItem('token_customer', result.data.token)
+                    window.alert(result.data.message)
+                    router.push(`/customer/landing/${result.data.role_id}`)
+                } else {
+                    window.alert("username atau password salah")
+                }
             })
         } catch (error) {
             console.error(error);
@@ -93,9 +100,10 @@ export default function Login() {
                             </Col>
 
                         </Row>
+
                         <Row align="middle" className="justify-between" style={{ width: "50%" }}>
                             <Col lg={{ span: 16 }} offset={4}>
-                                <form className="mt-5">
+                                <form className="mt-5" onSubmit={onFormSubmit}>
                                     <div className="mb-10">
                                         <input
                                             type="text"
@@ -130,6 +138,7 @@ export default function Login() {
                                             placeholder="Password"
                                             value={password} onChange={onChangePassword}
                                         />
+
                                     </div>
                                     <div className="text-center pt-1 mb-12 pb-1">
                                         <button
@@ -146,6 +155,7 @@ export default function Login() {
                                         </button>
 
                                     </div>
+
                                     <div className="flex items-center justify-between pb-6">
                                         <p className="mb-0 mr-2">Tidak punya akun? <Link href="/auth/landingOpsi"><a className="text-pink-500">Daftar disini</a></Link></p>
 
