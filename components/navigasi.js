@@ -1,17 +1,89 @@
 import 'tailwindcss/tailwind.css'
 /* This example requires Tailwind CSS v2.0+ */
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import logo from "../public/Image/sahin-love.png"
 import Link from 'next/link'
+import { Space, Dropdown, Menu, Button } from 'antd'
+import {
+    UserOutlined,
+    DownOutlined, LogoutOutlined, ShoppingCartOutlined
+} from '@ant-design/icons';
+import jwt_decode from 'jwt-decode'
+
+
 
 
 
 export default function Navigasi() {
     const [navbar, setNavbar] = useState(false);
+    const [isLogged, setLogged] = useState(false)
+    const [username, setUsername] = useState('')
     const router = useRouter();
     const currentRoute = router.pathname;
+
+    async function validate() {
+        try {
+            let token = localStorage.getItem('token_customer')
+
+            const decode = jwt_decode(token)
+            const user = decode.username
+            console.log(decode);
+            if (user) {
+                setUsername(user)
+
+            } else {
+                setUsername(null)
+            }
+            if (token) {
+                setLogged(true)
+            } else {
+                setLogged(false)
+            }
+
+        } catch (error) {
+
+        }
+    }
+    useEffect(() => {
+        validate()
+
+    }, []);
+    async function buttonLogout() {
+        try {
+            const remove = localStorage.clear()
+            window.alert("Anda telah keluar")
+            router.push("/auth/login")
+
+        } catch (error) {
+
+        }
+    }
+
+    const menu = (
+        <Menu
+            items={[
+                {
+                    label: '1st menu item',
+                    key: '1',
+                    icon: <UserOutlined />,
+                },
+                {
+                    label: <Button onClick={buttonLogout}>
+                        Logout
+                    </Button>,
+                    key: '2',
+                    icon: <LogoutOutlined />,
+                },
+                {
+                    label: '3rd menu item',
+                    key: '3',
+                    icon: <UserOutlined />,
+                },
+            ]}
+        />
+    );
     return (
         <>
 
@@ -75,7 +147,7 @@ export default function Navigasi() {
                         <ul className="items-center justify-center  md:flex md:space-x-6 md:space-y-0">
                             <li className="text-pink-500 ">
                                 <Link href="/">
-                                    <a className={`text-pink-500 hover:text-white active:bg-lime-500 
+                                    <a className={`text-pink-500 hover:text-white 
                                  pt-5 pb-6 px-5 text-lg ${currentRoute === "/" ? "active" : "non-active"}`}>
                                         Home
                                     </a>
@@ -93,6 +165,7 @@ export default function Navigasi() {
                         </ul>
 
                         <div className="mt-3 space-y-2 lg:hidden md:hidden sm:inline-block">
+
                             <a
                                 href=""
                                 className="inline-block w-full px-4 py-2 text-center text-white bg-pink-500 rounded-md shadow hover:bg-white hover:text-pink-500 border-solid border-2 border-pink-500"
@@ -112,22 +185,53 @@ export default function Navigasi() {
 
 
                     <div className="hidden space-x-2 md:inline-block">
-                        <Link href="/auth/login">
-                            <button
-                                className="transition ease-in-out hover:-translate-x-2 hover:scale-110 delay-150 px-5 py-2 
+                        {isLogged ? (
+                            <>
+                                <div className='flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 '>
+                                    <ul className="items-center justify-center  md:flex md:space-x-6 md:space-y-0">
+                                        <li className="text-pink-500 ">
+                                            <Link href="/customer/ganti">
+                                                <ShoppingCartOutlined className='text-2xl' />
+                                            </Link>
+                                        </li>
+                                        <li className="text-pink-500 ">
+                                            <div className='text-center text-pink-500 space-x-2'>
+                                                <Space className='text-center '>
+                                                    <UserOutlined className=' text-2xl' />
+                                                    <Dropdown overlay={menu} trigger={['click']}>
+                                                        <a onClick={(e) => e.preventDefault()} className="text-lg">
+                                                            {username}
+                                                            <DownOutlined />
+                                                        </a>
+                                                    </Dropdown>
+                                                </Space>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <Link href="/auth/login">
+                                    <button
+                                        className="transition ease-in-out hover:-translate-x-2 hover:scale-110 delay-150 px-5 py-2 
                                  text-pink-500 mr-4 border-solid border-pink-500 border-2 rounded-full shadow hover:bg-pink-500
                                   hover:text-white ..."
-                            >
-                                Login
-                            </button>
-                        </Link>
-                        <Link href="/auth/landingOpsi">
-                            <button
-                                className="transition ease-in-out hover:-translate-x-2 hover:scale-110 delay-150 px-5 py-2 text-pink-500 bg-white rounded-md shadow hover:bg-pink-500 hover:text-white ..."
-                            >
-                                Daftar
-                            </button>
-                        </Link>
+                                    >
+                                        Login
+                                    </button>
+                                </Link>
+                                <Link href="/auth/landingOpsi">
+                                    <button
+                                        className="transition ease-in-out hover:-translate-x-2 hover:scale-110 delay-150 px-5 py-2 text-pink-500 bg-white rounded-md shadow hover:bg-pink-500 hover:text-white ..."
+                                    >
+                                        Daftar
+                                    </button>
+                                </Link>
+                            </>
+
+                        )}
+
 
 
                     </div>

@@ -5,13 +5,27 @@ import Sidebar from "./layoutSider";
 import 'antd/dist/antd.variable.css'
 import 'tailwindcss/tailwind.css'
 import Link from "next/link";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 const { Footer, Header, Sider } = Layout
+
 ConfigProvider.config({
     theme: {
         primaryColor: '#EC4899',
     },
 });
 function MainLayout({ children }) {
+    const router = useRouter()
+    useEffect(() => {
+        const getToken = localStorage.getItem('token_customer')
+
+        if (!getToken) {
+            window.alert("Anda belom login dan tidak berhak mengakses")
+            router.push("/auth/login")
+        }
+
+
+    }, []);
     return (
 
         <Layout

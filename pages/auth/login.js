@@ -5,7 +5,7 @@ import { Col, Row, Grid, Layout, Button, Input } from "antd"
 import "antd/dist/antd.css"
 import "tailwindcss/tailwind.css"
 import { useState, Fragment } from "react"
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
@@ -55,18 +55,29 @@ export default function Login() {
             }).then(result => {
 
                 const decode = jwt_decode(result.data.token)
-                console.log(decode)
-                // localStorage.setItem('token_customer', result.data.token)
-                // window.alert(result.data.message)
-                if (result.status == 200 || result.status == 201) {
+                console.log(decode.role)
+                window.alert(result.data.message)
+                if (decode.role == "Admin") {
                     localStorage.setItem('token_customer', result.data.token)
-                    window.alert(result.data.message)
+                    router.push("/admin/dashboard")
+
+                } else if (decode.role == "Merchant") {
+                    localStorage.setItem('token_customer', result.data.token)
+                    router.push("/merchant/dashboard")
+                } else if (decode.role == "Costumer") {
+                    localStorage.setItem('token_customer', result.data.token)
                     router.push(`/customer/landing/${result.data.role_id}`)
-                } else {
-                    window.alert("username atau password salah")
                 }
+                // if (result.status == 200 || result.status == 201) {
+                //     localStorage.setItem('token_customer', result.data.token)
+                //     window.alert(result.data.message)
+                //     router.push(`/customer/landing/${result.data.role_id}`)
+                // } else {
+                //     window.alert("username atau password salah")
+                // }
             })
         } catch (error) {
+
             console.error(error);
         }
     }
@@ -74,52 +85,52 @@ export default function Login() {
 
     return (
         <>
-            <Fragment>
-                <div style={{ position: "relative" }} className="min-h-screen min-w-full">
-                    <Image src={Background} layout="fill" priority={true} />
-                    <div className="min-h-screen align-middle">
-                        <Row gutter={{
-                            xs: 8,
-                            sm: 16,
-                            md: 32,
-                            lg: 32,
-                        }} align="middle" className="justify-between" style={{ width: "50%" }} >
-                            {Object.entries(screens)
-                                .filter((screen) => !!screen[1])
-                                .map((screen) => (
-                                    screen[0]
-                                ))}
-                            <Col lg={{ span: 10 }} offset={1} className="pt-5  align-middle">
 
-                                <h1 className="text-pink-500 text-3xl">Login</h1>
+            <div style={{ position: "relative" }} className="min-h-screen min-w-full">
+                <Image src={Background} layout="fill" priority={true} />
+                <div className="min-h-screen align-middle">
+                    <Row gutter={{
+                        xs: 8,
+                        sm: 16,
+                        md: 32,
+                        lg: 32,
+                    }} align="middle" className="justify-between" style={{ width: "50%" }} >
+                        {Object.entries(screens)
+                            .filter((screen) => !!screen[1])
+                            .map((screen) => (
+                                screen[0]
+                            ))}
+                        <Col lg={{ span: 10 }} offset={1} className="pt-5  align-middle">
+
+                            <h1 className="text-pink-500 text-3xl">Login</h1>
 
 
-                            </Col>
-                            <Col span={8} offset={1} className="pt-5 mb-10 justify-self-end">
-                                <Image src={Logo} width={150} height={125} />
-                            </Col>
+                        </Col>
+                        <Col span={8} offset={1} className="pt-5 mb-10 justify-self-end">
+                            <Image src={Logo} width={150} height={125} />
+                        </Col>
 
-                        </Row>
+                    </Row>
 
-                        <Row align="middle" className="justify-between" style={{ width: "50%" }}>
-                            <Col lg={{ span: 16 }} offset={4}>
-                                <form className="mt-5" onSubmit={onFormSubmit}>
-                                    <div className="mb-10">
-                                        <input
-                                            type="text"
-                                            className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
+                    <Row align="middle" className="justify-between" style={{ width: "50%" }}>
+                        <Col lg={{ span: 16 }} offset={4}>
+                            <form className="mt-5" onSubmit={onFormSubmit}>
+                                <div className="mb-10">
+                                    <input
+                                        type="text"
+                                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
 
-                                            placeholder="Masukan Username Anda"
-                                            value={username} onChange={onChangeUsername}
+                                        placeholder="Masukan Username Anda"
+                                        value={username} onChange={onChangeUsername}
 
-                                        />
-                                    </div>
-                                    <div className="mb-10">
-                                        <Input.Password
-                                            type="password"
-                                            className="form-control
+                                    />
+                                </div>
+                                <div className="mb-10">
+                                    <Input.Password
+                                        type="password"
+                                        className="form-control
                                             block
                                             w-full
                                             px-3
@@ -134,38 +145,38 @@ export default function Login() {
                                             ease-in-out
                                             m-0
                                             focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                            iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                                            placeholder="Password"
-                                            value={password} onChange={onChangePassword}
-                                        />
+                                        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                                        placeholder="Password"
+                                        value={password} onChange={onChangePassword}
+                                    />
 
-                                    </div>
-                                    <div className="text-center pt-1 mb-12 pb-1">
-                                        <button
-                                            className="inline-block px-6 py-2.5 text-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
+                                </div>
+                                <div className="text-center pt-1 mb-12 pb-1">
+                                    <button
+                                        className="inline-block px-6 py-2.5 text-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
                                     hover:bg-pink-700 hover:text-white hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg 
                                     transition duration-150 ease-in-out w-full mb-3"
 
-                                            data-mdb-ripple="true"
-                                            data-mdb-ripple-color="light"
-                                            type="submit"
-                                            onClick={submitLogin}
-                                        >
-                                            Log in
-                                        </button>
+                                        data-mdb-ripple="true"
+                                        data-mdb-ripple-color="light"
+                                        type="submit"
+                                        onClick={submitLogin}
+                                    >
+                                        Log in
+                                    </button>
 
-                                    </div>
+                                </div>
 
-                                    <div className="flex items-center justify-between pb-6">
-                                        <p className="mb-0 mr-2">Tidak punya akun? <Link href="/auth/landingOpsi"><a className="text-pink-500">Daftar disini</a></Link></p>
+                                <div className="flex items-center justify-between pb-6">
+                                    <p className="mb-0 mr-2">Tidak punya akun? <Link href="/auth/landingOpsi"><a className="text-pink-500">Daftar disini</a></Link></p>
 
-                                    </div>
-                                </form>
-                            </Col>
-                        </Row>
-                    </div>
+                                </div>
+                            </form>
+                        </Col>
+                    </Row>
                 </div>
-            </Fragment>
+            </div>
+
         </>
     )
 }
