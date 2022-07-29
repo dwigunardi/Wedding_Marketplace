@@ -1,43 +1,92 @@
 import {
     UserOutlined,
-    DownOutlined
+    DownOutlined,
+    LogoutOutlined
 } from '@ant-design/icons';
-import { Col, Layout, Menu, Row, Space, Dropdown, Link } from 'antd';
-import React, { useState } from 'react';
+import { Col, Layout, Menu, Row, Space, Dropdown, Button } from 'antd';
+import React, { useState, useEffect } from 'react';
 import 'antd/dist/antd.css'
 import 'tailwindcss/tailwind.css'
-
+import Router, { useRouter } from 'next/router';
+import jwt_decode from 'jwt-decode'
+import axios from 'axios'
 const { Header } = Layout;
 
-const menu = (
-    <Menu
-        items={[
-            {
-                label: '1st menu item',
-                key: '1',
-                icon: <UserOutlined />,
-            },
-            {
-                label: '2nd menu item',
-                key: '2',
-                icon: <UserOutlined />,
-            },
-            {
-                label: '3rd menu item',
-                key: '3',
-                icon: <UserOutlined />,
-            },
-        ]}
-    />
-);
+
 
 
 const NavbarMerchant = () => {
+
+    const [username, setUsername] = useState('')
+    const [isLogged, setLogged] = useState(false)
+
     const bgStyle = {
         backgroundColor: "white",
 
     }
 
+    async function validate() {
+        try {
+            const token = await localStorage.getItem('token_customer')
+            const decode = await jwt_decode(token)
+            const user = decode.username
+            console.log(decode);
+            if (user) {
+                setUsername(user)
+
+            } else {
+                setUsername(null)
+            }
+            if (token) {
+                setLogged(true)
+            } else {
+                setLogged(false)
+            }
+
+        } catch (error) {
+
+        }
+    }
+    async function buttonLogout() {
+        try {
+            const remove = localStorage.clear()
+            window.alert("Anda telah keluar")
+            router.push("/auth/login")
+
+        } catch (error) {
+
+        }
+    }
+
+
+    const menu = (
+        <Menu
+            items={[
+                {
+                    label: 'Profile',
+                    key: '1',
+                    icon: <UserOutlined />,
+                },
+                {
+                    label: <Button onClick={buttonLogout}>
+                        Logout
+                    </Button>,
+                    key: '2',
+                    icon: <LogoutOutlined />,
+                },
+                {
+                    label: '3rd menu item',
+                    key: '3',
+                    icon: <UserOutlined />,
+                },
+            ]}
+        />
+    );
+    useEffect(() => {
+
+        validate()
+
+    }, []);
     return (
         <>
             <Header
@@ -51,7 +100,7 @@ const NavbarMerchant = () => {
                                 <UserOutlined className='mb-5' />
                                 <Dropdown overlay={menu} trigger={['click']}>
                                     <a onClick={(e) => e.preventDefault()}>
-                                        Merchant
+                                        {username}
                                         <DownOutlined />
                                     </a>
                                 </Dropdown>

@@ -22,7 +22,6 @@ export default function LandingCustomer() {
 
     useEffect(() => {
         const getToken = localStorage.getItem('token_customer')
-
         if (!getToken) {
             window.alert("Anda belom login dan tidak berhak mengakses")
             router.push("/auth/login")

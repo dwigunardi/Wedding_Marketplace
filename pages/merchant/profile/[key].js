@@ -7,10 +7,8 @@ import ImgPlaceholder from "../../../public/Image/img-placeholder.png"
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import BackButton from "../../backButton";
-import axios from "axios";
 
-export default function detailAdminId() {
-
+export default function detailMerchantId() {
 
     const data = [
         {

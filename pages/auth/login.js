@@ -95,11 +95,7 @@ export default function Login() {
                         md: 32,
                         lg: 32,
                     }} align="middle" className="justify-between" style={{ width: "50%" }} >
-                        {Object.entries(screens)
-                            .filter((screen) => !!screen[1])
-                            .map((screen) => (
-                                screen[0]
-                            ))}
+
                         <Col lg={{ span: 10 }} offset={1} className="pt-5  align-middle">
 
                             <h1 className="text-pink-500 text-3xl">Login</h1>

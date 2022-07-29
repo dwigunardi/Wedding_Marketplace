@@ -8,6 +8,7 @@ import Router, { useRouter } from 'next/router';
 import 'antd/dist/antd.css'
 import 'tailwindcss/tailwind.css'
 import jwt_decode from 'jwt-decode'
+import Link from 'next/link';
 
 const { Header } = Layout;
 
@@ -22,6 +23,7 @@ const NavbarAdmin = () => {
     }
     const [username, setUsername] = useState('')
     const [isLogged, setLogged] = useState(false)
+    const [role, setRole] = useState('')
     const router = useRouter();
 
     async function validate() {
@@ -29,6 +31,7 @@ const NavbarAdmin = () => {
             const token = await localStorage.getItem('token_customer')
             const decode = await jwt_decode(token)
             const user = decode.username
+            const roleId = decode.role
             console.log(decode);
             if (user) {
                 setUsername(user)
@@ -40,6 +43,9 @@ const NavbarAdmin = () => {
                 setLogged(true)
             } else {
                 setLogged(false)
+            }
+            if (roleId) {
+                setRole(roleId)
             }
 
         } catch (error) {
@@ -62,7 +68,9 @@ const NavbarAdmin = () => {
         <Menu
             items={[
                 {
-                    label: '1st menu item',
+                    label: <Link href={`/admin/detailAdmin/${username}`}>
+                        <a>Profile</a>
+                    </Link>,
                     key: '1',
                     icon: <UserOutlined />,
                 },

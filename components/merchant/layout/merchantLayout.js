@@ -4,6 +4,8 @@ import 'antd/dist/antd.variable.css'
 import 'tailwindcss/tailwind.css'
 import NavbarMerchant from "./navbarMerchant";
 import SiderMerchant from "./siderMerchant";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 const { Footer, Header, Sider } = Layout
 ConfigProvider.config({
     theme: {
@@ -11,6 +13,17 @@ ConfigProvider.config({
     },
 });
 export default function MerchantLayout({ children }) {
+    const router = useRouter()
+    useEffect(() => {
+        const getToken = localStorage.getItem('token_customer')
+
+        if (!getToken) {
+            window.alert("Anda belom login dan tidak berhak mengakses")
+            router.push("/auth/login")
+        }
+
+
+    }, []);
     return (
 
         <Layout
