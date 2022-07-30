@@ -1,19 +1,62 @@
 import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input } from 'antd';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import Link from "next/link";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
+import qs from 'qs'
 
 const { Header, Content, Sider } = Layout;
 
 const { Search } = Input;
 export default function KontenUsers() {
 
+    const [dataUser, setDataUser] = useState()
+    const [pagination, setPagination] = useState({
+        current: 1,
+        pageSize: 6,
+    });
+    const [loading, setLoading] = useState(false);
+    const getRandomuserParams = (params) => ({
+        results: params.pagination?.pageSize,
+        page: params.pagination?.current,
+        ...params,
+    });
+
+    async function validate(params = {}) {
+        try {
+            setLoading(true);
+            const getUsers = await axios.get(`https://project-wo.herokuapp.com/users?${qs.stringify(getRandomuserParams(params))}`,
+            ).then(response => {
+                if (response.status == 200 || response.status == 201) {
+                    setDataUser(response.data.items)
+
+                }
+            })
+            setLoading(false);
+            setPagination({
+                ...params.pagination,
+                total: dataUser.length
+            });
+        } catch (error) {
+
+        }
+    }
+    useEffect(() => {
+        validate({
+            pagination,
+        });
+    }, []);
+
+    const handleTableChange = (newPagination, filters, sorter) => {
+        fetchData({
+            sortField: sorter.field,
+            sortOrder: sorter.order,
+            pagination: newPagination,
+            ...filters,
+        });
+    };
+
     const columns = [
-        {
-            title: 'No',
-            dataIndex: 'key',
-            key: 'key',
-        },
         {
             title: 'Name',
             dataIndex: 'name',
@@ -22,53 +65,53 @@ export default function KontenUsers() {
         },
         {
             title: 'Username',
-            dataIndex: 'age',
-            key: 'age',
+            dataIndex: 'username',
+            key: 'username',
         },
         {
             title: 'Email',
-            dataIndex: 'address',
-            key: 'address',
+            dataIndex: 'email',
+            key: 'email',
         },
         {
             title: 'Phone',
-            dataIndex: 'address',
-            key: 'address',
+            dataIndex: 'no_telp',
+            key: 'no_telp',
         },
-        {
-            title: 'Role',
-            key: 'tags',
-            dataIndex: 'tags',
-            render: (_, { tags }) => (
-                <>
-                    {tags.map((tag) => {
-                        let color = ''
-                        if (tag === 'Admin') {
-                            color = 'geekblue';
-                        }
-                        else if (tag === 'Customer') {
-                            color = 'volcano';
-                        }
-                        else if (tag === 'Merchant') {
-                            color = 'green'
-                        }
+        // {
+        //     title: 'Role',
+        //     key: 'role',
+        //     dataIndex: 'role',
+        //     // render: (_, { data }) => (
+        //     //     <>
+        //     //         {data.map((tag) => {
+        //     //             let color = ''
+        //     //             if (tag === 'Admin') {
+        //     //                 color = 'geekblue';
+        //     //             }
+        //     //             else if (tag === 'Customer') {
+        //     //                 color = 'volcano';
+        //     //             }
+        //     //             else if (tag === 'Merchant') {
+        //     //                 color = 'green'
+        //     //             }
 
-                        return (
-                            <Tag color={color} key={tag}>
-                                {tag.toUpperCase()}
-                            </Tag>
-                        );
-                    })}
-                </>
-            ),
-        },
+        //     //             return (
+        //     //                 <Tag color={color} key={tag}>
+        //     //                     {tag.toUpperCase()}
+        //     //                 </Tag>
+        //     //             );
+        //     //         })}
+        //     //     </>
+        //     // ),
+        // },
         {
             title: 'Action',
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
 
-                    <Link href={`/admin/detailUser/${record.key}`}>
+                    <Link href={`/admin/detailUser/${record.username}`}>
                         <Tooltip placement="left" title="Detail">
                             <Button
                                 style={{ color: "#4ade80", borderColor: "#4ade80" }}
@@ -93,29 +136,6 @@ export default function KontenUsers() {
             ),
         },
     ];
-    const data = [
-        {
-            key: '1',
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['Admin'],
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 1 Lake Park',
-            tags: ['Customer'],
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            age: 32,
-            address: 'Sidney No. 1 Lake Park',
-            tags: ['Merchant'],
-        },
-    ];
 
     const onSearch = (value) => console.log(value);
     return (
@@ -138,7 +158,17 @@ export default function KontenUsers() {
                 <Row justify="center" align="middle" className='h-96 ' style={{ overflow: "auto" }}>
 
                     <Col lg={{ span: 20 }} md={{ span: 22 }}  >
-                        <Table columns={columns} dataSource={data} />
+                        <Table
+                            columns={columns}
+                            scroll={{
+                                y: 240,
+                            }}
+
+                            dataSource={dataUser}
+                            pagination={pagination}
+                            loading={loading}
+                            onChange={handleTableChange}
+                        />
                     </Col>
                 </Row>
 

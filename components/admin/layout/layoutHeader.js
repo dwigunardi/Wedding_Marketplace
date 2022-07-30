@@ -1,6 +1,6 @@
 import {
     UserOutlined,
-    DownOutlined
+    DownOutlined, LogoutOutlined
 } from '@ant-design/icons';
 import { Col, Layout, Menu, Row, Space, Dropdown, Button } from 'antd';
 import React, { useState, useEffect } from 'react';
@@ -68,7 +68,7 @@ const NavbarAdmin = () => {
         <Menu
             items={[
                 {
-                    label: <Link href={`/admin/detailAdmin/${username}`}>
+                    label: <Link href={`/admin/detail/${username}`}>
                         <a>Profile</a>
                     </Link>,
                     key: '1',
@@ -79,7 +79,7 @@ const NavbarAdmin = () => {
                         Logout
                     </Button>,
                     key: '2',
-                    icon: <UserOutlined />,
+                    icon: <LogoutOutlined />,
                 },
                 {
                     label: '3rd menu item',
