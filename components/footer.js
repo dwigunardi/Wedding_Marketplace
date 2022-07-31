@@ -21,8 +21,9 @@ function FooterCustomer() {
                     </Row>
 
                     <Row justify="space-evenly">
-                        <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} >
-                            <Image src={logo} objectFit="contain" layout="responsive" />
+                        <Col lg={{ span: 3 }} md={{ span: 3 }} sm={{ span: 10 }} xs={{ span: 10 }} >
+                            <br />
+                            <Image src={logo} width={130} height={100} />
                             <p className="text-white text-center">
                                 One stop wedding solution
                             </p>

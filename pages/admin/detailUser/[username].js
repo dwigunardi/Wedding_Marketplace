@@ -100,11 +100,11 @@ export default function detailUserId() {
     // console.log(dataSelected)
     // 
 
-    const onReset = () => {
+    // const onReset = () => {
 
-        form.setFieldsValue(myData)
+    //     form.setFieldsValue(myData)
 
-    };
+    // };
 
 
 
@@ -231,9 +231,9 @@ export default function detailUserId() {
                                             <Space>
 
                                                 <BackButton />
-                                                <Button htmlType="button" onClick={onReset}>
+                                                {/* <Button htmlType="button">
                                                     Reset
-                                                </Button>
+                                                </Button> */}
                                             </Space>
                                         </Form.Item>
                                     </Form>
