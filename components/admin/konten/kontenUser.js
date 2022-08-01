@@ -38,33 +38,13 @@ function getColumns(showModal) {
             dataIndex: 'no_telp',
             key: 'no_telp',
         },
-        // {
-        //     title: 'Role',
-        //     key: 'role',
-        //     dataIndex: 'role',
-        //     // render: (_, { data }) => (
-        //     //     <>
-        //     //         {data.map((tag) => {
-        //     //             let color = ''
-        //     //             if (tag === 'Admin') {
-        //     //                 color = 'geekblue';
-        //     //             }
-        //     //             else if (tag === 'Customer') {
-        //     //                 color = 'volcano';
-        //     //             }
-        //     //             else if (tag === 'Merchant') {
-        //     //                 color = 'green'
-        //     //             }
+        {
+            title: 'Role',
+            key: 'role',
+            dataIndex: 'role',
+            render: (_, record) => <a> {record.role.name} </a>
 
-        //     //             return (
-        //     //                 <Tag color={color} key={tag}>
-        //     //                     {tag.toUpperCase()}
-        //     //                 </Tag>
-        //     //             );
-        //     //         })}
-        //     //     </>
-        //     // ),
-        // },
+        },
         {
             title: 'Action',
             key: 'action',
@@ -132,7 +112,7 @@ export default function KontenUsers() {
     async function validate(params = {}) {
         try {
             setLoading(true);
-            const getUsers = await axios.get(`https://project-wo.herokuapp.com/users?${qs.stringify(getRandomuserParams(params))}`,
+            const getUsers = await axios.get("https://project-wo.herokuapp.com/users?",
             ).then(response => {
                 if (response.status == 200 || response.status == 201) {
                     setDataUser(response.data.items)
@@ -155,7 +135,7 @@ export default function KontenUsers() {
         })
         return () => controller.abort()
 
-    }, []);
+    }, [dataUser]);
 
 
 
@@ -192,7 +172,7 @@ export default function KontenUsers() {
             setVisible(false);
             setConfirmLoading(false);
         }, 2000);
-        location.reload()
+        // location.reload()
     };
     const handleCancel = () => {
         console.log('Clicked cancel button');
@@ -214,7 +194,6 @@ export default function KontenUsers() {
     const onSelect = (value) => {
         console.log('onSelect', value);
     };
-
 
 
     return (

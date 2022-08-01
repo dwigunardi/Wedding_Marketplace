@@ -19,6 +19,8 @@ const NavbarMerchant = () => {
 
     const [username, setUsername] = useState('')
     const [isLogged, setLogged] = useState(false)
+    const [role, setRole] = useState('')
+    const router = useRouter();
 
     const bgStyle = {
         backgroundColor: "white",
@@ -30,6 +32,7 @@ const NavbarMerchant = () => {
             const token = await localStorage.getItem('token_customer')
             const decode = await jwt_decode(token)
             const user = decode.username
+            const roleId = decode.role
             console.log(decode);
             if (user) {
                 setUsername(user)
@@ -41,6 +44,9 @@ const NavbarMerchant = () => {
                 setLogged(true)
             } else {
                 setLogged(false)
+            }
+            if (roleId) {
+                setRole(roleId)
             }
 
         } catch (error) {

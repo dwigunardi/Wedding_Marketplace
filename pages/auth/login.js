@@ -53,6 +53,7 @@ export default function Login() {
             const request = await axios.post("https://project-wo.herokuapp.com/auth/login", formData, {
                 headers: { 'content-type': 'application/json' }
             }).then(result => {
+                console.log(result);
 
                 const decode = jwt_decode(result.data.token)
                 console.log(decode.role)
@@ -77,7 +78,7 @@ export default function Login() {
                 // }
             })
         } catch (error) {
-
+            window.alert(error, error.message = "Password atau username salah")
             console.error(error);
         }
     }
