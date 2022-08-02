@@ -97,13 +97,13 @@ export default function Login() {
                         lg: 32,
                     }} align="middle" className="justify-between" style={{ width: "50%" }} >
 
-                        <Col lg={{ span: 10 }} offset={1} className="pt-5  align-middle">
+                        <Col lg={{ span: 10 }} offset={4} className="pt-5  align-middle">
 
                             <h1 className="text-pink-500 text-3xl">Login</h1>
 
 
                         </Col>
-                        <Col span={8} offset={1} className="pt-5 mb-10 justify-self-end">
+                        <Col span={8} offset={2} className="pt-5 mb-10 justify-self-end">
                             <Image src={Logo} width={150} height={125} />
                         </Col>
 

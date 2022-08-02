@@ -1,80 +1,82 @@
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, } from 'antd';
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined, } from '@ant-design/icons';
 import Link from "next/link";
 import Image from 'next/image';
 import image1 from "../../../public/Image/card-product/aminta-hotel.webp"
 import image2 from "../../../public/Image/card-product/Fieris Hotel Rawamangun.webp"
 import image3 from "../../../public/Image/card-product/Mang Kabayan Vida Bekasi.webp"
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TambahProduct from './tambahProduct';
-
+import axios from 'axios';
 
 
 const { Header, Content, Sider } = Layout;
 
 const { Search, TextArea } = Input;
-export default function MerchantProduct() {
-    const columns = [
+
+function getColumns(showModal) {
+    return [
         {
             title: 'No',
             dataIndex: 'id',
             key: 'id',
         },
         {
-            title: 'Product',
-            dataIndex: 'product',
-            key: 'product',
+            title: 'Name Product',
+            dataIndex: 'name',
+            key: 'name',
 
         },
         {
-            title: 'Venue',
-            dataIndex: 'venue',
-            key: 'venue',
+            title: 'Location',
+            dataIndex: 'location',
+            key: 'location',
         },
         {
-            title: 'Lokasi',
-            dataIndex: 'lokasi',
-            key: 'lokasi',
+            title: 'Category',
+            dataIndex: 'category',
+            key: 'category',
+            render: (_, record) => <a> {record.category.name} </a>
+        },
+        // {
+        //     title: 'Varian',
+        //     dataIndex: 'varian',
+        //     key: 'varian',
+        // },
+        // {
+        //     title: 'Harga',
+        //     dataIndex: 'harga',
+        //     key: 'harga',
+        // },
+        {
+            title: 'Image',
+            dataIndex: 'image',
+            key: 'image',
         },
         {
-            title: 'Varian',
-            dataIndex: 'varian',
-            key: 'varian',
-        },
-        {
-            title: 'Harga',
-            dataIndex: 'harga',
-            key: 'harga',
-        },
-        {
-            title: 'Foto',
-            dataIndex: 'foto',
-            key: 'foto',
-        },
-        {
-            title: 'Status',
-            key: 'status',
-            dataIndex: 'status',
-            render: (_, { status }) => (
-                <>
-                    {status.map((tag) => {
-                        let color = ''
-                        if (tag === 'Tersedia') {
-                            color = 'green';
-                        }
-                        else if (tag === 'Non-Tersedia') {
-                            color = 'volcano';
-                        }
+            title: 'Availability',
+            key: 'availability',
+            dataIndex: 'availability',
+            // render: (_, { status }) => (
+            //     <>
+            //         {status.map((tag) => {
+            //             let color = ''
+            //             if (tag === 'Tersedia') {
+            //                 color = 'green';
+            //             }
+            //             else if (tag === 'Non-Tersedia') {
+            //                 color = 'volcano';
+            //             }
 
 
-                        return (
-                            <Tag color={color} key={tag}>
-                                {tag.toUpperCase()}
-                            </Tag>
-                        );
-                    })}
-                </>
-            ),
+            //             return (
+            //                 <Tag color={color} key={tag}>
+            //                     {tag.toUpperCase()}
+            //                 </Tag>
+            //             );
+            //         })}
+            //     </>
+            // ),
         },
         {
             title: 'Action',
@@ -102,53 +104,139 @@ export default function MerchantProduct() {
                             </Button>
                         </Tooltip>
                     </Link>
-                    <Link href={`/${record.deleteUser}`}>
-                        <Tooltip placement="right" title="Delete">
-                            <Button
-                                type="danger"
-                                icon={<DeleteOutlined />}
-                                danger={true}
-                            >
-                            </Button>
-                        </Tooltip>
-                    </Link>
+
+                    <Tooltip placement="right" title="Delete">
+                        <Button
+                            onClick={() => showModal(record.id)}
+                            type="danger"
+                            icon={<DeleteOutlined />}
+                            danger={true}
+                        >
+                        </Button>
+                    </Tooltip>
+
 
                 </Space>
             ),
         },
     ];
-    const data = [
-        {
-            id: '1',
-            product: 'WO',
-            venue: 'Aminta Hall',
-            lokasi: 'Jakarta',
-            varian: '100',
-            harga: 'Rp. 70,600,000',
-            foto: <Image src={image1} width={65} height={44} placeholder='blur' />,
-            status: ['Tersedia'],
-        },
-        {
-            id: '2',
-            product: 'WO',
-            venue: 'Fieris Hotel',
-            lokasi: 'Jakarta',
-            varian: '100',
-            harga: 'Rp. 66,600,000',
-            foto: <Image src={image2} width={65} height={44} placeholder='blur' />,
-            status: ['Tersedia'],
-        },
-        {
-            id: '3',
-            product: 'WO',
-            venue: 'Mang Kabayan Vida',
-            lokasi: 'Bekasi',
-            varian: '100',
-            harga: 'Rp. 45,900,000',
-            foto: <Image src={image3} width={65} height={44} placeholder='blur' />,
-            status: ['Non-Tersedia'],
-        },
-    ];
+}
+
+export default function MerchantProduct() {
+
+    const [token, setToken] = useState('')
+    const [userId, setUserId] = useState('')
+    const [merchantId, setMerchantId] = useState('')
+    const [product, setProduct] = useState([])
+    const [productId, setProductId] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [modalText, setModalText] = useState('Content of the modal');
+    const [modalTaskId, setModalTaskId] = useState('');
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [pagination, setPagination] = useState({
+        current: 1,
+        pageSize: 5,
+    });
+    const [visible, setVisible] = useState(false);
+
+
+    async function getMerchant(params = {}) {
+        try {
+
+            const token = await localStorage.getItem("token_customer")
+            if (token) {
+                setToken(token)
+
+            }
+            setLoading(true);
+            await axios.get("https://project-wo.herokuapp.com/merchant").then(res => {
+                // console.log(res.data.items)
+                if (res.status == 200) {
+                    setUserId(res.data.items[0].user.id)
+                    setMerchantId(res.data.items[0].id)
+
+                }
+            })
+            await axios.get("https://project-wo.herokuapp.com/product").then(res => {
+                // console.log(res)
+                if (res.status == 200) {
+                    setProduct(res.data.items)
+
+                }
+            }).then(show => {
+                // product.map((ele) => {
+                //     console.log(ele.merchant.id)
+                // })
+
+                const dataSelected = product.filter((product) => product.merchant.id == merchantId)
+                // console.log(product);
+                if (dataSelected) {
+                    setProductId(dataSelected)
+
+                }
+
+            })
+            setPagination({
+                ...params.pagination,
+                total: productId.length
+            });
+            setLoading(false);
+
+
+        } catch (error) {
+
+        }
+
+    }
+
+
+    useEffect(() => {
+
+        getMerchant({
+            pagination,
+        })
+
+
+
+    }, []);
+
+    const handleTableChange = (newPagination, filters, sorter) => {
+        getMerchant({
+            sortField: sorter.field,
+            sortOrder: sorter.order,
+            pagination: newPagination,
+            ...filters,
+        });
+    };
+
+    const showModal = (record) => {
+        if (record) {
+            setModalTaskId(record);
+            setVisible(true);
+
+        } else {
+            setVisible(false)
+        }
+
+
+    };
+    const handleOkModal = () => {
+        axios.delete(`https://project-wo.herokuapp.com/product/${modalTaskId}`).then(res => {
+            console.log(res)
+        })
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setVisible(false);
+            setConfirmLoading(false);
+        }, 2000);
+        location.reload()
+    };
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setVisible(false);
+    };
+    console.log(productId)
 
     const onSearch = (value) => console.log(value);
     return (
@@ -173,10 +261,29 @@ export default function MerchantProduct() {
                             <TambahProduct />
                         </Col>
                     </Row>
-                    <Row justify="center" align="middle" className='h-96 ' style={{ overflow: "auto" }}>
+                    <Row justify="center" align="middle" style={{ overflow: "auto" }}>
 
                         <Col lg={{ span: 20 }} md={{ span: 22 }}  >
-                            <Table columns={columns} dataSource={data} className="shadow-sm" />
+                            <Table
+                                columns={getColumns(showModal)}
+                                dataSource={productId}
+                                pagination={pagination}
+                                // scroll={{
+                                //     y: 240,
+                                // }}
+                                loading={loading}
+                                onChange={handleTableChange}
+                                className="shadow-sm" />
+                            <Modal
+                                title="Konfirmasi Penghapusan"
+                                visible={visible}
+                                onOk={handleOkModal}
+                                confirmLoading={confirmLoading}
+                                onCancel={handleCancel}
+                            >
+                                <p className='text-pink-500'>Apakah anda yakin akan meghapus ? user yang Memiliki ID </p>
+                                <p className='text-red-500'>{JSON.stringify(modalTaskId)}</p>
+                            </Modal>
                         </Col>
                     </Row>
 

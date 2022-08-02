@@ -135,7 +135,7 @@ export default function KontenUsers() {
         })
         return () => controller.abort()
 
-    }, [dataUser]);
+    }, []);
 
 
 
