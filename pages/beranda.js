@@ -12,6 +12,7 @@ import { BackTop } from "antd";
 import { ArrowUpOutlined } from '@ant-design/icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+
 export default function Beranda() {
 
     return (

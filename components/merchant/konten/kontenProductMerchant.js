@@ -8,6 +8,7 @@ import image3 from "../../../public/Image/card-product/Mang Kabayan Vida Bekasi.
 import React, { useEffect, useState } from 'react';
 import TambahProduct from './tambahProduct';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 
 
 const { Header, Content, Sider } = Layout;
@@ -52,6 +53,7 @@ function getColumns(showModal) {
             title: 'Image',
             dataIndex: 'image',
             key: 'image',
+
         },
         {
             title: 'Availability',
@@ -124,7 +126,7 @@ function getColumns(showModal) {
 
 export default function MerchantProduct() {
 
-    const [token, setToken] = useState('')
+    const [token, setToken] = useState()
     const [userId, setUserId] = useState('')
     const [merchantId, setMerchantId] = useState('')
     const [product, setProduct] = useState([])
@@ -139,66 +141,50 @@ export default function MerchantProduct() {
     });
     const [visible, setVisible] = useState(false);
 
-
-    async function getMerchant(params = {}) {
+    async function getData(params = {}) {
         try {
-
-            const token = await localStorage.getItem("token_customer")
-            if (token) {
-                setToken(token)
-
-            }
-            setLoading(true);
+            setLoading(true)
             await axios.get("https://project-wo.herokuapp.com/merchant").then(res => {
-                // console.log(res.data.items)
+
                 if (res.status == 200) {
                     setUserId(res.data.items[0].user.id)
                     setMerchantId(res.data.items[0].id)
 
+                } else {
+                    window.alert("data tidak ada harap menambahkan data")
                 }
+                return res
             })
-            await axios.get("https://project-wo.herokuapp.com/product").then(res => {
-                // console.log(res)
-                if (res.status == 200) {
-                    setProduct(res.data.items)
+            await axios.get("https://project-wo.herokuapp.com/product").then(result => {
 
+                if (result.status == 200) {
+                    setProduct(result.data.items)
+
+                } else {
+                    window.alert("data tidak ada harap menambahkan data")
                 }
-            }).then(show => {
-                // product.map((ele) => {
-                //     console.log(ele.merchant.id)
-                // })
-
-                const dataSelected = product.filter((product) => product.merchant.id == merchantId)
-                // console.log(product);
-                if (dataSelected) {
-                    setProductId(dataSelected)
-
-                }
-
+                return result
             })
             setPagination({
                 ...params.pagination,
                 total: productId.length
             });
-            setLoading(false);
-
-
+            setLoading(false)
         } catch (error) {
 
         }
-
     }
-
-
     useEffect(() => {
 
-        getMerchant({
+        getData({
             pagination,
         })
-
-
-
+        const getToken = localStorage.getItem("token_customer")
+        const decode = jwt_decode(getToken)
+        setToken(decode)
     }, []);
+
+    const dataSelected = product.filter((product) => product.merchant.id == merchantId)
 
     const handleTableChange = (newPagination, filters, sorter) => {
         getMerchant({
@@ -236,9 +222,13 @@ export default function MerchantProduct() {
         console.log('Clicked cancel button');
         setVisible(false);
     };
-    console.log(productId)
+
+    // const getToken = localStorage.getItem('token_customer')
+
 
     const onSearch = (value) => console.log(value);
+
+
     return (
         <>
             <Content>
@@ -265,13 +255,14 @@ export default function MerchantProduct() {
 
                         <Col lg={{ span: 20 }} md={{ span: 22 }}  >
                             <Table
-                                columns={getColumns(showModal)}
-                                dataSource={productId}
-                                pagination={pagination}
-                                // scroll={{
-                                //     y: 240,
-                                // }}
                                 loading={loading}
+                                columns={getColumns(showModal)}
+                                dataSource={dataSelected}
+                                pagination={pagination}
+                                scroll={{
+                                    y: 240,
+                                }}
+
                                 onChange={handleTableChange}
                                 className="shadow-sm" />
                             <Modal

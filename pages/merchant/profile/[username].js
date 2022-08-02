@@ -7,35 +7,58 @@ import ImgPlaceholder from "../../../public/Image/img-placeholder.png"
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import BackButton from "../../backButton";
+import axios from "axios";
 
 export default function detailMerchantId() {
 
-    const data = [
-        {
-            key: '1',
-            name: 'John Brown',
-            age: 32,
-            address: 'New York No. 1 Lake Park',
-            tags: ['Admin'],
-        },
-        {
-            key: '2',
-            name: 'Jim Green',
-            age: 42,
-            address: 'London No. 1 Lake Park',
-            tags: ['Customer'],
-        },
-        {
-            key: '3',
-            name: 'Joe Black',
-            age: 32,
-            address: 'Sidney No. 1 Lake Park',
-            tags: ['Merchant'],
-        },
-    ];
+    const [dataUser, setDataUser] = useState([])
+
+    async function validate() {
+        try {
+            const getData = await axios.get("https://project-wo.herokuapp.com/users").then(response => {
+                if (response.status == 200 || response.status == 201) {
+                    setDataUser(response.data.items)
+
+                }
+
+
+            })
+        } catch (error) {
+
+        }
+        return
+    }
+    useEffect(() => {
+
+        validate().then(show => {
+
+            const dataSelected = dataUser.find((dataUser) => dataUser.username == username)
+
+            const myData = {
+                name: `${dataSelected?.name}`,
+                username: `${dataSelected?.username}`,
+                email: `${dataSelected?.email}`,
+                no_telp: `${dataSelected?.no_telp}`,
+                image: `${dataSelected?.image}`,
+                createdAt: `${dataSelected?.createdAt}`,
+                isActive: `${dataSelected?.isActive}`,
+
+            }
+
+            form.setFieldsValue({
+                name: myData.name,
+                username: myData.username,
+                email: myData.email,
+                no_telp: myData.no_telp,
+                createdAt: myData.createdAt
+            })
+
+
+        })
+
+    }, [validate]);
     const router = useRouter();
-    const { key } = router.query;
-    const dataSelected = data.find((data) => data.key == key);
+    const { username } = router.query;
     // state di update berdasarkan data harus di ubah
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
@@ -65,12 +88,12 @@ export default function detailMerchantId() {
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
-    const [defaultValues, setDefaultValues] = useState({
-        name: `${dataSelected?.name}`,
-        email: `${dataSelected?.age}`,
-        address: `${dataSelected?.address}`,
-        age: `${dataSelected?.age}`
-    })
+    // const [defaultValues, setDefaultValues] = useState({
+    //     name: `${dataSelected?.name}`,
+    //     email: `${dataSelected?.age}`,
+    //     address: `${dataSelected?.address}`,
+    //     age: `${dataSelected?.age}`
+    // })
 
 
     const onReset = () => {
@@ -115,9 +138,11 @@ export default function detailMerchantId() {
                                         wrapperCol={{
                                             span: 16,
                                         }}
-                                        initialValues={defaultValues}
+
+
                                         onFinish={onFinish}
                                         onFinishFailed={onFinishFailed}
+
                                         autoComplete="off"
 
                                     >
@@ -131,12 +156,11 @@ export default function detailMerchantId() {
                                                 },
                                             ]}
                                         >
-                                            <Input value={name}
-                                                onChange={onChangeName} />
+                                            <Input />
                                         </Form.Item>
                                         <Form.Item
-                                            label="Age"
-                                            name="age"
+                                            label="Username"
+                                            name="username"
                                             rules={[
                                                 {
                                                     required: true,
@@ -144,12 +168,11 @@ export default function detailMerchantId() {
                                                 },
                                             ]}
                                         >
-                                            <Input value={age}
-                                                onChange={onChangeAge} />
+                                            <Input />
                                         </Form.Item>
                                         <Form.Item
-                                            label="Address"
-                                            name="address"
+                                            label="Email"
+                                            name="email"
                                             rules={[
                                                 {
                                                     required: true,
@@ -157,8 +180,31 @@ export default function detailMerchantId() {
                                                 },
                                             ]}
                                         >
-                                            <Input value={address}
-                                                onChange={onChangeAddress} />
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Phone"
+                                            name="no_telp"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Mohon Isi Nama Anda!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Di buat"
+                                            name="createdAt"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Mohon Isi Nama Anda!',
+                                                },
+                                            ]}
+                                        >
+                                            <Input />
                                         </Form.Item>
                                         <Form.Item
                                             wrapperCol={{
@@ -166,7 +212,7 @@ export default function detailMerchantId() {
                                                 span: 16,
                                             }}>
                                             <Button>
-                                                {dataSelected?.tags}
+                                                Active
                                             </Button>
                                         </Form.Item>
 
@@ -179,9 +225,9 @@ export default function detailMerchantId() {
                                             <Space>
 
                                                 <BackButton />
-                                                <Button htmlType="button" onClick={onReset}>
+                                                {/* <Button htmlType="button">
                                                     Reset
-                                                </Button>
+                                                </Button> */}
                                             </Space>
                                         </Form.Item>
                                     </Form>

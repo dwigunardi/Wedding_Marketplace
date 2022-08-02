@@ -10,6 +10,7 @@ import 'tailwindcss/tailwind.css'
 import Router, { useRouter } from 'next/router';
 import jwt_decode from 'jwt-decode'
 import axios from 'axios'
+import Link from 'next/link';
 const { Header } = Layout;
 
 
@@ -69,7 +70,9 @@ const NavbarMerchant = () => {
         <Menu
             items={[
                 {
-                    label: 'Profile',
+                    label: <Link href={`/merchant/profile/${username}`}>
+                        <a>Profile</a>
+                    </Link>,
                     key: '1',
                     icon: <UserOutlined />,
                 },
