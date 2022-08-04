@@ -85,8 +85,9 @@ export default function Daftar() {
             data.append('role_id', roleId)
             data.append('image', image)
 
-            console.log(data)
-
+            for (const value of data.values()) {
+                console.log(value);
+            }
             const res = await axios.post("https://project-wo.herokuapp.com/auth/register", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",

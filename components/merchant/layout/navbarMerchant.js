@@ -34,7 +34,7 @@ const NavbarMerchant = () => {
             const decode = await jwt_decode(token)
             const user = decode.username
             const roleId = decode.role
-            console.log(decode);
+            // console.log(decode);
             if (user) {
                 setUsername(user)
 
