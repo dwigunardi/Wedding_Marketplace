@@ -149,6 +149,7 @@ export default function MerchantProduct() {
     const [product, setProduct] = useState([])
     const [productId, setProductId] = useState([])
     const [loading, setLoading] = useState(false);
+    const [loadingDua, setLoadingDua] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [pagination, setPagination] = useState({
         current: 1,
@@ -291,9 +292,11 @@ export default function MerchantProduct() {
     };
 
     //akhir update modal
+
+
     //start Image modal
     const imageModal = async (record) => {
-
+        setLoadingDua(true)
         if (record) {
             await setModalTaskIdTiga(record);
             setVisibleTiga(true);
@@ -304,7 +307,7 @@ export default function MerchantProduct() {
         } else {
             setVisibleTiga(false)
         }
-
+        setLoadingDua(false)
         console.log(modalTaskIdTiga)
 
     };
@@ -355,7 +358,7 @@ export default function MerchantProduct() {
                         </Col>
                         <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }}>
                             {/* product modal form */}
-                            <TambahProduct />
+                            <TambahProduct merchant={merchantId} />
                         </Col>
                     </Row>
                     <Row justify="center" align="middle" style={{ overflow: "auto" }}>

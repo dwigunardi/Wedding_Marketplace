@@ -1,10 +1,11 @@
-import { Button, Input, Modal, Form, Select, } from 'antd';
+import { Button, Input, Modal, Form, Select, Upload, Space } from 'antd';
 import React, { useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useRouter } from "next/router"
 import axios from "axios"
+const { Option } = Select;
 
-export default function TambahProduct() {
+export default function TambahProduct(props) {
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -38,7 +39,7 @@ export default function TambahProduct() {
         setHarga(value)
     }
     const onChangeFoto = (e) => {
-        const value = e.target.value
+        const value = e.target.files[0]
         setFoto(value)
     }
     const onChangeStatus = (e) => {
@@ -49,7 +50,6 @@ export default function TambahProduct() {
         const value = e.target.value
         setDeskripsi(value)
     }
-
     const showModal = () => {
         setVisible(true);
     };
@@ -65,9 +65,58 @@ export default function TambahProduct() {
     const handleCancel = () => {
         setVisible(false);
     };
-    const onFinish = (values) => {
-        console.log('Success:', values);
+
+    const normFile = (e) => {
+        console.log('Upload event:', e);
+
+        if (Array.isArray(e)) {
+            return e;
+        }
+        return e?.fileList;
     };
+    const onFinish = async (values) => {
+        try {
+            // const arr = JSON.stringify(values.variant)
+
+            const dataForm = new FormData()
+            dataForm.append("name", values.name)
+            dataForm.append('availability', values.availability)
+            dataForm.append('location', values.location)
+            dataForm.append('image', foto)
+            dataForm.append("description", values.description)
+            dataForm.append("category_id", values.category_id)
+            dataForm.append("merchant_id", props.merchant)
+            // values.variant.forEach(variant => { dataForm.append('variant[0][name]', variant.name) }
+            // )
+            // values.variant.forEach(variant => { dataForm.append('variant[0][price]', variant.price) }
+            // )
+            dataForm.append('variant[0][name]', values.variant[0].name)
+            dataForm.append('variant[0][price]', values.variant[0].price)
+            dataForm.append('variant[1][name]', values.variant[1].name)
+            dataForm.append('variant[1][price]', values.variant[1].price)
+            // dataForm.append('variant[2][name]', values.variant[2].name)
+            // dataForm.append('variant[2][price]', values.variant[2].price)
+
+            for (const value of dataForm.values()) {
+                console.log(value);
+            }
+            // console.log(...dataForm)
+
+            await axios.post("https://project-wo.herokuapp.com/product", dataForm, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            }).then(res => {
+                console.log(res)
+            })
+
+        } catch (error) {
+
+        }
+
+
+    };
+
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -78,28 +127,6 @@ export default function TambahProduct() {
 
     const router = useRouter()
     const { TextArea } = Input;
-    const submitTambah = async () => {
-
-        try {
-            const formData = {
-                product: product,
-                venue: venue,
-                lokasi: lokasi,
-                varian: varian,
-                harga: harga,
-                foto: foto,
-                deskripsi: deskripsi,
-                status: status,
-            }
-
-            console.log(formData)
-
-
-        } catch (error) {
-            console.error(error);
-        }
-
-    }
     return (
         <>
             <Button type="primary" onClick={showModal}>
@@ -117,14 +144,15 @@ export default function TambahProduct() {
                 <Form
                     name="basic"
                     layout='vertical'
-                    onSubmit={onFormSubmit}
+                    // onSubmit={onFormSubmit}
+                    onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
                     autoComplete="off"
                     method='POST'
                 >
                     <Form.Item
-                        label="Product"
-                        name="product"
+                        label="Product Name"
+                        name="name"
                         rules={[
                             {
                                 required: true,
@@ -132,12 +160,12 @@ export default function TambahProduct() {
                             },
                         ]}
                     >
-                        <Input value={product} onChange={onChangeProduct} />
+                        <Input />
                     </Form.Item>
 
                     <Form.Item
-                        label="Venue"
-                        name="venue"
+                        label="Lokasi"
+                        name="location"
                         rules={[
                             {
                                 required: true,
@@ -145,60 +173,104 @@ export default function TambahProduct() {
                             },
                         ]}
                     >
-                        <Input value={venue} onChange={onChangeVenue} />
+                        <Input />
                     </Form.Item>
+                    <input
+                        id="img"
+                        style={{ display: "none" }}
+                        type="file"
+                        accept="image/*"
+                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 
+                                    bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
+                                    ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                        onChange={onChangeFoto}
+                    />
+
+                    <button className="inline-block px-6 py-4 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                        <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
+                    </button>
+
+
+                    <Form.List name="variant">
+                        {(fields, { add, remove }) => (
+                            <>
+                                {fields.map(({ key, name, ...restField }) => (
+                                    <Space
+                                        key={key}
+                                        style={{
+                                            display: 'flex',
+                                            marginBottom: 8,
+                                        }}
+                                        align="baseline"
+                                    >
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, 'name']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Missing name',
+                                                },
+                                            ]}
+                                        >
+                                            <Input placeholder="Variant Name" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            {...restField}
+                                            name={[name, 'price']}
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    message: 'Missing Price',
+                                                },
+                                            ]}
+                                        >
+                                            <Input placeholder="Variant Price" />
+                                        </Form.Item>
+                                        <MinusCircleOutlined onClick={() => remove(name)} />
+                                    </Space>
+                                ))}
+                                <Form.Item>
+                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                        Tambah varian
+                                    </Button>
+                                </Form.Item>
+                            </>
+                        )}
+                    </Form.List>
                     <Form.Item
-                        label="Lokasi"
-                        name="lokasi"
+                        label="Category"
+                        name='category_id'
+
                         rules={[
                             {
-                                required: true,
-                                message: 'Please input product Lokasi!',
-                            },
-                        ]}
-                    >
-                        <Input value={lokasi} onChange={onChangeLokasi} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Varian"
-                        name="varian"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input product Varian!',
-                            },
-                        ]}
-                    >
-                        <Input value={varian} onChange={onChangeVarian} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Harga"
-                        name="harga"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input product harga!',
-                            },
-                        ]}
-                    >
-                        <Input value={harga} onChange={onChangeHarga} />
+
+                                message: 'Please select product Category'
+                            }
+                        ]}>
+                        <Select placeholder="--Pilih Category"
+                        >
+                            <Option value="97de0e48-d7b6-446c-8e68-94e3baaa5000" >Wedding Organizer</Option>
+                            <Option value="bbc709ac-30d7-4b0a-9ab0-982aef62df59" >Venue</Option>
+                            <Option value="31666e7d-5d27-4698-a205-9b902b8b5164" >Chatering</Option>
+                            <Option value="0a0e6483-fb83-47f5-8525-654131a70af8" >Photographer</Option>
+                        </Select>
                     </Form.Item>
 
-                    <Form.Item
-                        label="Foto"
-                        name="foto"
-                        rules={[
-                            {
-                                required: true,
-                                message: 'Please input product foto!',
-                            },
-                        ]}
+                    {/* <Form.Item
+                        name="image"
+                        label="Upload"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        extra="Silahkan upload gambar anda"
                     >
-                        <Input type='file' value={foto} onChange={onChangeFoto} />
-                    </Form.Item>
+                        <Upload name="logo" listType="picture" >
+                            <Button icon={<UploadOutlined />}>Click to upload</Button>
+                        </Upload>
+                    </Form.Item> */}
                     <Form.Item
                         label="Deskripsi"
-                        name="deskripsi"
+                        name="description"
                         rules={[
                             {
                                 required: true,
@@ -210,7 +282,7 @@ export default function TambahProduct() {
                     </Form.Item>
                     <Form.Item
                         label="Status"
-                        name='status'
+                        name='availability'
 
                         rules={[
                             {
@@ -218,16 +290,21 @@ export default function TambahProduct() {
                                 message: 'Please select product Status'
                             }
                         ]}>
-                        <Select value={status}
+                        <Select placeholder="--Pilih status"
                         >
-                            <Select.Option value="Tersedia" onChange={onChangeStatus}>Tersedia</Select.Option>
-                            <Select.Option value="non-tersedia" onChange={onChangeStatus}>Non-Tersedia</Select.Option>
+                            <Option value="Tersedia" onChange={onChangeStatus}>Tersedia</Option>
+                            <Option value="non-tersedia" onChange={onChangeStatus}>Non-Tersedia</Option>
                         </Select>
+                    </Form.Item>
+                    <Form.Item
+                        name="merchant_id"
+                    >
+                        <Input value={props.merchant} type="hidden" />
                     </Form.Item>
                     <Form.Item
 
                     >
-                        <Button type="primary" htmlType="submit" onClick={submitTambah}>
+                        <Button type="primary" htmlType="submit" >
                             Submit
                         </Button>
                     </Form.Item>
