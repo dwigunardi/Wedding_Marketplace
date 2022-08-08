@@ -1,16 +1,12 @@
 import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, Select } from 'antd';
-import { EditOutlined, EyeOutlined, DeleteOutlined, } from '@ant-design/icons';
+import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import Link from "next/link";
-import Image from 'next/image';
-import image1 from "../../../public/Image/card-product/aminta-hotel.webp"
-import image2 from "../../../public/Image/card-product/Fieris Hotel Rawamangun.webp"
-import image3 from "../../../public/Image/card-product/Mang Kabayan Vida Bekasi.webp"
 import React, { useEffect, useState } from 'react';
 import TambahProduct from './tambahProduct';
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-// import { useForm } from 'antd/lib/form/Form';
-const { Option } = Select;
+
+const { Option, OptGroup } = Select;
 
 const { Header, Content, Sider } = Layout;
 
@@ -35,10 +31,36 @@ function getColumns(deleteModal, updateModal, imageModal) {
             key: 'location',
         },
         {
+            title: 'Variant',
+            dataIndex: 'variant',
+            key: 'variant',
+            render: (_, status) => (
+                <>
+                    {status.variant.map((res) => {
+                        return (
+                            <>
+                                {/* 
+                                */}
+                                <Row justify='space-between'>
+                                    <Col>
+                                        <p>variant Name :{res.name}</p>
+                                    </Col>
+                                    <Col>
+                                        <p>variant Price :{res.price}</p>
+
+                                    </Col>
+                                </Row>
+                            </>
+                        )
+                    })}
+                </>
+            )
+        },
+        {
             title: 'Category',
             dataIndex: 'category',
             key: 'category',
-            render: (_, record) => <a> {record.category.name} </a>
+            render: (_, record) => <a>{record.category.name}</a>
         },
         // {
         //     title: 'Varian',
@@ -77,7 +99,7 @@ function getColumns(deleteModal, updateModal, imageModal) {
             dataIndex: 'availability',
             // render: (_, { status }) => (
             //     <>
-            //         {status.map((tag) => {
+            //         {
             //             let color = ''
             //             if (tag === 'Tersedia') {
             //                 color = 'green';
@@ -92,7 +114,7 @@ function getColumns(deleteModal, updateModal, imageModal) {
             //                     {tag.toUpperCase()}
             //                 </Tag>
             //             );
-            //         })}
+            //         }
             //     </>
             // ),
         },
@@ -142,10 +164,10 @@ function getColumns(deleteModal, updateModal, imageModal) {
 }
 
 export default function MerchantProduct() {
-
     const [token, setToken] = useState()
     const [userId, setUserId] = useState('')
-    const [merchantId, setMerchantId] = useState('')
+    const [merchantId, setMerchantId] = useState([])
+    const [merchantMap, setMerchantMap] = useState('')
     const [product, setProduct] = useState([])
     const [productId, setProductId] = useState([])
     const [loading, setLoading] = useState(false);
@@ -156,6 +178,7 @@ export default function MerchantProduct() {
         pageSize: 5,
     });
     let [imageUrl, setImageUrl] = useState('')
+
     //state modal delete
     const [visible, setVisible] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
@@ -167,7 +190,7 @@ export default function MerchantProduct() {
     const [modalTaskIdDua, setModalTaskIdDua] = useState('');
 
     //state image modal
-    //state modal update
+
     const [visibleTiga, setVisibleTiga] = useState(false);
     const [modalTextTiga, setModalTextTiga] = useState('Content of the modal');
     const [modalTaskIdTiga, setModalTaskIdTiga] = useState('');
@@ -180,52 +203,46 @@ export default function MerchantProduct() {
 
     const [form] = Form.useForm();
 
-
-
-    async function getData(params = {}) {
-        try {
-            setLoading(true)
-            await axios.get("https://project-wo.herokuapp.com/merchant").then(res => {
-
-                if (res.status == 200) {
-                    setUserId(res.data.items[0].user.id)
-                    setMerchantId(res.data.items[0].id)
-
-                } else {
-                    window.alert("data tidak ada harap menambahkan data")
-                }
-                return res
-            })
-            await axios.get("https://project-wo.herokuapp.com/product").then(result => {
-
-                if (result.status == 200) {
-                    setProduct(result.data.items)
-
-                } else {
-                    window.alert("data tidak ada harap menambahkan data")
-                }
-                return result
-            })
-            setPagination({
-                ...params.pagination,
-                total: productId.length
-            });
-            setLoading(false)
-        } catch (error) {
-
-        }
-    }
-    useEffect(() => {
-
-        getData({
-            pagination,
-        })
+    useEffect((params = {}) => {
         const getToken = localStorage.getItem("token_customer")
         const decode = jwt_decode(getToken)
         setToken(decode)
-    }, []);
+        axios.get(`https://project-wo.herokuapp.com/users/${decode.user_id}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
+            // console.log(res.data.data.merchant[0].id)
+            if (res.status == 200 || res.status == 201) {
+                setMerchantId(res.data.data.merchant[0].id)
 
-    const dataSelected = product.filter((product) => product.merchant.id == merchantId)
+                axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=&category=&merchant=${res.data.data.merchant[0].id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                    }
+                }).then(result => {
+                    // console.log(result)
+                    if (result.status == 200 || result.status == 201) {
+                        setProduct(result.data.items)
+                        // setMerchantId(res.data.items)
+                    } else {
+                        window.alert("data tidak ada harap menambahkan data")
+                    }
+
+
+                })
+            } else {
+                window.alert("data tidak ada harap menambahkan data")
+            }
+        })
+        setPagination({
+            ...params.pagination,
+            total: product.length
+        });
+
+
+    }, [product]);
+
 
     const handleTableChange = (newPagination, filters, sorter) => {
         getData({
@@ -250,7 +267,11 @@ export default function MerchantProduct() {
 
     };
     const handleOkModalDelete = () => {
-        axios.delete(`https://project-wo.herokuapp.com/product/${modalTaskId}`).then(res => {
+        axios.delete(`https://project-wo.herokuapp.com/product/delete/${modalTaskId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
 
         })
         setModalText('The modal will be closed after two seconds');
@@ -265,34 +286,75 @@ export default function MerchantProduct() {
     //akhir delete modal
 
     //start update modal
+    const onChangeFoto = (e) => {
+        const value = e.target.files[0]
+        setFoto(value)
+    }
     const updateModal = (record) => {
+        // console.log(record)
         if (record) {
-            setModalTaskIdDua(record);
-
+            setModalTaskIdDua(record.id);
             setVisibleDua(true);
-
-
+            form.setFieldsValue({
+                id: record.id,
+                name: record.name,
+                location: record.location,
+                category: record.category.id,
+                merchant: record.merchant.id,
+                variant: record.variant,
+                price: record.price,
+                description: record.description,
+                availability: record.availability,
+                image: record.image
+            });
         } else {
             setVisibleDua(false)
         }
-
-
     };
-    const handleOkModalUpdate = () => {
-        // axios.delete(`https://project-wo.herokuapp.com/product/${modalTaskId}`).then(res => {
-        //     console.log(res)
-        // })
-        setModalTextDua('The modal will be closed after two seconds');
-        setConfirmLoading(true);
-        setTimeout(() => {
-            setVisibleDua(false);
-            setConfirmLoading(false);
-        }, 2000);
-        // location.reload()
+    // const onFormSubmit = (e) => {
+    //     e.preventDefault()
+    // }
+
+    const handleOkModalUpdate = async () => {
+        try {
+            const data = await form.getFieldsValue();
+            // console.log(data)
+            const dataForm = new FormData()
+            dataForm.append("id", data.id)
+            dataForm.append("name", data.name)
+            dataForm.append('availability', data.availability)
+            dataForm.append('location', data.location)
+            dataForm.append('image', data.image)
+            dataForm.append("description", data.description)
+            dataForm.append("category_id", data.category)
+            for (let i = 0; i < data.variant.length; i++) {
+                dataForm.append(`variant[${i}][name]`, data.variant[i].name)
+                dataForm.append(`variant[${i}][price]`, data.variant[i].price)
+            }
+            for (const value of dataForm.values()) {
+                console.log(value);
+            }
+            await axios.put(`https://project-wo.herokuapp.com/product/${data.id}`, dataForm, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                }
+            }).then(res => {
+                console.log(res)
+            })
+            setModalTextDua('The modal will be closed after two seconds');
+            setConfirmLoading(true);
+            setTimeout(() => {
+                setVisibleDua(false);
+                setConfirmLoading(false);
+            }, 2000);
+            // location.reload()
+        } catch (error) {
+
+        }
+
     };
 
     //akhir update modal
-
 
     //start Image modal
     const imageModal = async (record) => {
@@ -334,10 +396,21 @@ export default function MerchantProduct() {
     // const getToken = localStorage.getItem('token_customer')
 
 
-    const onSearch = (value) => console.log(value);
+    const onSearch = (value) => {
+        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=${value}&location=&category=&merchant=${merchantId}`).then(res => {
+            console.log(res)
+            setProduct(res.data.items)
+            // console.log(res.data.items)
+        })
+    };
 
-
-
+    const onSelect = (value) => {
+        // console.log('onSelect', value);
+        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=${value}&category=&merchant=${merchantId}`).then(res => {
+            setProduct(res.data.items)
+            // console.log(res.data.items)
+        })
+    };
 
     return (
         <>
@@ -348,13 +421,36 @@ export default function MerchantProduct() {
                     <Row className='my-5 ' justify='space-between'>
                         <Col lg={{ span: 5, offset: 2 }} md={{ span: 5, offset: 2 }} sm={{ span: 10 }} xs={{ span: 10 }} >
                             <Search
-                                placeholder="input search text"
+                                placeholder="Search....."
                                 allowClear
                                 enterButton
                                 size="large"
                                 onSearch={onSearch}
 
                             />
+
+                        </Col>
+                        <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }}>
+                            <Form.Item
+                                label={"Filter :"}>
+                                <Select
+                                    defaultValue="All"
+
+                                    style={{
+                                        width: 110,
+                                    }}
+                                    onChange={onSelect}
+                                    placeholder="Filter"
+                                >
+                                    <Option value="">All</Option>
+                                    <Option value="Jakarta">Jakarta</Option>
+                                    <Option value="Bogor">Bogor</Option>
+                                    <Option value="Depok" >Depok</Option>
+                                    <Option value="Tanggerang" >Tanggerang</Option>
+                                    <Option value="Bekasi" >Bekasi</Option>
+                                </Select>
+                            </Form.Item>
+
                         </Col>
                         <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }}>
                             {/* product modal form */}
@@ -367,11 +463,11 @@ export default function MerchantProduct() {
                             <Table
                                 loading={loading}
                                 columns={getColumns(deleteModal, updateModal, imageModal)}
-                                dataSource={dataSelected}
+                                dataSource={product}
                                 pagination={pagination}
-                                scroll={{
-                                    y: 240,
-                                }}
+                                // scroll={{
+                                //     y: 240,
+                                // }}
 
                                 onChange={handleTableChange}
                                 className="shadow-sm" />
@@ -392,61 +488,189 @@ export default function MerchantProduct() {
                                 confirmLoading={confirmLoading}
                                 onCancel={handleCancel}
                             >
-                                <Form layout="vertical" >
-                                    <Form.Item label="Name" name="name">
+                                <Form
+                                    form={form}
+                                    name="basic"
+                                    layout='vertical'
+                                    // onSubmit={onFormSubmit}
+                                    // onFinish={onFinish}
+                                    // onFinishFailed={onFinishFailed}
+                                    autoComplete="off"
+                                    method='POST'
+                                >
+                                    <Form.Item
+                                        label="Product Name"
+                                        name="name"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input product Name!',
+                                            },
+                                        ]}
+                                    >
                                         <Input />
                                     </Form.Item>
-                                    <Form.Item label="Location" name="location">
-                                        <Select placeholder="--Silahkan Pilih">
-                                            <Option value="Jakarta">
-                                                Jakarta
-                                            </Option>
-                                            <Option value="Bogor">
-                                                Bogor
-                                            </Option>
-                                            <Option value="Depok">
-                                                Depok
-                                            </Option>
-                                            <Option value="Tanggerang">
-                                                Tanggerang
-                                            </Option>
-                                            <Option value="Bekasi">
-                                                Bekasi
-                                            </Option>
-                                        </Select>
-                                    </Form.Item>
-                                    <Form.Item label="Category" name="category">
-                                        <Select placeholder="--Silahkan Pilih">
-                                            <Option value="97de0e48-d7b6-446c-8e68-94e3baaa5000">
-                                                Wo
-                                            </Option>
-                                            <Option value="bbc709ac-30d7-4b0a-9ab0-982aef62df59 ">
-                                                Venue
-                                            </Option>
-                                            <Option value="31666e7d-5d27-4698-a205-9b902b8b5164">
-                                                Chatering
-                                            </Option>
-                                            <Option value="0a0e6483-fb83-47f5-8525-654131a70af8">
-                                                Photographer
-                                            </Option>
-                                        </Select>
-                                    </Form.Item>
-                                    <Form.Item label="Description" name="description">
-                                        <Input type='text' />
-                                    </Form.Item>
-                                    <Form.Item label="Image" name="image">
-                                        <Input type='file' />
-                                    </Form.Item>
-                                    <Form.Item label="Status" name="category">
-                                        <Select placeholder="---Silahkan Pilih">
-                                            <Option value="Tersedia">
-                                                Tersedia
-                                            </Option>
-                                            <Option value="tidak_tersedia">
-                                                Tidak Tersedia
-                                            </Option>
 
+                                    <Form.Item
+                                        label="Lokasi"
+                                        name="location"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input product Venue!',
+                                            },
+                                        ]}
+                                    >
+                                        <Select
+                                            defaultValue="All"
+                                            style={{
+                                                width: 470,
+                                            }}
+                                            onChange={onSelect}
+                                            placeholder="Filter"
+                                        >
+                                            <Option value="All">All</Option>
+                                            <Option value="Jakarta">Jakarta</Option>
+                                            <Option value="Bogor">Bogor</Option>
+                                            <Option value="Depok" >Depok</Option>
+                                            <Option value="Tanggerang" >Tanggerang</Option>
+                                            <Option value="Bekasi" >Bekasi</Option>
                                         </Select>
+                                    </Form.Item>
+                                    <input
+                                        id="img"
+                                        style={{ display: "none" }}
+                                        type="file"
+                                        accept="image/*"
+                                        className="form-control block w-full px-4 py-1 text-base font-normal text-gray-700 
+                                    bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
+                                    ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                                        onChange={onChangeFoto}
+                                    />
+
+                                    <button className="inline-block px-6 py-2 mb-5 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                                        <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
+                                    </button>
+
+
+                                    <Form.List name="variant">
+                                        {(fields, { add, remove }) => (
+                                            <>
+                                                {fields.map(({ key, name, ...restField }) => (
+                                                    <Space
+                                                        key={key}
+                                                        style={{
+                                                            display: 'flex',
+                                                            marginBottom: 8,
+                                                        }}
+                                                        align="baseline"
+                                                    >
+                                                        <Form.Item
+                                                            {...restField}
+                                                            name={[name, 'name']}
+                                                            rules={[
+                                                                {
+                                                                    required: true,
+                                                                    message: 'Missing name',
+                                                                },
+                                                            ]}
+                                                        >
+                                                            <Input placeholder="Variant Name" />
+                                                        </Form.Item>
+                                                        <Form.Item
+                                                            {...restField}
+                                                            name={[name, 'price']}
+                                                            rules={[
+                                                                {
+                                                                    required: true,
+                                                                    message: 'Missing Price',
+                                                                },
+                                                            ]}
+                                                        >
+                                                            <Input placeholder="Variant Price" />
+                                                        </Form.Item>
+                                                        <MinusCircleOutlined onClick={() => remove(name)} />
+                                                    </Space>
+                                                ))}
+                                                <Form.Item>
+                                                    <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+                                                        Tambah varian
+                                                    </Button>
+                                                </Form.Item>
+                                            </>
+                                        )}
+                                    </Form.List>
+                                    <Form.Item
+                                        label="Category"
+                                        name='category'
+
+                                        rules={[
+                                            {
+
+                                                message: 'Please select product Category'
+                                            }
+                                        ]}>
+                                        <Select placeholder="--Pilih Category"
+                                        >
+                                            <Option value="97de0e48-d7b6-446c-8e68-94e3baaa5000" >Wedding Organizer</Option>
+                                            <Option value="bbc709ac-30d7-4b0a-9ab0-982aef62df59" >Venue</Option>
+                                            <Option value="31666e7d-5d27-4698-a205-9b902b8b5164" >Chatering</Option>
+                                            <Option value="0a0e6483-fb83-47f5-8525-654131a70af8" >Photographer</Option>
+                                        </Select>
+                                    </Form.Item>
+
+                                    {/* <Form.Item
+                        name="image"
+                        label="Upload"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        extra="Silahkan upload gambar anda"
+                    >
+                        <Upload name="logo" listType="picture" >
+                            <Button icon={<UploadOutlined />}>Click to upload</Button>
+                        </Upload>
+                    </Form.Item> */}
+                                    <Form.Item
+                                        label="Deskripsi"
+                                        name="description"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'Please input product deskripsi!',
+                                            },
+                                        ]}
+                                    >
+                                        <Input.TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="Status"
+                                        name='availability'
+
+                                        rules={[
+                                            {
+
+                                                message: 'Please select product Status'
+                                            }
+                                        ]}>
+                                        <Select placeholder="--Pilih status"
+                                        >
+                                            <Option value="Tersedia" >Tersedia</Option>
+                                            <Option value="non-tersedia" >Non-Tersedia</Option>
+                                        </Select>
+                                    </Form.Item>
+                                    {/* <Form.Item
+                                        name="merchant_id"
+                                    >
+                                        <Input value={merchantId} type="hidden" />
+                                        
+                                    </Form.Item> */}
+                                    <Form.Item
+                                        name="id"
+                                    >
+                                        <Input type="text" />
+                                    </Form.Item>
+                                    <Form.Item>
+
                                     </Form.Item>
                                 </Form>
                                 {/* <p className='text-red-500'>{JSON.stringify(modalTaskIdDua)}</p> */}
@@ -455,6 +679,7 @@ export default function MerchantProduct() {
                                 title="Image"
                                 visible={visibleTiga}
                                 onOk={handleOkModalImage}
+                                onCancel={handleCancel}
                                 confirmLoading={confirmLoading}
                             >
                                 <img src={imageUrl} width={500} height={500} />

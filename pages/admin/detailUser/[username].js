@@ -16,7 +16,11 @@ export default function detailUserId() {
 
     async function validate() {
         try {
-            const getData = await axios.get("https://project-wo.herokuapp.com/users").then(response => {
+            const getData = await axios.get("https://project-wo.herokuapp.com/users", {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                }
+            }).then(response => {
                 if (response.status == 200 || response.status == 201) {
                     setDataUser(response.data.items)
 
@@ -31,31 +35,7 @@ export default function detailUserId() {
     }
     useEffect(() => {
 
-        validate().then(show => {
-
-            const dataSelected = dataUser.find((dataUser) => dataUser.username == username)
-
-            const myData = {
-                name: `${dataSelected?.name}`,
-                username: `${dataSelected?.username}`,
-                email: `${dataSelected?.email}`,
-                no_telp: `${dataSelected?.no_telp}`,
-                image: `${dataSelected?.image}`,
-                createdAt: `${dataSelected?.createdAt}`,
-                isActive: `${dataSelected?.isActive}`,
-
-            }
-
-            form.setFieldsValue({
-                name: myData.name,
-                username: myData.username,
-                email: myData.email,
-                no_telp: myData.no_telp,
-                createdAt: myData.createdAt
-            })
-
-
-        })
+        validate()
 
     }, [validate]);
 
@@ -109,7 +89,27 @@ export default function detailUserId() {
 
 
     const [form] = Form.useForm();
+    const dataSelected = dataUser.find((dataUser) => dataUser.username == username)
 
+    const myData = {
+        name: `${dataSelected?.name}`,
+        username: `${dataSelected?.username}`,
+        email: `${dataSelected?.email}`,
+        no_telp: `${dataSelected?.no_telp}`,
+        image: `${dataSelected?.image}`,
+        createdAt: `${dataSelected?.createdAt}`,
+        isActive: `${dataSelected?.isActive}`,
+
+    }
+
+    const date = new Date()
+    form.setFieldsValue({
+        name: myData.name,
+        username: myData.username,
+        email: myData.email,
+        no_telp: myData.no_telp,
+        createdAt: myData.createdAt
+    })
     return (
         <>
             <MainLayout>

@@ -1,4 +1,4 @@
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input, Modal } from 'antd';
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input, Modal, Select } from 'antd';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
@@ -7,16 +7,11 @@ import qs from 'qs'
 import Highlighter from "react-highlight-words";
 
 const { Header, Content, Sider } = Layout;
-const { Option } = AutoComplete;
 const { Search } = Input;
+const { Option } = Select;
 
 function getColumns(showModal) {
     return [
-        {
-            title: 'UUID',
-            dataIndex: 'id',
-            key: 'id',
-        },
         {
             title: 'Name',
             dataIndex: 'name',
@@ -83,7 +78,7 @@ function getColumns(showModal) {
 
 export default function KontenUsers() {
 
-    const [dataUser, setDataUser] = useState()
+    const [dataUser, setDataUser] = useState([])
     const [pagination, setPagination] = useState({
         current: 1,
         pageSize: 5,
@@ -111,28 +106,32 @@ export default function KontenUsers() {
 
     async function validate(params = {}) {
         try {
-            setLoading(true);
-            const getUsers = await axios.get("https://project-wo.herokuapp.com/users?",
+
+            const getUsers = await axios.get("https://project-wo.herokuapp.com/users", {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                }
+            },
             ).then(response => {
+
                 if (response.status == 200 || response.status == 201) {
                     setDataUser(response.data.items)
 
                 }
             })
-            setLoading(false);
             setPagination({
                 ...params.pagination,
                 total: dataUser.length
             });
+
         } catch (error) {
 
         }
     }
     useEffect(() => {
         const controller = new AbortController()
-        validate({
-            pagination,
-        })
+        validate()
+
         return () => controller.abort()
 
     }, []);
@@ -163,7 +162,11 @@ export default function KontenUsers() {
     };
 
     const handleOkModal = () => {
-        axios.delete(`https://project-wo.herokuapp.com/users/${modalTaskId}`).then(res => {
+        axios.delete(`https://project-wo.herokuapp.com/users/delete/${modalTaskId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
             console.log(res)
         })
         setModalText('The modal will be closed after two seconds');
@@ -172,36 +175,46 @@ export default function KontenUsers() {
             setVisible(false);
             setConfirmLoading(false);
         }, 2000);
-        // location.reload()
+        location.reload()
     };
     const handleCancel = () => {
         console.log('Clicked cancel button');
         setVisible(false);
     };
 
-    // useEffect(() => {
-    //     handleOkModal()
-    // }, []);
+
 
 
 
     const onSearch = function (value) {
-        axios.get(`https://project-wo.herokuapp.com/users/username/${value}`).then(res => {
-            setSearchText(res.data)
-            console.log(searchText)
+        axios.get(`https://project-wo.herokuapp.com/users/search/users/?page=1&limit=20&search=${value}&role=`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
+            setDataUser(res.data.items)
+            // console.log(res.data.items)
         })
     }
     const onSelect = (value) => {
         console.log('onSelect', value);
+        axios.get(`https://project-wo.herokuapp.com/users/search/users/?page=1&limit=20&search=&role=${value}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
+            setDataUser(res.data.items)
+            // console.log(res.data.items)
+        })
     };
-
+    console.log(pagination)
 
     return (
         <>
             <Content>
                 <h1 className='mt-4 ml-14 text-2xl'>Table User</h1>
-                <Row className='mt-4 ' justify='center'>
-                    <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
+                <Row className='mt-4 ' justify='space-between'>
+                    <Col lg={{ span: 10, offset: 2 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
                         <AutoComplete
                             dropdownMatchSelectWidth={252}
                             style={{
@@ -211,12 +224,29 @@ export default function KontenUsers() {
                             onSelect={onSelect}
                             onSearch={onSearch}
                         >
-                            <Input.Search size="large" placeholder="input here" enterButton />
+                            <Input.Search size="large" placeholder="Search...." enterButton />
 
                         </AutoComplete>
 
                     </Col>
-                    <Col lg={{ span: 15 }} md={{ span: 15 }} sm={{ span: 14 }} xs={{ span: 24 }}></Col>
+                    <Col lg={{ span: 4, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }} >
+
+                        <Select
+                            defaultValue="All"
+                            style={{
+                                width: 110,
+                            }}
+                            onChange={onSelect}
+                            placeholder="Filter"
+                        >
+                            <Option value="All">All</Option>
+                            <Option value="Admin">Admin</Option>
+                            <Option value="Costumer">Customer</Option>
+                            <Option value="Merchant" >
+                                Merchant
+                            </Option>
+                        </Select>
+                    </Col>
                 </Row>
                 <Row justify="center" align="middle" style={{ overflow: "auto" }}>
 
@@ -226,7 +256,6 @@ export default function KontenUsers() {
                             // scroll={{
                             //     y: 270,
                             // }}
-
                             dataSource={dataUser}
                             pagination={pagination}
                             loading={loading}

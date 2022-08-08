@@ -53,7 +53,7 @@ export default function Login() {
             const request = await axios.post("https://project-wo.herokuapp.com/auth/login", formData, {
                 headers: { 'content-type': 'application/json' }
             }).then(result => {
-                console.log(result);
+                // console.log(result);
 
                 const decode = jwt_decode(result.data.token)
                 console.log(decode.role)
@@ -67,7 +67,7 @@ export default function Login() {
                     router.push("/merchant/dashboard")
                 } else if (decode.role == "Costumer") {
                     localStorage.setItem('token_customer', result.data.token)
-                    router.push(`/customer/landing/${result.data.role_id}`)
+                    router.push(`/customer/landing/${decode.username}`)
                 }
                 // if (result.status == 200 || result.status == 201) {
                 //     localStorage.setItem('token_customer', result.data.token)
@@ -142,8 +142,9 @@ export default function Login() {
                                             ease-in-out
                                             m-0
                                             focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                                        iconRender={(visible) => (visible ? <EyeTwoTone style={{ color: "pink" }} /> : <EyeInvisibleOutlined style={{ color: "pink" }} />)}
                                         placeholder="Password"
+                                        style={{ borderColor: "pink", color: "pink" }}
                                         value={password} onChange={onChangePassword}
                                     />
 

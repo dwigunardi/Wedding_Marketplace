@@ -1,4 +1,5 @@
-
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Tabs } from 'antd';
 import { Col, Row, Grid } from 'antd';
 import { Content } from 'antd/lib/layout/layout';
@@ -21,6 +22,18 @@ const styleTab = {
 
 function ProductHome() {
     const screens = useBreakpoint();
+
+    const [product, setProduct] = useState([])
+
+    useEffect(() => {
+        axios.get("https://project-wo.herokuapp.com/product").then(res => {
+            console.log(res)
+        })
+        // return () => {
+        //     cleanup
+        // };
+    }, []);
+
     return (
         <>
             <div className="text-center mt-5 py-10">
@@ -183,11 +196,6 @@ function ProductHome() {
                         {/* card product */}
 
                         <Row justify="center space-x-5">
-                            {Object.entries(screens)
-                                .filter((screen) => !!screen[1])
-                                .map((screen) => (
-                                    console.log(screen[0])
-                                ))}
                             <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
 
 

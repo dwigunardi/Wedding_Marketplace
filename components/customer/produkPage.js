@@ -128,11 +128,7 @@ export default function ContentProduct() {
 
                     <Sider className="ml-20 bg-white" style={{ backgroundColor: "white" }}>
                         <Row justify="center" >
-                            {Object.entries(screens)
-                                .filter((screen) => !!screen[1])
-                                .map((screen) => (
-                                    console.log(screen[0])
-                                ))}
+
                             <Col>
                                 <Card
                                     title="Filter"

@@ -8,7 +8,7 @@ import Link from "next/link"
 import { useRouter } from "next/router"
 import { useState } from "react"
 import { LoadingOutlined, PlusOutline, UploadOutlined } from '@ant-design/icons';
-import axios from "axios"
+import axios, { AxiosError } from "axios"
 
 
 const { useBreakpoint } = Grid;
@@ -24,9 +24,14 @@ export default function MerchantRegis() {
     const [roleId, setRoleid] = useState('ed4e0cb2-f4b1-4bd5-8e00-77a120d4f9d3')
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState('')
+    const [namaToko, setNamaToko] = useState('')
 
 
 
+    const onChangeNamaToko = (e) => {
+        const value = e.target.value
+        setNamaToko(value)
+    }
 
     const onChangeName = (e) => {
         const value = e.target.value
@@ -78,6 +83,7 @@ export default function MerchantRegis() {
             data.append('password', password)
             data.append('role_id', roleId)
             data.append('image', image)
+            data.append('merchant_name', namaToko)
 
             console.log(data)
 
@@ -88,7 +94,7 @@ export default function MerchantRegis() {
             }).then(result => {
                 console.log(result.data.statusCode)
                 if (result.data.statusCode == 201 || result.data.statusCode == 200) {
-                    window.alert(result.data.message)
+                    window.alert(result.data.message = "Selamat anda telah mendaftar silahkan login")
                     router.push('/auth/login')
                 } else {
                     window.alert("Gagal mendaftar")
@@ -97,6 +103,7 @@ export default function MerchantRegis() {
             })
         } catch (error) {
             console.error(error);
+            window.alert(error, error.message)
         }
 
     }
@@ -137,6 +144,17 @@ export default function MerchantRegis() {
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
                                         value={name} onChange={onChangeName}
                                         placeholder="Masukan Nama Anda"
+
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <input
+                                        type="text"
+                                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
+                                    bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
+                                    ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                                        value={namaToko} onChange={onChangeNamaToko}
+                                        placeholder="Masukan Nama Toko Anda"
 
                                     />
                                 </div>

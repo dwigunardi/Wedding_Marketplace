@@ -3,9 +3,13 @@ import React, { useState } from 'react';
 import { PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useRouter } from "next/router"
 import axios from "axios"
+import jwt_decode from 'jwt-decode';
 const { Option } = Select;
 
 export default function TambahProduct(props) {
+
+    // const token = localStorage.getItem('token_customer')
+    // const decode = jwt_decode(token)
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -65,6 +69,10 @@ export default function TambahProduct(props) {
     const handleCancel = () => {
         setVisible(false);
     };
+    const onSelect = (value) => {
+        // console.log('onSelect', value);
+        setLokasi(value)
+    };
 
     const normFile = (e) => {
         console.log('Upload event:', e);
@@ -74,9 +82,9 @@ export default function TambahProduct(props) {
         }
         return e?.fileList;
     };
+
     const onFinish = async (values) => {
         try {
-            // const arr = JSON.stringify(values.variant)
 
             const dataForm = new FormData()
             dataForm.append("name", values.name)
@@ -86,27 +94,42 @@ export default function TambahProduct(props) {
             dataForm.append("description", values.description)
             dataForm.append("category_id", values.category_id)
             dataForm.append("merchant_id", props.merchant)
+
             // values.variant.forEach(variant => { dataForm.append('variant[0][name]', variant.name) }
             // )
             // values.variant.forEach(variant => { dataForm.append('variant[0][price]', variant.price) }
             // )
-            dataForm.append('variant[0][name]', values.variant[0].name)
-            dataForm.append('variant[0][price]', values.variant[0].price)
-            dataForm.append('variant[1][name]', values.variant[1].name)
-            dataForm.append('variant[1][price]', values.variant[1].price)
+            for (let i = 0; i < values.variant.length; i++) {
+                dataForm.append(`variant[${i}][name]`, values.variant[i].name)
+                dataForm.append(`variant[${i}][price]`, values.variant[i].price)
+            }
+            // Object.keys(values.variant).map(variant => {
+            //     dataForm.append("variant", JSON.stringify(values.variant[variant]))
+            // })
+
+            // const cek = Object.keys(values)
+            // console.log(cek)
+
+            // dataForm.append('variant[1][name]', values.variant[1].name)
+            // dataForm.append('variant[1][price]', values.variant[1].price)
             // dataForm.append('variant[2][name]', values.variant[2].name)
             // dataForm.append('variant[2][price]', values.variant[2].price)
 
-            for (const value of dataForm.values()) {
-                console.log(value);
-            }
+            // for (const value of dataForm.values()) {
+            //     console.log(value);
+            // }
             // console.log(...dataForm)
 
             await axios.post("https://project-wo.herokuapp.com/product", dataForm, {
                 headers: {
                     "Content-Type": "multipart/form-data",
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
                 }
             }).then(res => {
+                if (res.status == 200 || res.status == 201) {
+                    window.alert(res.data.message)
+                    setVisible(false)
+                }
                 console.log(res)
             })
 
@@ -127,6 +150,7 @@ export default function TambahProduct(props) {
 
     const router = useRouter()
     const { TextArea } = Input;
+
     return (
         <>
             <Button type="primary" onClick={showModal}>
@@ -173,20 +197,34 @@ export default function TambahProduct(props) {
                             },
                         ]}
                     >
-                        <Input />
+                        <Select
+                            defaultValue="All"
+                            style={{
+                                width: 470,
+                            }}
+                            onChange={onSelect}
+                            placeholder="Filter"
+                        >
+                            <Option value="All">All</Option>
+                            <Option value="Jakarta">Jakarta</Option>
+                            <Option value="Bogor">Bogor</Option>
+                            <Option value="Depok" >Depok</Option>
+                            <Option value="Tanggerang" >Tanggerang</Option>
+                            <Option value="Bekasi" >Bekasi</Option>
+                        </Select>
                     </Form.Item>
                     <input
                         id="img"
                         style={{ display: "none" }}
                         type="file"
                         accept="image/*"
-                        className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 
+                        className="form-control block w-full px-4 py-1 text-base font-normal text-gray-700 
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
                         onChange={onChangeFoto}
                     />
 
-                    <button className="inline-block px-6 py-4 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                    <button className="inline-block px-6 py-2 mb-5 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
                         <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
                     </button>
 

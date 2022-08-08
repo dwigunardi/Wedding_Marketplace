@@ -13,43 +13,13 @@ import 'tailwindcss/tailwind.css'
 import { Editor } from '@tinymce/tinymce-react';
 const { TextArea } = Input;
 export default function DetailProductMerchant() {
-    // const data = [
-    //     {
-    //         id: '1',
-    //         product: 'WO',
-    //         venue: 'Aminta Hall',
-    //         lokasi: 'Jakarta',
-    //         varian: '100',
-    //         harga: 'Rp. 70,600,000',
-    //         foto: <Image src={image1} layout="responsive" placeholder='blur' />,
-    //         status: ['Tersedia'],
-    //         deskripsi: 'Harga diatas sudah termasuk semua komponen utama pesta pernikahan termasuk vendor seperti Wedding planner and Wedding Organizer Master of Ceremony (MC) Decorations Catering (Food and Beverages) Documentation (Photo and Video) Entertainment, Sound System dan Lighting Bridal and Make Up Bonus sesuai paket'
-    //     },
-    //     {
-    //         id: '2',
-    //         product: 'WO',
-    //         venue: 'Fieris Hotel',
-    //         lokasi: 'Jakarta',
-    //         varian: '100',
-    //         harga: 'Rp. 66,600,000',
-    //         foto: <Image src={image2} layout="responsive" placeholder='blur' />,
-    //         status: ['Tersedia'],
-    //         deskripsi: 'Harga diatas sudah termasuk semua komponen utama pesta pernikahan termasuk vendor seperti Wedding planner and Wedding Organizer Master of Ceremony (MC) Decorations Catering (Food and Beverages) Documentation (Photo and Video) Entertainment, Sound System dan Lighting Bridal and Make Up Bonus sesuai paket'
-    //     },
-    //     {
-    //         id: '3',
-    //         product: 'WO',
-    //         venue: 'Mang Kabayan Vida',
-    //         lokasi: 'Bekasi',
-    //         varian: '100',
-    //         harga: 'Rp. 45,900,000',
-    //         foto: <Image src={image3} layout="responsive" placeholder='blur' />,
-    //         status: ['Non-Tersedia'],
-    //         deskripsi: 'Harga diatas sudah termasuk semua komponen utama pesta pernikahan termasuk vendor seperti Wedding planner and Wedding Organizer Master of Ceremony (MC) Decorations Catering (Food and Beverages) Documentation (Photo and Video) Entertainment, Sound System dan Lighting Bridal and Make Up Bonus sesuai paket'
-    //     },
-    // ];
+
 
     const [dataProduct, setDataProduct] = useState([])
+    const [variant, setVariant] = useState({
+        name: '',
+        price: ''
+    })
     const [form] = Form.useForm();
     async function validate() {
         try {
@@ -94,6 +64,7 @@ export default function DetailProductMerchant() {
     // })
 
     const dataSelected = dataProduct.find((dataProduct) => dataProduct.id == id);
+
     const myData = {
         id: `${dataSelected?.id}`,
         availability: `${dataSelected?.availability}`,
@@ -101,9 +72,17 @@ export default function DetailProductMerchant() {
         location: `${dataSelected?.location}`,
         name: `${dataSelected?.name}`,
         merchant: `${dataSelected?.merchant.name}`,
-        category: `${dataSelected?.category.name}`
+        category: `${dataSelected?.category.name}`,
+        image: `${dataSelected?.image}`,
+        // variant: [dataSelected?.variant.map((data) => {
+        //     return (
+        //         <Tag color={'volcano'} >
+        //             {data}
+        //         </Tag>
+        //     );
+        // })]
     }
-
+    const dataImg = `https://project-wo.herokuapp.com/product/image/${myData.image}`
     form.setFieldsValue({
         name: myData.name,
         availability: myData.availability,
@@ -111,10 +90,11 @@ export default function DetailProductMerchant() {
         merchant: myData.merchant,
         category: myData.category,
         description: myData.description,
+        variant: myData.variant
     })
 
 
-
+    // console.log(myData)
     return (
         <>
             <MerchantLayout>
@@ -122,9 +102,16 @@ export default function DetailProductMerchant() {
                     <h1 className='mt-6 ml-14 text-2xl'>Form Detail Product</h1>
                     <div className="rounded-lg shadow-lg bg-white mx-10 mb-10">
                         <Row justify="space-between" align="middle">
-                            <Col lg={{ span: 12 }} md={{ span: 12 }} sm={{ span: 24 }}>
+                            <Col lg={{ span: 11 }} md={{ span: 12 }} sm={{ span: 24 }} offset={1}>
 
-                                {/* {dataSelected?.foto} */}
+                                <Image
+                                    loader={() => dataImg}
+                                    src={dataImg}
+                                    priority={true}
+                                    unoptimized={true}
+                                    width={300}
+                                    height={300}
+                                />
                                 <div className="mt-5 p-5">
                                     <Form
                                         layout="vertical"
@@ -135,15 +122,6 @@ export default function DetailProductMerchant() {
                                         wrapperCol={{
                                             span: 16,
                                         }}
-                                        // initialValues={{
-                                        //     name: myData.name,
-                                        //     availability: myData.availability,
-                                        //     lokasi: myData.location,
-                                        //     description: myData.description,
-                                        //     category: myData.category,
-                                        //     merchant: myData.merchant,
-
-                                        // }}
                                         onFinish={onFinish}
                                         onFinishFailed={onFinishFailed}
                                         autoComplete="off"
@@ -151,7 +129,7 @@ export default function DetailProductMerchant() {
                                     >
                                         <Form.Item
                                             label="Deskripsi"
-                                            name="deskripsi"
+                                            name="description"
                                             rules={[
                                                 {
                                                     required: true,
@@ -165,7 +143,7 @@ export default function DetailProductMerchant() {
                                     </Form>
                                 </div>
                             </Col>
-                            <Col lg={{ span: 11 }} md={{ span: 11 }} sm={{ span: 24 }} offset={1}>
+                            <Col lg={{ span: 12 }} md={{ span: 12 }} sm={{ span: 24 }} className="mt-5">
 
                                 <Form
                                     layout="vertical"
@@ -176,15 +154,7 @@ export default function DetailProductMerchant() {
                                     wrapperCol={{
                                         span: 20,
                                     }}
-                                    // initialValues={{
-                                    //     product: `${dataSelected?.product}`,
-                                    //     venue: `${dataSelected?.venue}`,
-                                    //     lokasi: `${dataSelected?.lokasi}`,
-                                    //     varian: `${dataSelected?.varian}`,
-                                    //     harga: `${dataSelected?.harga}`,
-                                    //     deskripsi: `${dataSelected?.deskripsi}`,
 
-                                    // }}
                                     onFinish={onFinish}
                                     onFinishFailed={onFinishFailed}
                                     autoComplete="off"
@@ -254,23 +224,21 @@ export default function DetailProductMerchant() {
                                         wrapperCol={{
 
                                             span: 16,
-                                        }}>
+                                        }}
+                                        name="variant"
+                                    >
 
-                                        {/* {dataSelected?.status.map((tag) => {
+                                        {/* {myData.variant.map((data) => {
                                             let color = ''
-                                            if (tag === 'Tersedia') {
-                                                color = 'green';
-                                            }
-                                            else if (tag === 'Non-Tersedia') {
-                                                color = 'volcano';
-                                            }
+                                            // if (name) {
+                                            //     color = 'green';
+                                            // }
+                                            // else if (price) {
+                                            //     color = 'volcano';
+                                            // }
 
 
-                                            return (
-                                                <Tag color={color} key={tag}>
-                                                    {tag.toUpperCase()}
-                                                </Tag>
-                                            );
+                                           
                                         })}
                                         { } */}
 

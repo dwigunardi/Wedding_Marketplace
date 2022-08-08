@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import BackButton from "../../backButton";
 import axios from "axios";
+import jwt_decode from "jwt-decode";
 
 const normFile = (e) => {
     console.log('Upload event:', e);
@@ -24,63 +25,68 @@ const normFile = (e) => {
 };
 
 export default function detailMerchantId() {
-
+    const router = useRouter();
+    const { username } = router.query;
     // state di update berdasarkan data harus di ubah
+    const [dataToken, setDataToken] = useState('')
+    const [myRole, setMyRole] = useState({})
     const [id, setId] = useState('')
     const [nameUpdate, setNameUpdate] = useState('')
     const [password, setPassword] = useState('')
     const [usernameUpdate, setUsernameUpdate] = useState('')
     const [emailUpdate, setEmailUpdate] = useState('')
     const [noTelpUpdate, setNoTelUpdate] = useState('')
+    const [namaToko, setNamaToko] = useState('')
     const [image, setImage] = useState('')
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
-
-    const [dataUser, setDataUser] = useState([])
-
-    async function validate() {
-        try {
-            const getData = await axios.get("https://project-wo.herokuapp.com/users").then(response => {
-                if (response.status == 200 || response.status == 201) {
-                    setDataUser(response.data.items)
-                }
-            })
-        } catch (error) {
-
-        }
-    }
-    useEffect(() => {
-        validate()
-    }, []);
-
-    const router = useRouter();
-    const { username } = router.query;
-
-    const dataSelected = dataUser.find((dataUser) => dataUser.username == username)
+    const [dataUser, setDataUser] = useState({})
     const [form] = Form.useForm();
+    useEffect(() => {
+        const getToken = localStorage.getItem("token_customer")
+        const decode = jwt_decode(getToken)
+        setDataToken(decode)
+        axios.get(`https://project-wo.herokuapp.com/users/${decode.user_id}`, {
+            headers: {
+                'Authorization': `Bearer ${getToken}`
+            }
+        }).then(response => {
+            console.log(response)
+            if (response.status == 200 || response.status == 201) {
+                setDataUser(response.data.data)
+                setMyRole(response.data.data.role)
+            }
+        })
 
+    }, [])
 
-    const myData = {
-        id: `${dataSelected?.id}`,
-        name: `${dataSelected?.name}`,
-        username: `${dataSelected?.username}`,
-        email: `${dataSelected?.email}`,
-        no_telp: `${dataSelected?.no_telp}`,
-        image: `${dataSelected?.image}`,
-        createdAt: `${dataSelected?.createdAt}`,
-        isActive: `${dataSelected?.isActive}`,
-
-    }
 
     form.setFieldsValue({
-        id: myData.id,
-        name: myData.name,
-        username: myData.username,
-        email: myData.email,
-        no_telp: myData.no_telp,
-        createdAt: myData.createdAt,
-        image: myData.image
+        id: dataUser.id,
+        name: dataUser.name,
+        username: dataUser.username,
+        email: dataUser.email,
+        no_telp: dataUser.no_telp,
+        createdAt: dataUser.createdAt,
+        image: dataUser.image
     })
+    // const dataSelected = dataUser.find((dataUser) => dataUser.username == username)
+
+
+
+    // const myData = {
+    //     id: `${dataSelected?.id}`,
+    //     name: `${dataSelected?.name}`,
+    //     username: `${dataSelected?.username}`,
+    //     email: `${dataSelected?.email}`,
+    //     no_telp: `${dataSelected?.no_telp}`,
+    //     image: `${dataSelected?.image}`,
+    //     createdAt: `${dataSelected?.createdAt}`,
+    //     isActive: `${dataSelected?.isActive}`,
+
+    // }
+    const orig = `https://project-wo.herokuapp.com/users/image/${dataUser.image}`
+
 
 
     const showModal = () => {
@@ -112,10 +118,15 @@ export default function detailMerchantId() {
     const onChangeId = (e) => {
         const value = e.target.value
         setId(myData.id)
+        console.log(value)
     }
     const onChangeImage = (e) => {
         const value = e.target.files[0]
         setImage(value)
+    }
+    const onChangeToko = (e) => {
+        const value = e.target.value
+        setNamaToko(value)
     }
 
 
@@ -140,29 +151,28 @@ export default function detailMerchantId() {
             // for (const value of dataUpdate.values()) {
             //     console.log(value);
             // }
-            await axios.put(`https://project-wo.herokuapp.com/users/${myData.id}`, dataUpdate).then(res => {
-                console.log(res)
+            await axios.put(`https://project-wo.herokuapp.com/users/${myData.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                }
+            }, dataUpdate).then(res => {
+                // console.log(res)
+                if (res.status == 200 || res.status == 201) {
+                    window.alert("berhasil update")
+                    location.reload()
+                }
             })
         } catch (error) {
-
+            window.alert(error + error.message)
         }
 
     }
-    // const [defaultValues, setDefaultValues] = useState({
-    //     name: myData.name,
-    //     username: myData.username,
-    //     email: myData.email,
-    //     no_telp: myData.no_telp,
-    //     createdAt: myData.createdAt
-    // })
-
-
     const onReset = () => {
 
-        form.setFieldsValue(dataSelected)
+        form.setFieldsValue(dataUser)
 
     };
-
+    // console.log(myRole)
 
     return (
         <>
@@ -177,10 +187,13 @@ export default function detailMerchantId() {
                                         <a href="#!" className="mx-20">
                                             <Image
                                                 className="rounded-t-lg"
-                                                src={ImgPlaceholder}
+                                                loader={() => orig}
+                                                src={orig}
                                                 width={150}
                                                 height={150}
                                                 alt=""
+                                                priority={true}
+                                                unoptimized={true}
                                             />
                                         </a>
                                         <br />
@@ -199,16 +212,6 @@ export default function detailMerchantId() {
                                         wrapperCol={{
                                             span: 16,
                                         }}
-                                        // initialValues={{
-                                        //     name: `${dataSelected?.name}`,
-                                        //     username: `${dataSelected?.username}`,
-                                        //     email: `${dataSelected?.email}`,
-                                        //     no_telp: `${dataSelected?.no_telp}`,
-                                        //     image: `${dataSelected?.image}`,
-                                        //     createdAt: `${dataSelected?.createdAt}`,
-                                        //     isActive: `${dataSelected?.isActive}`,
-                                        // }}
-
                                         // onFinish={onFinish}
                                         onFinishFailed={onFinishFailed}
                                         autoComplete="off"
@@ -260,7 +263,7 @@ export default function detailMerchantId() {
                                                 span: 16,
                                             }}>
                                             <Button>
-                                                Active : {myData.isActive}
+                                                Role : {myRole.name}
                                             </Button>
                                         </Form.Item>
 
@@ -293,7 +296,7 @@ export default function detailMerchantId() {
                                         ]}
                                     >
 
-                                        <form onSubmit={onFormSubmit} className="mt-5" method="POST">
+                                        {/* <form onSubmit={onFormSubmit} className="mt-5" method="POST">
                                             <div className="form-group mb-6">
                                                 <label
                                                     className="form-label inline-block mb-2 text-gray-700"
@@ -320,6 +323,35 @@ export default function detailMerchantId() {
                                                     focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
                                                     value={nameUpdate} onChange={onChangeName}
                                                     placeholder="Nama Anda"
+                                                />
+
+                                            </div>
+                                            <div className="form-group mb-6">
+                                                <label
+                                                    className="form-label inline-block mb-2 text-gray-700"
+                                                >
+                                                    Nama Toko
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    name="nameUpdate"
+                                                    className="form-control
+                                                    block
+                                                    w-full
+                                                    px-3
+                                                    py-1.5
+                                                    text-base
+                                                    font-normal
+                                                    text-pink-700
+                                                    bg-white bg-clip-padding
+                                                    border border-solid border-pink-300
+                                                    rounded
+                                                    transition
+                                                    ease-in-out
+                                                    m-0
+                                                    focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                                                    value={namaToko} onChange={onChangeToko}
+                                                    placeholder="Nama Toko Anda"
                                                 />
 
                                             </div>
@@ -442,19 +474,19 @@ export default function detailMerchantId() {
                                                     value={password} onChange={onChangePassword}
                                                 />
                                                 <input
-                                                    name="id"
-                                                    type="hidden"
+
+                                                    type="text"
                                                     className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                                    value={id} onChange={onChangeId}
+                                                // value={myData.id} onChange={onChangeId}
 
                                                 />
 
                                             </div>
                                             <div className="mb-4">
                                                 <input
-                                                    id="img"
+
                                                     style={{ display: "none" }}
                                                     type="file"
                                                     accept="image/*"
@@ -484,7 +516,7 @@ export default function detailMerchantId() {
                                                 </button>
 
                                             </div>
-                                        </form>
+                                        </form> */}
 
                                     </Modal>
                                 </div>

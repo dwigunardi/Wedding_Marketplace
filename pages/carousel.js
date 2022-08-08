@@ -20,7 +20,7 @@ function CarouselAuto() {
     const [dotPosition, setDotPosition] = useState('top');
 
     const onChange = (currentSlide) => {
-        console.log(currentSlide);
+
     };
     return (
         <>

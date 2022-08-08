@@ -12,12 +12,13 @@ import jwt_decode from 'jwt-decode'
 
 
 export default function Detail() {
-
+    const [form] = Form.useForm();
 
     const [username, setUsername] = useState('')
     const [isLogged, setLogged] = useState('')
     const [role, setRole] = useState('')
     const [dataUser, setDataUser] = useState([])
+    const [id, setId] = useState('')
 
 
     const router = useRouter();
@@ -31,10 +32,9 @@ export default function Detail() {
                 setLogged(null)
             }
             const decode = await jwt_decode(token)
+            const idUser = decode.user_id
             const user = decode.username
             const roleId = decode.role
-            console.log(decode);
-
             if (user) {
                 setUsername(user)
 
@@ -44,12 +44,17 @@ export default function Detail() {
             if (roleId) {
                 setRole(roleId)
             }
-            const getUsers = await axios.get(`https://project-wo.herokuapp.com/users/username/${user}`,
+            if (idUser) {
+                setId(idUser)
+            }
+            const getUsers = await axios.get(`https://project-wo.herokuapp.com/users/${idUser}`,
             ).then(response => {
-                console.log(response.data);
-                if (response.data[0].username == username) {
-                    setDataUser(response.data)
+                console.log(response);
+                if (response.status == 200 || response.status == 201) {
+                    setDataUser([response.data.data])
                 }
+
+
 
             })
 
@@ -65,9 +70,9 @@ export default function Detail() {
 
         validate()
 
-    });
+    }, []);
 
-    const [form] = Form.useForm();
+
 
     return (
         <>
@@ -111,8 +116,8 @@ export default function Detail() {
                                                     no_telp: data.no_telp,
 
                                                 }}
-
                                                 disabled={true}
+
                                                 autoComplete="off"
 
                                             >
@@ -155,16 +160,15 @@ export default function Detail() {
                                                 >
                                                     <Space>
 
-                                                        <BackButton />
-                                                        <Button htmlType="button" >
-                                                            Reset
-                                                        </Button>
+
+
                                                     </Space>
                                                 </Form.Item>
                                             </Form>
                                         </>
                                     )
                                 })}
+                                <BackButton />
                             </div>
                         </div>
 

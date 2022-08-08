@@ -57,11 +57,6 @@ export default function CardProductPage() {
     return (
         <>
             <Row justify="start space-x-5">
-                {Object.entries(screens)
-                    .filter((screen) => !!screen[1])
-                    .map((screen) => (
-                        console.log(screen[0])
-                    ))}
 
 
                 {data.map((result => {

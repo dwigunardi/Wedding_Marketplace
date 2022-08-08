@@ -17,12 +17,6 @@ function ContentMain() {
                 Congratulations!
             </h1>
             <Row align="middle" justify="center">
-
-                {Object.entries(screens)
-                    .filter((screen) => !!screen[1])
-                    .map((screen) => (
-                        console.log(screen[0])
-                    ))}
                 <Col lg={{ span: 8 }} md={{ span: 8 }} sm={{ span: 22 }} xs={{ span: 22 }} className="gutter-row">
                     <div className=" sm:text-start text-2xl text-start sm:ml-auto ">
                         <h1 className="text-pink-500">Anda Mau menikah?, Selamat!</h1>
