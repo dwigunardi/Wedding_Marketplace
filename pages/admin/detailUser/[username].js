@@ -23,10 +23,7 @@ export default function detailUserId() {
             }).then(response => {
                 if (response.status == 200 || response.status == 201) {
                     setDataUser(response.data.items)
-
                 }
-
-
             })
         } catch (error) {
 
@@ -123,7 +120,10 @@ export default function detailUserId() {
                                         <a href="#!" className="mx-20">
                                             <Image
                                                 className="rounded-t-lg"
-                                                src={ImgPlaceholder}
+                                                loader={() => myData.image}
+                                                priority={true}
+                                                unoptimized={true}
+                                                src={`https://project-wo.herokuapp.com/product/image/${myData.image}`}
                                                 width={150}
                                                 height={150}
                                                 alt=""

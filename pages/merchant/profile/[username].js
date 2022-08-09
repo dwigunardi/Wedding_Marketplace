@@ -5,7 +5,7 @@ import {
 } from '@ant-design/icons';
 import { Content } from "antd/lib/layout/layout";
 import { useRouter, Router } from "next/router";
-import MainLayout from "../../../components/admin/layout/mainLayout";
+import MerchantLayout from "../../../components/merchant/layout/merchantLayout";
 import Image from "next/image";
 import ImgPlaceholder from "../../../public/Image/img-placeholder.png"
 import { useEffect, useState } from "react";
@@ -42,6 +42,8 @@ export default function detailMerchantId() {
     const [visible, setVisible] = useState(false);
     const [dataUser, setDataUser] = useState({})
     const [form] = Form.useForm();
+
+
     useEffect(() => {
         const getToken = localStorage.getItem("token_customer")
         const decode = jwt_decode(getToken)
@@ -51,7 +53,7 @@ export default function detailMerchantId() {
                 'Authorization': `Bearer ${getToken}`
             }
         }).then(response => {
-            console.log(response)
+            // console.log(response)
             if (response.status == 200 || response.status == 201) {
                 setDataUser(response.data.data)
                 setMyRole(response.data.data.role)
@@ -70,27 +72,11 @@ export default function detailMerchantId() {
         createdAt: dataUser.createdAt,
         image: dataUser.image
     })
-    // const dataSelected = dataUser.find((dataUser) => dataUser.username == username)
-
-
-
-    // const myData = {
-    //     id: `${dataSelected?.id}`,
-    //     name: `${dataSelected?.name}`,
-    //     username: `${dataSelected?.username}`,
-    //     email: `${dataSelected?.email}`,
-    //     no_telp: `${dataSelected?.no_telp}`,
-    //     image: `${dataSelected?.image}`,
-    //     createdAt: `${dataSelected?.createdAt}`,
-    //     isActive: `${dataSelected?.isActive}`,
-
-    // }
     const orig = `https://project-wo.herokuapp.com/users/image/${dataUser.image}`
-
-
-
     const showModal = () => {
         setVisible(true);
+        const data = form.getFieldValue()
+        // console.log(data)
     };
     const handleCancel = () => {
         setVisible(false);
@@ -176,7 +162,7 @@ export default function detailMerchantId() {
 
     return (
         <>
-            <MainLayout>
+            <MerchantLayout>
                 <Content>
                     <h1 className='mt-6 ml-14 text-2xl'>Form Detail Merchant</h1>
                     <Row justify="center" align="middle" className='mt-6 ' >
@@ -286,7 +272,7 @@ export default function detailMerchantId() {
                                     </Form>
                                     <Modal
                                         visible={visible}
-                                        title="Title"
+                                        title="Update Data"
 
                                         onCancel={handleCancel}
                                         footer={[
@@ -296,227 +282,53 @@ export default function detailMerchantId() {
                                         ]}
                                     >
 
-                                        {/* <form onSubmit={onFormSubmit} className="mt-5" method="POST">
-                                            <div className="form-group mb-6">
-                                                <label
-                                                    className="form-label inline-block mb-2 text-gray-700"
-                                                >
-                                                    Name
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="nameUpdate"
-                                                    className="form-control
-                                                    block
-                                                    w-full
-                                                    px-3
-                                                    py-1.5
-                                                    text-base
-                                                    font-normal
-                                                    text-pink-700
-                                                    bg-white bg-clip-padding
-                                                    border border-solid border-pink-300
-                                                    rounded
-                                                    transition
-                                                    ease-in-out
-                                                    m-0
-                                                    focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                                    value={nameUpdate} onChange={onChangeName}
-                                                    placeholder="Nama Anda"
-                                                />
+                                        <Form
+                                            layout="vertical"
+                                            form={form}
+                                            labelCol={{
+                                                span: 16,
+                                            }}
+                                            wrapperCol={{
+                                                span: 16,
+                                            }}
+                                            // onFinish={onFinish}
+                                            onFinishFailed={onFinishFailed}
+                                            autoComplete="off"
+                                        >
+                                            <Form.Item
+                                                label="Name"
+                                                name="name"
 
-                                            </div>
-                                            <div className="form-group mb-6">
-                                                <label
-                                                    className="form-label inline-block mb-2 text-gray-700"
-                                                >
-                                                    Nama Toko
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="nameUpdate"
-                                                    className="form-control
-                                                    block
-                                                    w-full
-                                                    px-3
-                                                    py-1.5
-                                                    text-base
-                                                    font-normal
-                                                    text-pink-700
-                                                    bg-white bg-clip-padding
-                                                    border border-solid border-pink-300
-                                                    rounded
-                                                    transition
-                                                    ease-in-out
-                                                    m-0
-                                                    focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                                    value={namaToko} onChange={onChangeToko}
-                                                    placeholder="Nama Toko Anda"
-                                                />
+                                            >
+                                                <Input value={nameUpdate} onChange={onChangeName} />
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Username"
+                                                name="username"
+                                                rules={[
+                                                    {
+                                                        required: true,
+                                                        message: 'Mohon Isi Email Anda!',
+                                                    },
+                                                ]}
+                                            >
+                                                <Input value={usernameUpdate} onChange={onChangeUsername} />
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Email"
+                                                name="email"
 
-                                            </div>
-                                            <div className="form-group mb-6">
+                                            >
+                                                <Input value={emailUpdate} onChange={onChangeEmail} />
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Phone"
+                                                name="no_telp"
 
-                                                <label
-                                                    className="form-label inline-block mb-2 text-gray-700"
-                                                >
-                                                    Username
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="usernameUpdate"
-                                                    className="form-control
-                                                    block
-                                                    w-full
-                                                    px-3
-                                                    py-1.5
-                                                    text-base
-                                                    font-normal
-                                                    text-pink-700
-                                                    bg-white bg-clip-padding
-                                                    border border-solid border-pink-300
-                                                    rounded
-                                                    transition
-                                                    ease-in-out
-                                                    m-0
-                                                    focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                                    value={usernameUpdate} onChange={onChangeUsername}
-                                                    placeholder="Username Anda"
-                                                />
-
-                                            </div>
-                                            <div className="form-group mb-6">
-                                                <label
-
-                                                    className="form-label inline-block mb-2 text-gray-700"
-                                                >
-                                                    Email
-                                                </label>
-                                                <input
-                                                    type="email"
-                                                    name="emailUpdate"
-                                                    className="form-control
-                                                    block
-                                                    w-full
-                                                    px-3
-                                                    py-1.5
-                                                    text-base
-                                                    font-normal
-                                                    text-pink-700
-                                                    bg-white bg-clip-padding
-                                                    border border-solid border-pink-300
-                                                    rounded
-                                                    transition
-                                                    ease-in-out
-                                                    m-0
-                                                    focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                                    value={emailUpdate} onChange={onChangeEmail}
-                                                    placeholder="Email Anda"
-                                                />
-
-                                            </div>
-                                            <div className="form-group mb-6">
-                                                <label
-
-                                                    className="form-label inline-block mb-2 text-gray-700"
-                                                >
-                                                    No telpon
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="no_telpUpdate"
-                                                    className="form-control
-                                                    block
-                                                    w-full
-                                                    px-3
-                                                    py-1.5
-                                                    text-base
-                                                    font-normal
-                                                    text-pink-700
-                                                    bg-white bg-clip-padding
-                                                    border border-solid border-pink-300
-                                                    rounded
-                                                    transition
-                                                    ease-in-out
-                                                    m-0
-                                                    focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                                    value={noTelpUpdate} onChange={onChangeNoTel}
-                                                    placeholder="nomer telpon anda"
-                                                />
-
-                                            </div>
-                                            <div className="form-group mb-6">
-                                                <label
-
-                                                    className="form-label inline-block mb-2 text-gray-700"
-                                                >
-                                                    Password
-                                                </label>
-                                                <Input.Password
-                                                    type="password"
-                                                    className="form-control
-                                                    block
-                                                    w-full
-                                                    px-3
-                                                    py-1.5
-                                                    text-base
-                                                    font-normal
-                                                    text-pink-700
-                                                    bg-white bg-clip-padding
-                                                    border border-solid border-pink-300
-                                                    rounded
-                                                    transition
-                                                    ease-in-out
-                                                    m-0
-                                                    focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                                    iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                                                    placeholder="Password"
-                                                    value={password} onChange={onChangePassword}
-                                                />
-                                                <input
-
-                                                    type="text"
-                                                    className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 
-                                    bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
-                                    ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                                // value={myData.id} onChange={onChangeId}
-
-                                                />
-
-                                            </div>
-                                            <div className="mb-4">
-                                                <input
-
-                                                    style={{ display: "none" }}
-                                                    type="file"
-                                                    accept="image/*"
-                                                    className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700 
-                                    bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
-                                    ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                                    onChange={onChangeImage}
-                                                />
-
-                                                <button className="inline-block px-6 py-4 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
-                                                    <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
-                                                </button>
-
-                                            </div>
-                                            <div className="text-center pt-1 mb-12 pb-1">
-                                                <button
-                                                    type="submit"
-                                                    className="inline-block px-6 py-2.5 text-pink-500 font-medium text-xs leading-tight uppercase rounded shadow-md 
-                                    hover:bg-pink-700 hover:text-white hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg 
-                                    transition duration-150 ease-in-out w-full mb-3"
-
-                                                    data-mdb-ripple="true"
-                                                    data-mdb-ripple-color="light"
-                                                    onClick={submitUpdate}
-                                                >
-                                                    Submit
-                                                </button>
-
-                                            </div>
-                                        </form> */}
+                                            >
+                                                <Input value={noTelpUpdate} onChange={onChangeNoTel} />
+                                            </Form.Item>
+                                        </Form>
 
                                     </Modal>
                                 </div>
@@ -526,7 +338,7 @@ export default function detailMerchantId() {
                         </Col>
                     </Row>
                 </Content>
-            </MainLayout>
+            </MerchantLayout>
         </>
     )
 }

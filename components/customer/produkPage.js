@@ -9,9 +9,10 @@ import "tailwindcss/tailwind.css"
 import "antd/dist/antd.variable.min.css"
 import Navigasi from "../../components/navigasi";
 import FooterCustomer from "../../components/footer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import CarouselProductPage from "./carouselProductPage";
 import CardProductPage from "./cardProductPage";
+import axios from "axios";
 
 
 
@@ -53,24 +54,47 @@ const searchResult = (query) =>
             };
         });
 // menu onclick handle biar gak pusing
-const onClick = ({ key }) => {
-    message.info(`Click on item ${key}`);
-};
+
 
 
 export default function ContentProduct() {
+
+    const [product, setProduct] = useState([])
+    // autocomplete state handle
+    const [options, setOptions] = useState([]);
+
+    useEffect(() => {
+        axios.get("https://project-wo.herokuapp.com/product/").then(res => {
+            setProduct(res.data.items)
+        })
+        // return () => {
+        //     cleanup
+        // };
+    }, []);
+
 
     ConfigProvider.config({
         theme: {
             primaryColor: "#EC4899"
         },
     });
+    const onClick = ({ key }) => {
+        message.info(`Anda Memilih ${key}`);
+        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=${key}&category=&merchant=`).then(res => {
+            setProduct(res.data.items)
+            // console.log(res)
+        })
+    };
     const screens = useBreakpoint();
     const menu = (
         <Menu
-
             onClick={onClick}
             items={[
+                {
+                    label: 'All',
+                    key: '',
+                    icon: <PushpinOutlined />,
+                },
                 {
                     label: 'Jakarta',
                     key: 'Jakarta',
@@ -100,12 +124,11 @@ export default function ContentProduct() {
         />
     );
 
-
-    // autocomplete state handle
-    const [options, setOptions] = useState([]);
-
     const handleSearch = (value) => {
-        setOptions(value ? searchResult(value) : []);
+        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=${value}&location=&category=&merchant=`).then(res => {
+            setProduct(res.data.items)
+            // console.log(res.data.items)
+        })
     };
 
     const onSelect = (value) => {
@@ -155,22 +178,22 @@ export default function ContentProduct() {
 
                     <Content className="ml-20 bg-white">
                         <Row>
-                            <Col>
+                            <Col lg={{ span: 20 }}>
                                 <AutoComplete
                                     dropdownMatchSelectWidth={252}
 
-                                    options={options}
-                                    onSelect={onSelect}
+                                    // options={options}
+                                    // onSelect={onSelect}
                                     onSearch={handleSearch}
                                 >
                                     <Input.Search size="large" placeholder="Search Product" enterButton />
                                 </AutoComplete>
 
                                 {/* Card product  */}
-                                <CardProductPage />
+                                <CardProductPage product={product} />
                                 <Row justify="center" align="middle" style={{ height: "160px" }}>
-                                    <Col span={12}>
-                                        <Pagination defaultCurrent={6} total={500} />
+                                    <Col span={6}>
+                                        <Pagination defaultCurrent={1} total={product.length} />
                                     </Col>
                                 </Row>
                             </Col>

@@ -49,13 +49,10 @@ export default function Detail() {
             }
             const getUsers = await axios.get(`https://project-wo.herokuapp.com/users/${idUser}`,
             ).then(response => {
-                console.log(response);
+                // console.log(response);
                 if (response.status == 200 || response.status == 201) {
                     setDataUser([response.data.data])
                 }
-
-
-
             })
 
         } catch (error) {
@@ -63,16 +60,11 @@ export default function Detail() {
         }
     }
 
-
-
-
     useEffect(() => {
 
         validate()
 
     }, []);
-
-
 
     return (
         <>
@@ -83,16 +75,25 @@ export default function Detail() {
                         <div className="rounded-lg shadow-lg bg-white ">
                             <Row justify="center" align="middle">
                                 <Col>
-                                    <a href="#!" className="mx-20">
-                                        <Image
-                                            className="rounded-t-lg"
-                                            src={ImgPlaceholder}
-                                            width={150}
-                                            height={150}
-                                            alt=""
-                                            priority={true}
-                                        />
-                                    </a>
+                                    {dataUser.map((res) => {
+                                        return (
+                                            <>
+                                                <a href="#!" className="mx-20">
+                                                    <Image
+                                                        className="rounded-t-lg"
+                                                        loader={() => res.image}
+                                                        src={`https://project-wo.herokuapp.com/product/image/${res.image}`}
+                                                        priority={true}
+                                                        unoptimized={true}
+                                                        width={150}
+                                                        height={150}
+                                                        alt=""
+                                                    />
+                                                </a>
+                                            </>
+                                        )
+                                    })}
+
                                     <br />
 
                                 </Col>
@@ -171,8 +172,6 @@ export default function Detail() {
                                 <BackButton />
                             </div>
                         </div>
-
-
                     </Col>
                 </Row>
             </Content>

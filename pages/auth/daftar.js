@@ -27,7 +27,7 @@ export default function Daftar() {
     const [username, setUsername] = useState('')
     const [no_telp, setNotel] = useState('')
     const [password, setPassword] = useState('')
-    const [roleId, setRoleid] = useState('55d6fa93-67e4-42a0-b302-e0bb1b312ba4')
+    const [roleId, setRoleid] = useState('d507bde7-2d67-4fee-9cf1-d67c619596f9')
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState('')
 

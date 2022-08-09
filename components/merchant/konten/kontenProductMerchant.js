@@ -1,5 +1,5 @@
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, Select } from 'antd';
-import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, Select, Upload } from 'antd';
+import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined, UploadOutlined, MinusCircleOutlined, } from '@ant-design/icons';
 import Link from "next/link";
 import React, { useEffect, useState } from 'react';
 import TambahProduct from './tambahProduct';
@@ -14,11 +14,7 @@ const { Search, TextArea } = Input;
 
 function getColumns(deleteModal, updateModal, imageModal) {
     return [
-        {
-            title: 'No',
-            dataIndex: 'id',
-            key: 'id',
-        },
+
         {
             title: 'Name Product',
             dataIndex: 'name',
@@ -34,25 +30,34 @@ function getColumns(deleteModal, updateModal, imageModal) {
             title: 'Variant',
             dataIndex: 'variant',
             key: 'variant',
-            render: (_, status) => (
+            render: (_, data) => (
                 <>
-                    {status.variant.map((res) => {
-                        return (
-                            <>
-                                {/* 
-                                */}
-                                <Row justify='space-between'>
-                                    <Col>
-                                        <p>variant Name :{res.name}</p>
-                                    </Col>
-                                    <Col>
-                                        <p>variant Price :{res.price}</p>
-
-                                    </Col>
-                                </Row>
-                            </>
-                        )
-                    })}
+                    <Row justify='space-evenly space-x-2'>
+                        <Col>
+                            <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
+                            {data.variant.map((v) => {
+                                return (
+                                    <>
+                                        <ol>
+                                            <li style={{ listStyleType: "circle" }}>{v.name}</li>
+                                        </ol>
+                                    </>
+                                )
+                            })}
+                        </Col>
+                        <Col>
+                            <h1 className='border-b-2 border-pink-500'>Variant Price</h1>
+                            {data.variant.map((v) => {
+                                return (
+                                    <>
+                                        <ol>
+                                            <li style={{ listStyleType: "circle" }}>{v.price}</li>
+                                        </ol>
+                                    </>
+                                )
+                            })}
+                        </Col>
+                    </Row>
                 </>
             )
         },
@@ -188,6 +193,7 @@ export default function MerchantProduct() {
     const [visibleDua, setVisibleDua] = useState(false);
     const [modalTextDua, setModalTextDua] = useState('Content of the modal');
     const [modalTaskIdDua, setModalTaskIdDua] = useState('');
+    const [foto, setFoto] = useState('')
 
     //state image modal
 
@@ -212,10 +218,12 @@ export default function MerchantProduct() {
                 'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
             }
         }).then(res => {
-            // console.log(res.data.data.merchant[0].id)
-            if (res.status == 200 || res.status == 201) {
+            // console.log(res.data.data)
+            if (!res.data.data.merchant[0]) {
+                window.alert("data tidak ada harap menambahkan data")
+            }
+            else {
                 setMerchantId(res.data.data.merchant[0].id)
-
                 axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=&category=&merchant=${res.data.data.merchant[0].id}`, {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
@@ -228,20 +236,16 @@ export default function MerchantProduct() {
                     } else {
                         window.alert("data tidak ada harap menambahkan data")
                     }
-
-
                 })
-            } else {
-                window.alert("data tidak ada harap menambahkan data")
             }
         })
         setPagination({
             ...params.pagination,
-            total: product.length
+            // total: product.length
         });
 
 
-    }, [product]);
+    }, []);
 
 
     const handleTableChange = (newPagination, filters, sorter) => {
@@ -289,7 +293,18 @@ export default function MerchantProduct() {
     const onChangeFoto = (e) => {
         const value = e.target.files[0]
         setFoto(value)
+        console.log(value)
     }
+    const normFile = (e) => {
+        console.log('Upload event:', e);
+
+        // if (Array.isArray(e)) {
+        //     return e;
+        // }
+        // return console.log(e?.fileList)
+
+    };
+
     const updateModal = (record) => {
         // console.log(record)
         if (record) {
@@ -314,7 +329,28 @@ export default function MerchantProduct() {
     // const onFormSubmit = (e) => {
     //     e.preventDefault()
     // }
+    const uploadHandler = async (args) => {
+        console.log("masuk sini", args)
+        try {
+            const formData = new FormData();
+            formData.append("image", args.file);
 
+            const processImage = await axios
+                .put(
+                    `https://project-wo.herokuapp.com/users/edit/image/${modalTaskIdDua}`,
+                    formData,
+                    { headers: { "content-type": "multipart/form-data" } }
+                )
+                .then((res) => {
+                    // message.success("berhasil Upload File")
+                    // onChangeImage(res.data.data.filename)
+                    console.log(res)
+                });
+        } catch (e) {
+            console.log(e, "apa errornya")
+                ;
+        }
+    };
     const handleOkModalUpdate = async () => {
         try {
             const data = await form.getFieldsValue();
@@ -324,9 +360,11 @@ export default function MerchantProduct() {
             dataForm.append("name", data.name)
             dataForm.append('availability', data.availability)
             dataForm.append('location', data.location)
-            dataForm.append('image', data.image)
+            // dataForm.append('image', foto)
             dataForm.append("description", data.description)
             dataForm.append("category_id", data.category)
+            dataForm.append("merchant_id", merchantId)
+
             for (let i = 0; i < data.variant.length; i++) {
                 dataForm.append(`variant[${i}][name]`, data.variant[i].name)
                 dataForm.append(`variant[${i}][price]`, data.variant[i].price)
@@ -363,14 +401,12 @@ export default function MerchantProduct() {
             await setModalTaskIdTiga(record);
             setVisibleTiga(true);
             await axios.get(`https://project-wo.herokuapp.com/product/image/${modalTaskIdTiga}`).then(res => {
-                console.log(res.config.url)
                 setImageUrl(res.config.url)
             })
         } else {
             setVisibleTiga(false)
         }
         setLoadingDua(false)
-        console.log(modalTaskIdTiga)
 
     };
     const handleOkModalImage = () => {
@@ -411,7 +447,6 @@ export default function MerchantProduct() {
             // console.log(res.data.items)
         })
     };
-
     return (
         <>
             <Content>
@@ -537,8 +572,8 @@ export default function MerchantProduct() {
                                             <Option value="Bekasi" >Bekasi</Option>
                                         </Select>
                                     </Form.Item>
-                                    <input
-                                        id="img"
+                                    {/* <input
+                                        id='img'
                                         style={{ display: "none" }}
                                         type="file"
                                         accept="image/*"
@@ -547,12 +582,20 @@ export default function MerchantProduct() {
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
                                         onChange={onChangeFoto}
                                     />
-
                                     <button className="inline-block px-6 py-2 mb-5 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
                                         <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
-                                    </button>
-
-
+                                    </button> */}
+                                    <Form.Item
+                                        name="upload"
+                                        label="Upload"
+                                        valuePropName="fileList"
+                                        getValueFromEvent={normFile}
+                                        extra="longgggggggggggggggggggggggggggggggggg"
+                                    >
+                                        <Upload customRequest={(args) => uploadHandler(args)} multiple={false}>
+                                            <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                                        </Upload>
+                                    </Form.Item>
                                     <Form.List name="variant">
                                         {(fields, { add, remove }) => (
                                             <>
@@ -612,24 +655,14 @@ export default function MerchantProduct() {
                                         ]}>
                                         <Select placeholder="--Pilih Category"
                                         >
-                                            <Option value="97de0e48-d7b6-446c-8e68-94e3baaa5000" >Wedding Organizer</Option>
-                                            <Option value="bbc709ac-30d7-4b0a-9ab0-982aef62df59" >Venue</Option>
-                                            <Option value="31666e7d-5d27-4698-a205-9b902b8b5164" >Chatering</Option>
-                                            <Option value="0a0e6483-fb83-47f5-8525-654131a70af8" >Photographer</Option>
+                                            <Option value="10204698-277b-45a6-9e5e-440091731647" >Wedding Organizer</Option>
+                                            <Option value="41d341e1-7126-44f6-8eba-de30bf5a518a" >Venue</Option>
+                                            <Option value="68703cc9-a91f-408e-b88d-9c99a7bd3a82" >Chatering</Option>
+                                            <Option value="1c6a09c9-8e9c-4648-a0ac-adf7da50744b" >Photographer</Option>
                                         </Select>
                                     </Form.Item>
 
-                                    {/* <Form.Item
-                        name="image"
-                        label="Upload"
-                        valuePropName="fileList"
-                        getValueFromEvent={normFile}
-                        extra="Silahkan upload gambar anda"
-                    >
-                        <Upload name="logo" listType="picture" >
-                            <Button icon={<UploadOutlined />}>Click to upload</Button>
-                        </Upload>
-                    </Form.Item> */}
+
                                     <Form.Item
                                         label="Deskripsi"
                                         name="description"
@@ -658,16 +691,15 @@ export default function MerchantProduct() {
                                             <Option value="non-tersedia" >Non-Tersedia</Option>
                                         </Select>
                                     </Form.Item>
-                                    {/* <Form.Item
+                                    <Form.Item
                                         name="merchant_id"
                                     >
                                         <Input value={merchantId} type="hidden" />
-                                        
-                                    </Form.Item> */}
+                                    </Form.Item>
                                     <Form.Item
                                         name="id"
                                     >
-                                        <Input type="text" />
+                                        <Input type="hidden" />
                                     </Form.Item>
                                     <Form.Item>
 

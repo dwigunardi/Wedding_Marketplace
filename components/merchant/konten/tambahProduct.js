@@ -95,10 +95,6 @@ export default function TambahProduct(props) {
             dataForm.append("category_id", values.category_id)
             dataForm.append("merchant_id", props.merchant)
 
-            // values.variant.forEach(variant => { dataForm.append('variant[0][name]', variant.name) }
-            // )
-            // values.variant.forEach(variant => { dataForm.append('variant[0][price]', variant.price) }
-            // )
             for (let i = 0; i < values.variant.length; i++) {
                 dataForm.append(`variant[${i}][name]`, values.variant[i].name)
                 dataForm.append(`variant[${i}][price]`, values.variant[i].price)
@@ -288,10 +284,10 @@ export default function TambahProduct(props) {
                         ]}>
                         <Select placeholder="--Pilih Category"
                         >
-                            <Option value="97de0e48-d7b6-446c-8e68-94e3baaa5000" >Wedding Organizer</Option>
-                            <Option value="bbc709ac-30d7-4b0a-9ab0-982aef62df59" >Venue</Option>
-                            <Option value="31666e7d-5d27-4698-a205-9b902b8b5164" >Chatering</Option>
-                            <Option value="0a0e6483-fb83-47f5-8525-654131a70af8" >Photographer</Option>
+                            <Option value="10204698-277b-45a6-9e5e-440091731647" >Wedding Organizer</Option>
+                            <Option value="41d341e1-7126-44f6-8eba-de30bf5a518a" >Venue</Option>
+                            <Option value="68703cc9-a91f-408e-b88d-9c99a7bd3a82" >Chatering</Option>
+                            <Option value="1c6a09c9-8e9c-4648-a0ac-adf7da50744b" >Photographer</Option>
                         </Select>
                     </Form.Item>
 
@@ -331,7 +327,7 @@ export default function TambahProduct(props) {
                         <Select placeholder="--Pilih status"
                         >
                             <Option value="Tersedia" onChange={onChangeStatus}>Tersedia</Option>
-                            <Option value="non-tersedia" onChange={onChangeStatus}>Non-Tersedia</Option>
+                            <Option value="Tidak-Tersedia" onChange={onChangeStatus}>Non-Tersedia</Option>
                         </Select>
                     </Form.Item>
                     <Form.Item

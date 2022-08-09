@@ -180,10 +180,7 @@ export default function Navigasi() {
                                 Daftar
                             </a>
                         </div>
-
                     </div>
-
-
                     <div className="hidden space-x-2 md:inline-block">
                         {isLogged ? (
                             <>
@@ -231,9 +228,6 @@ export default function Navigasi() {
                             </>
 
                         )}
-
-
-
                     </div>
                 </div>
             </div >

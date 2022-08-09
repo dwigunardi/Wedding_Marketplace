@@ -26,11 +26,7 @@ function ReviewerSection() {
             </div>
             <div className='bg-[#FFF2F5]'>
                 <Row className=" justify-center">
-                    {Object.entries(screens)
-                        .filter((screen) => !!screen[1])
-                        .map((screen) => (
-                            console.log(screen[0])
-                        ))}
+
                     <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 20 }} xs={{ span: 20 }} className="space-x-2 pt-5">
                         <Image
 
@@ -59,11 +55,7 @@ function ReviewerSection() {
                     </Col>
                 </Row>
                 <Row className=" justify-center">
-                    {Object.entries(screens)
-                        .filter((screen) => !!screen[1])
-                        .map((screen) => (
-                            console.log(screen[0])
-                        ))}
+
                     <Col lg={{ span: 6 }} md={{ span: 5 }} sm={{ span: 20 }} xs={{ span: 20 }} className=" pt-5">
                         <Image
 
@@ -92,11 +84,7 @@ function ReviewerSection() {
                     </Col>
                 </Row>
                 <Row justify="center">
-                    {Object.entries(screens)
-                        .filter((screen) => !!screen[1])
-                        .map((screen) => (
-                            console.log(screen[0])
-                        ))}
+
                     <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 20 }} xs={{ span: 20 }} className="space-x-2 pt-5">
                         <Image
 

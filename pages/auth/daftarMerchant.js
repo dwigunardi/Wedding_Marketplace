@@ -21,7 +21,7 @@ export default function MerchantRegis() {
     const [username, setUsername] = useState('')
     const [no_telp, setNotel] = useState('')
     const [password, setPassword] = useState('')
-    const [roleId, setRoleid] = useState('ed4e0cb2-f4b1-4bd5-8e00-77a120d4f9d3')
+    const [roleId, setRoleid] = useState('36bb08f9-e29d-4d11-806c-b26ba1560dca')
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState('')
     const [namaToko, setNamaToko] = useState('')
