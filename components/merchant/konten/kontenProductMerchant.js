@@ -225,7 +225,7 @@ export default function MerchantProduct() {
                 'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
             }
         }).then(res => {
-            console.log(res.data)
+            // console.log(res.data)
             if (res.status == 200) {
 
                 setMerchantId(res.data.data.merchant[0].id)
@@ -316,7 +316,7 @@ export default function MerchantProduct() {
     const onChangeFoto = (e) => {
         const value = e.target.files[0]
         setFoto(value)
-        console.log(value)
+        // console.log(value)
     }
     const normFile = (e) => {
         console.log('Upload event:', e);
@@ -595,11 +595,11 @@ export default function MerchantProduct() {
                                     <Form.Item
                                         name="upload"
                                         label="Upload"
-                                        valuePropName="fileList"
-                                        getValueFromEvent={normFile}
+                                    // valuePropName="fileList"
+                                    // getValueFromEvent={normFile}
 
                                     >
-                                        <Upload customRequest={(args) => uploadHandler(args)} multiple={false}>
+                                        <Upload customRequest={(args) => uploadHandler(args)} multiple={false} listType="picture">
                                             <Button icon={<UploadOutlined />}>Click to Upload</Button>
                                         </Upload>
                                     </Form.Item>

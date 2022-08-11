@@ -38,25 +38,34 @@ function getColumns(deleteModal, imageModal) {
             title: 'Variant',
             dataIndex: 'variant',
             key: 'variant',
-            render: (_, status) => (
+            render: (_, data) => (
                 <>
-                    {status.variant.map((res) => {
-                        return (
-                            <>
-                                {/* 
-                                */}
-                                <Row justify='space-between'>
-                                    <Col>
-                                        <p>variant Name :{res.name}</p>
-                                    </Col>
-                                    <Col>
-                                        <p>variant Price :{res.price}</p>
-
-                                    </Col>
-                                </Row>
-                            </>
-                        )
-                    })}
+                    <Row justify='space-evenly space-x-2' >
+                        <Col>
+                            <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
+                            {data.variant.map((v) => {
+                                return (
+                                    <>
+                                        <ol>
+                                            <li style={{ listStyleType: "circle" }}>{v.name}</li>
+                                        </ol>
+                                    </>
+                                )
+                            })}
+                        </Col>
+                        <Col>
+                            <h1 className='border-b-2 border-pink-500'>Variant Price</h1>
+                            {data.variant.map((v) => {
+                                return (
+                                    <>
+                                        <ol>
+                                            <li style={{ listStyleType: "circle" }}>{v.price}</li>
+                                        </ol>
+                                    </>
+                                )
+                            })}
+                        </Col>
+                    </Row>
                 </>
             )
         },

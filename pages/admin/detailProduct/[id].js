@@ -12,41 +12,7 @@ import 'tailwindcss/tailwind.css'
 import { Editor } from '@tinymce/tinymce-react';
 const { TextArea } = Input;
 export default function DetailProduct() {
-    const data = [
-        {
-            id: '1',
-            product: 'WO',
-            venue: 'Aminta Hall',
-            lokasi: 'Jakarta',
-            varian: '100',
-            harga: 'Rp. 70,600,000',
-            foto: <Image src={image1} layout="responsive" placeholder='blur' />,
-            status: ['Tersedia'],
-            deskripsi: 'Harga diatas sudah termasuk semua komponen utama pesta pernikahan termasuk vendor seperti Wedding planner and Wedding Organizer Master of Ceremony (MC) Decorations Catering (Food and Beverages) Documentation (Photo and Video) Entertainment, Sound System dan Lighting Bridal and Make Up Bonus sesuai paket'
-        },
-        {
-            id: '2',
-            product: 'WO',
-            venue: 'Fieris Hotel',
-            lokasi: 'Jakarta',
-            varian: '100',
-            harga: 'Rp. 66,600,000',
-            foto: <Image src={image2} layout="responsive" placeholder='blur' />,
-            status: ['Tersedia'],
-            deskripsi: 'Harga diatas sudah termasuk semua komponen utama pesta pernikahan termasuk vendor seperti Wedding planner and Wedding Organizer Master of Ceremony (MC) Decorations Catering (Food and Beverages) Documentation (Photo and Video) Entertainment, Sound System dan Lighting Bridal and Make Up Bonus sesuai paket'
-        },
-        {
-            id: '3',
-            product: 'WO',
-            venue: 'Mang Kabayan Vida',
-            lokasi: 'Bekasi',
-            varian: '100',
-            harga: 'Rp. 45,900,000',
-            foto: <Image src={image3} layout="responsive" placeholder='blur' />,
-            status: ['Non-Tersedia'],
-            deskripsi: 'Harga diatas sudah termasuk semua komponen utama pesta pernikahan termasuk vendor seperti Wedding planner and Wedding Organizer Master of Ceremony (MC) Decorations Catering (Food and Beverages) Documentation (Photo and Video) Entertainment, Sound System dan Lighting Bridal and Make Up Bonus sesuai paket'
-        },
-    ];
+
 
 
     const onFinish = (values) => {

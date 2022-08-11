@@ -43,7 +43,8 @@ export default function TambahProduct(props) {
         setHarga(value)
     }
     const onChangeFoto = (e) => {
-        const value = e.target.files[0]
+        const value = e.file.originFileObj
+        console.log(value)
         setFoto(value)
     }
     const onChangeStatus = (e) => {
@@ -209,18 +210,18 @@ export default function TambahProduct(props) {
                             <Option value="Bekasi" >Bekasi</Option>
                         </Select>
                     </Form.Item>
-                    {/* <Form.Item
+                    <Form.Item
                         name="image"
                         label="Upload"
-                        valuePropName="fileList"
-                        getValueFromEvent={normFile}
-                        extra="Silahkan upload gambar anda"
+                    // valuePropName="fileList"
+                    // getValueFromEvent={normFile}
+                    // extra="Silahkan upload gambar anda"
                     >
-                        <Upload name="image" listType="picture" >
+                        <Upload multiple={false} onChange={onChangeFoto} listType="picture">
                             <Button icon={<UploadOutlined />}>Click to upload</Button>
                         </Upload>
-                    </Form.Item> */}
-                    <input
+                    </Form.Item>
+                    {/* <input
                         id="img"
                         // style={{ display: "none" }}
                         type="file"
@@ -230,7 +231,7 @@ export default function TambahProduct(props) {
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
                         onChange={onChangeFoto}
                     />
-                    {/* <button className="inline-block px-6 py-2 mb-5 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                    <button className="inline-block px-6 py-2 mb-5 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
                         <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
                     </button> */}
 

@@ -7,22 +7,11 @@ import { Content } from "antd/lib/layout/layout";
 import { useRouter, Router } from "next/router";
 import MerchantLayout from "../../../components/merchant/layout/merchantLayout";
 import Image from "next/image";
-import ImgPlaceholder from "../../../public/Image/img-placeholder.png"
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import BackButton from "../../backButton";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-
-const normFile = (e) => {
-    console.log('Upload event:', e);
-
-    if (Array.isArray(e)) {
-        return e;
-    }
-
-    return e?.fileList;
-};
 
 export default function detailMerchantId() {
     const router = useRouter();
@@ -51,12 +40,12 @@ export default function detailMerchantId() {
         const decode = jwt_decode(getToken)
         setToken(getToken)
         setDataToken(decode)
-        axios.get(`https://project-wo.herokuapp.com/users/${decode.user_id}`, {
+        axios.get(`https://project-wo.herokuapp.com/users/detail/${decode.user_id}`, {
             headers: {
-                'Authorization': `Bearer ${getToken}`
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
             }
         }).then(response => {
-            // console.log(response)
+            console.log(response)
             if (response.status == 200 || response.status == 201) {
                 setDataUser(response.data.data)
                 setMyRole(response.data.data.role)
@@ -97,26 +86,7 @@ export default function detailMerchantId() {
     const handleOkModalUpdate = async () => {
         try {
             const data = await formUpdate.getFieldsValue();
-
-            // const dataForm = new FormData()
-            // dataForm.append("id", data.id)
-            // dataForm.append("name", data.name)
-            // dataForm.append('availability', data.availability)
-            // dataForm.append('location', data.location)
-            // // dataForm.append('image', foto)
-            // dataForm.append("description", data.description)
-            // dataForm.append("category_id", data.category)
-            // dataForm.append("merchant_id", merchantId)
-
-            // for (let i = 0; i < data.variant.length; i++) {
-            //     dataForm.append(`variant[${i}][name]`, data.variant[i].name)
-            //     dataForm.append(`variant[${i}][price]`, data.variant[i].price)
-            // }
-            // for (const value of dataForm.values()) {
-            //     console.log(value);
-            // }
-            // console.log(data)
-            await axios.put(`https://project-wo.herokuapp.com/users/${dataUser.id}`, data, {
+            await axios.put(`https://project-wo.herokuapp.com/users/edit/${dataUser.id}`, data, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
                     "content-type": "application/json"
@@ -417,7 +387,7 @@ export default function detailMerchantId() {
                                                 name="upload"
                                                 label="Upload"
                                                 valuePropName="fileList"
-                                                getValueFromEvent={normFile}
+
 
                                             >
                                                 <Upload customRequest={(args) => uploadHandler(args)} multiple={false}>
