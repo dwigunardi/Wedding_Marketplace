@@ -14,12 +14,12 @@ ConfigProvider.config({
 });
 
 
-export default function LandingCustomer() {
+export default function LandingCustomer(props) {
     const router = useRouter()
     let [role, setRole] = useState('')
 
     const { username } = router.query;
-
+    console.log(props)
 
     useEffect(() => {
         const getToken = localStorage.getItem('token_customer')

@@ -113,10 +113,8 @@ export default function KontenUsers() {
                 }
             },
             ).then(response => {
-
                 if (response.status == 200 || response.status == 201) {
                     setDataUser(response.data.items)
-
                 }
             })
             setPagination({
@@ -128,16 +126,6 @@ export default function KontenUsers() {
 
         }
     }
-    useEffect(() => {
-        const controller = new AbortController()
-        validate()
-
-        return () => controller.abort()
-
-    }, []);
-
-
-
     const handleTableChange = (newPagination, filters, sorter) => {
         validate({
             sortField: sorter.field,
@@ -175,17 +163,12 @@ export default function KontenUsers() {
             setVisible(false);
             setConfirmLoading(false);
         }, 2000);
-        location.reload()
+        // location.reload()
     };
     const handleCancel = () => {
         console.log('Clicked cancel button');
         setVisible(false);
     };
-
-
-
-
-
     const onSearch = function (value) {
         axios.get(`https://project-wo.herokuapp.com/users/search/users/?page=1&limit=20&search=${value}&role=`, {
             headers: {
@@ -207,7 +190,10 @@ export default function KontenUsers() {
             // console.log(res.data.items)
         })
     };
-    console.log(pagination)
+    useEffect(() => {
+        validate()
+    }, []);
+
 
     return (
         <>

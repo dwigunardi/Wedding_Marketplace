@@ -14,38 +14,39 @@ export default function CardProductPage(props) {
     // props.product.map((data) => {
     //     console.log(data.id)
     // })
-
+    const thouSep = ".";
+    const decSep = ",";
+    // format to money
+    const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
+    ;
     return (
         <>
             <Row justify="start space-x-5">
                 {props.product.map((data => {
                     return (<>
                         <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 20 }} xs={{ span: 20 }} className="pt-5">
-                            <Card
-                                hoverable
+                            <Link href={`/customer/detailProduk/${data.id}`}>
+                                <a> <Card
+                                    hoverable
 
-                                cover={
-                                    <Image loader={() => res.image}
-                                        src={cardImg1}
-                                        priority={true}
-                                        unoptimized={true}
-                                        width={350}
-                                        height={250}>
-                                    </Image>}
-                            >
-                                <Meta title={data.name} description={data.variant.map((items) => {
-                                    return (
-                                        <>
-                                            <p>Rp.{items.price}</p>
-                                        </>
-                                    )
-                                })}
-                                />
+                                    cover={
+                                        <Image loader={() => data.image}
+                                            priority={true}
+                                            unoptimized={true}
+                                            src={`https://project-wo.herokuapp.com/product/image/${data.image}`}
+                                            alt=""
+                                            width={350}
+                                            height={250}
+                                        />
+                                    }
+                                >
+                                    <Meta title={data.name} description={"Rp. " + toMoney(data.variant[0].price)}
+                                    />
 
-                                <Link href={`/customer/detailProduk/${data.id}`}>
-                                    <Button>Detail</Button>
-                                </Link>
-                            </Card>
+
+                                </Card></a>
+                            </Link>
+
                         </Col>
                     </>)
                 }))}

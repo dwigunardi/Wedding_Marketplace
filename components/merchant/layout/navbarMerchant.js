@@ -77,16 +77,11 @@ const NavbarMerchant = () => {
                     icon: <UserOutlined />,
                 },
                 {
-                    label: <Button onClick={buttonLogout}>
+                    label: <Button type='danger' onClick={buttonLogout}>
                         Logout
                     </Button>,
                     key: '2',
                     icon: <LogoutOutlined />,
-                },
-                {
-                    label: '3rd menu item',
-                    key: '3',
-                    icon: <UserOutlined />,
                 },
             ]}
         />

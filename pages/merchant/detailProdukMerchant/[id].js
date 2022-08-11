@@ -109,7 +109,7 @@ export default function DetailProductMerchant() {
                                     src={dataImg}
                                     priority={true}
                                     unoptimized={true}
-                                    width={300}
+                                    width={400}
                                     height={300}
                                 />
                                 <div className="mt-5 p-5">

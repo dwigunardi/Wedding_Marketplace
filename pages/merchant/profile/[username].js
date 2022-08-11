@@ -28,6 +28,7 @@ export default function detailMerchantId() {
     const router = useRouter();
     const { username } = router.query;
     // state di update berdasarkan data harus di ubah
+    const [token, setToken] = useState('')
     const [dataToken, setDataToken] = useState('')
     const [myRole, setMyRole] = useState({})
     const [id, setId] = useState('')
@@ -39,14 +40,16 @@ export default function detailMerchantId() {
     const [namaToko, setNamaToko] = useState('')
     const [image, setImage] = useState('')
     const [loading, setLoading] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
     const [visible, setVisible] = useState(false);
     const [dataUser, setDataUser] = useState({})
     const [form] = Form.useForm();
-
+    const [formUpdate] = Form.useForm()
 
     useEffect(() => {
         const getToken = localStorage.getItem("token_customer")
         const decode = jwt_decode(getToken)
+        setToken(getToken)
         setDataToken(decode)
         axios.get(`https://project-wo.herokuapp.com/users/${decode.user_id}`, {
             headers: {
@@ -72,15 +75,96 @@ export default function detailMerchantId() {
         createdAt: dataUser.createdAt,
         image: dataUser.image
     })
-    const orig = `https://project-wo.herokuapp.com/users/image/${dataUser.image}`
+
+    // console.log(dataUser.image)
     const showModal = () => {
         setVisible(true);
-        const data = form.getFieldValue()
+        formUpdate.setFieldsValue({
+            id: dataUser.id,
+            name: dataUser.name,
+            username: dataUser.username,
+            email: dataUser.email,
+            no_telp: dataUser.no_telp,
+            createdAt: dataUser.createdAt,
+            image: dataUser.image
+        })
         // console.log(data)
     };
     const handleCancel = () => {
         setVisible(false);
     };
+
+    const handleOkModalUpdate = async () => {
+        try {
+            const data = await formUpdate.getFieldsValue();
+
+            // const dataForm = new FormData()
+            // dataForm.append("id", data.id)
+            // dataForm.append("name", data.name)
+            // dataForm.append('availability', data.availability)
+            // dataForm.append('location', data.location)
+            // // dataForm.append('image', foto)
+            // dataForm.append("description", data.description)
+            // dataForm.append("category_id", data.category)
+            // dataForm.append("merchant_id", merchantId)
+
+            // for (let i = 0; i < data.variant.length; i++) {
+            //     dataForm.append(`variant[${i}][name]`, data.variant[i].name)
+            //     dataForm.append(`variant[${i}][price]`, data.variant[i].price)
+            // }
+            // for (const value of dataForm.values()) {
+            //     console.log(value);
+            // }
+            // console.log(data)
+            await axios.put(`https://project-wo.herokuapp.com/users/${dataUser.id}`, data, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
+                    "content-type": "application/json"
+                }
+            }).then(res => {
+                setDataUser(res.data.data)
+            })
+            setConfirmLoading(true);
+            setTimeout(() => {
+                setVisible(false);
+                setConfirmLoading(false);
+            }, 2000);
+            // location.reload()
+        } catch (error) {
+
+        }
+
+    };
+    const uploadHandler = async (args) => {
+        console.log("masuk sini", args)
+        try {
+            const formData = new FormData();
+            formData.append("image", args.file);
+
+            const processImage = await axios
+                .put(
+                    `https://project-wo.herokuapp.com/users/edit/image/${dataUser.id}`,
+                    formData,
+                    {
+                        headers:
+                        {
+                            "content-type": "multipart/form-data",
+                            'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
+                        }
+                    }
+                )
+                .then((res) => {
+                    // message.success("berhasil Upload File")
+                    // onChangeImage(res.data.data.filename)
+                    console.log(res)
+                });
+        } catch (e) {
+            console.log(e, "apa errornya")
+                ;
+        }
+    };
+
+    const orig = `https://project-wo.herokuapp.com/users/image/${dataUser.image}`
     const onChangeName = (e) => {
         const value = e.target.value
         setNameUpdate(value)
@@ -124,35 +208,36 @@ export default function detailMerchantId() {
         console.log('Failed:', errorInfo);
     };
 
-    async function submitUpdate() {
-        try {
-            const dataUpdate = new FormData()
-            dataUpdate.append('id', id)
-            dataUpdate.append('nameUpdate', nameUpdate)
-            dataUpdate.append('usernameUpdate', usernameUpdate)
-            dataUpdate.append('emailUpdate', emailUpdate)
-            dataUpdate.append('no_telpUpdate', noTelpUpdate)
-            dataUpdate.append('password', password)
-            dataUpdate.append('image', image)
-            // for (const value of dataUpdate.values()) {
-            //     console.log(value);
-            // }
-            await axios.put(`https://project-wo.herokuapp.com/users/${myData.id}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
-                }
-            }, dataUpdate).then(res => {
-                // console.log(res)
-                if (res.status == 200 || res.status == 201) {
-                    window.alert("berhasil update")
-                    location.reload()
-                }
-            })
-        } catch (error) {
-            window.alert(error + error.message)
-        }
 
-    }
+    // async function submitUpdate() {
+    //     try {
+    //         const dataUpdate = new FormData()
+    //         dataUpdate.append('id', id)
+    //         dataUpdate.append('nameUpdate', nameUpdate)
+    //         dataUpdate.append('usernameUpdate', usernameUpdate)
+    //         dataUpdate.append('emailUpdate', emailUpdate)
+    //         dataUpdate.append('no_telpUpdate', noTelpUpdate)
+    //         dataUpdate.append('password', password)
+    //         // dataUpdate.append('image', image)
+    //         // for (const value of dataUpdate.values()) {
+    //         //     console.log(value);
+    //         // }
+    //         await axios.put(`https://project-wo.herokuapp.com/users/${myData.id}`, {
+    //             headers: {
+    //                 'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+    //             }
+    //         }, dataUpdate).then(res => {
+    //             // console.log(res)
+    //             if (res.status == 200 || res.status == 201) {
+    //                 window.alert("berhasil update")
+    //                 location.reload()
+    //             }
+    //         })
+    //     } catch (error) {
+    //         window.alert(error + error.message)
+    //     }
+
+    // }
     const onReset = () => {
 
         form.setFieldsValue(dataUser)
@@ -207,7 +292,7 @@ export default function detailMerchantId() {
                                             name="name"
 
                                         >
-                                            <Input value={nameUpdate} onChange={onChangeName} />
+                                            <Input />
                                         </Form.Item>
                                         <Form.Item
                                             label="Username"
@@ -219,21 +304,21 @@ export default function detailMerchantId() {
                                                 },
                                             ]}
                                         >
-                                            <Input value={usernameUpdate} onChange={onChangeUsername} />
+                                            <Input />
                                         </Form.Item>
                                         <Form.Item
                                             label="Email"
                                             name="email"
 
                                         >
-                                            <Input value={emailUpdate} onChange={onChangeEmail} />
+                                            <Input />
                                         </Form.Item>
                                         <Form.Item
                                             label="Phone"
                                             name="no_telp"
 
                                         >
-                                            <Input value={noTelpUpdate} onChange={onChangeNoTel} />
+                                            <Input />
                                         </Form.Item>
                                         <Form.Item
                                             label="Di buat"
@@ -270,21 +355,20 @@ export default function detailMerchantId() {
                                             </Space>
                                         </Form.Item>
                                     </Form>
-                                    <Modal
-                                        visible={visible}
-                                        title="Update Data"
 
+                                    {/* modal update */}
+                                    <Modal
+                                        title="Update Data"
+                                        visible={visible}
+                                        onOk={handleOkModalUpdate}
+                                        confirmLoading={confirmLoading}
                                         onCancel={handleCancel}
-                                        footer={[
-                                            <Button key="back" onClick={handleCancel}>
-                                                Return
-                                            </Button>,
-                                        ]}
+
                                     >
 
                                         <Form
                                             layout="vertical"
-                                            form={form}
+                                            form={formUpdate}
                                             labelCol={{
                                                 span: 16,
                                             }}
@@ -294,13 +378,14 @@ export default function detailMerchantId() {
                                             // onFinish={onFinish}
                                             onFinishFailed={onFinishFailed}
                                             autoComplete="off"
+                                            initialValues={dataUser}
                                         >
                                             <Form.Item
                                                 label="Name"
                                                 name="name"
 
                                             >
-                                                <Input value={nameUpdate} onChange={onChangeName} />
+                                                <Input />
                                             </Form.Item>
                                             <Form.Item
                                                 label="Username"
@@ -312,21 +397,32 @@ export default function detailMerchantId() {
                                                     },
                                                 ]}
                                             >
-                                                <Input value={usernameUpdate} onChange={onChangeUsername} />
+                                                <Input />
                                             </Form.Item>
                                             <Form.Item
                                                 label="Email"
                                                 name="email"
 
                                             >
-                                                <Input value={emailUpdate} onChange={onChangeEmail} />
+                                                <Input />
                                             </Form.Item>
                                             <Form.Item
                                                 label="Phone"
                                                 name="no_telp"
 
                                             >
-                                                <Input value={noTelpUpdate} onChange={onChangeNoTel} />
+                                                <Input />
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="upload"
+                                                label="Upload"
+                                                valuePropName="fileList"
+                                                getValueFromEvent={normFile}
+
+                                            >
+                                                <Upload customRequest={(args) => uploadHandler(args)} multiple={false}>
+                                                    <Button icon={<UploadOutlined />}>Click to Upload</Button>
+                                                </Upload>
                                             </Form.Item>
                                         </Form>
 

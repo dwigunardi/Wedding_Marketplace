@@ -1,11 +1,11 @@
 import 'tailwindcss/tailwind.css'
-/* This example requires Tailwind CSS v2.0+ */
+import 'antd/dist/antd.variable.css'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import logo from "../public/Image/sahin-love.png"
 import Link from 'next/link'
-import { Space, Dropdown, Menu, Button } from 'antd'
+import { Space, Dropdown, Menu, Button, ConfigProvider } from 'antd'
 import {
     UserOutlined,
     DownOutlined, LogoutOutlined, ShoppingCartOutlined
@@ -14,7 +14,11 @@ import jwt_decode from 'jwt-decode'
 
 
 
-
+ConfigProvider.config({
+    theme: {
+        primaryColor: '#EC4899',
+    },
+});
 
 export default function Navigasi() {
     const [navbar, setNavbar] = useState(false);
@@ -235,7 +239,7 @@ export default function Navigasi() {
                     color: #ec4899;
                   }
                   .non-active:hover {
-                    color : white
+                    color : #ec4899
                   }
                   /* Specific styles for active links */
                   .active {

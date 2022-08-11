@@ -12,6 +12,7 @@ import Image from 'next/image'
 import React from 'react';
 import 'antd/dist/antd.css'
 import "tailwindcss/tailwind.css"
+import Link from 'next/link';
 const { useBreakpoint } = Grid;
 const { TabPane } = Tabs;
 const styleTab = {
@@ -45,6 +46,12 @@ function ProductHome() {
     const onSearch = (value) => {
         console.log('search:', value);
     };
+    const thouSep = ".";
+    const decSep = ",";
+    // format to money
+    const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
+    ;
+
     return (
         <>
             <div className="text-center mt-5 py-10">
@@ -208,24 +215,32 @@ function ProductHome() {
 
                         <Row justify="center space-x-5">
                             {product.map((data) => {
+                                const thouSep = ".";
+                                const decSep = ",";
+                                // format to money
+                                const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
+                                ;
                                 return (
                                     <>
                                         <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
 
                                             <div className="rounded-lg shadow-lg bg-white ">
-                                                <a href="#!" data-mdb-ripple="true" data-mdb-ripple-color="light">
-                                                    <Image
-                                                        className="rounded-t-lg"
-                                                        loader={() => data.image}
-                                                        priority={true}
-                                                        unoptimized={true}
-                                                        src={`https://project-wo.herokuapp.com/product/image/${data.image}`}
-                                                        alt=""
-                                                        width={150}
-                                                        height={100}
-                                                        layout='responsive'
-                                                    />
-                                                </a>
+                                                <Link href={`/customer/detailProduk/${data.id}`} data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                                    <a>
+                                                        <Image
+                                                            className="rounded-t-lg"
+                                                            loader={() => data.image}
+                                                            priority={true}
+                                                            unoptimized={true}
+                                                            src={`https://project-wo.herokuapp.com/product/image/${data.image}`}
+                                                            alt=""
+                                                            width={150}
+                                                            height={100}
+                                                            layout='responsive'
+                                                        />
+                                                    </a>
+
+                                                </Link>
                                                 <div className="p-6">
                                                     <h5 className="text-gray-900 text-xl font-medium mb-2">{data.name}</h5>
                                                     <p className="text-gray-700 text-base mb-4">
@@ -234,7 +249,8 @@ function ProductHome() {
                                                         <Row justify='space-between'>
                                                             <Col>
                                                                 <h1>Variant Name</h1>
-                                                                {data.variant.map((v) => {
+                                                                {data.variant[0].name}
+                                                                {/* {data.variant.map((v) => {
                                                                     return (
                                                                         <>
                                                                             <p>
@@ -242,11 +258,12 @@ function ProductHome() {
                                                                             </p>
                                                                         </>
                                                                     )
-                                                                })}
+                                                                })} */}
                                                             </Col>
                                                             <Col>
                                                                 <h1>Variant Price</h1>
-                                                                {data.variant.map((v) => {
+                                                                Rp.{toMoney(data.variant[0].price)}
+                                                                {/* {data.variant.map((v) => {
                                                                     return (
                                                                         <>
                                                                             <p>
@@ -254,7 +271,7 @@ function ProductHome() {
                                                                             </p>
                                                                         </>
                                                                     )
-                                                                })}
+                                                                })} */}
                                                             </Col>
                                                         </Row>
 

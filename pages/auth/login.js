@@ -55,27 +55,23 @@ export default function Login() {
             }).then(result => {
                 // console.log(result);
 
-                const decode = jwt_decode(result.data.token)
+                const decode = jwt_decode(result.data.access_token)
                 console.log(decode.role)
                 window.alert(result.data.message)
                 if (decode.role == "Admin") {
-                    localStorage.setItem('token_customer', result.data.token)
+                    localStorage.setItem('token_customer', result.data.access_token)
                     router.push("/admin/dashboard")
 
                 } else if (decode.role == "Merchant") {
-                    localStorage.setItem('token_customer', result.data.token)
+                    localStorage.setItem('token_customer', result.data.access_token)
                     router.push("/merchant/dashboard")
                 } else if (decode.role == "Costumer") {
-                    localStorage.setItem('token_customer', result.data.token)
+                    localStorage.setItem('token_customer', result.data.access_token)
                     router.push(`/customer/landing/${decode.username}`)
                 }
-                // if (result.status == 200 || result.status == 201) {
-                //     localStorage.setItem('token_customer', result.data.token)
-                //     window.alert(result.data.message)
-                //     router.push(`/customer/landing/${result.data.role_id}`)
-                // } else {
-                //     window.alert("username atau password salah")
-                // }
+                else {
+                    window.alert("username atau password salah")
+                }
             })
         } catch (error) {
             window.alert(error, error.message = "Password atau username salah")

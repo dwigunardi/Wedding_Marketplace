@@ -10,7 +10,7 @@ export default function TambahProduct(props) {
 
     // const token = localStorage.getItem('token_customer')
     // const decode = jwt_decode(token)
-    const [visible, setVisible] = useState(false);
+    const [VisibleTambah, setVisibleTambah] = useState(false);
     const [loading, setLoading] = useState(false);
 
     const [product, setProduct] = useState('')
@@ -55,19 +55,19 @@ export default function TambahProduct(props) {
         setDeskripsi(value)
     }
     const showModal = () => {
-        setVisible(true);
+        setVisibleTambah(true);
     };
 
     const handleOk = () => {
         setLoading(true);
         setTimeout(() => {
             setLoading(false);
-            setVisible(false);
+            setVisibleTambah(false);
         }, 2000);
     };
 
     const handleCancel = () => {
-        setVisible(false);
+        setVisibleTambah(false);
     };
     const onSelect = (value) => {
         // console.log('onSelect', value);
@@ -76,15 +76,16 @@ export default function TambahProduct(props) {
 
     const normFile = (e) => {
         console.log('Upload event:', e);
-
+        // setFoto(e)
         if (Array.isArray(e)) {
             return e;
         }
+
         return e?.fileList;
     };
-
     const onFinish = async (values) => {
         try {
+            // console.log(values)
 
             const dataForm = new FormData()
             dataForm.append("name", values.name)
@@ -103,17 +104,16 @@ export default function TambahProduct(props) {
             //     dataForm.append("variant", JSON.stringify(values.variant[variant]))
             // })
 
-            // const cek = Object.keys(values)
-            // console.log(cek)
+
 
             // dataForm.append('variant[1][name]', values.variant[1].name)
             // dataForm.append('variant[1][price]', values.variant[1].price)
             // dataForm.append('variant[2][name]', values.variant[2].name)
             // dataForm.append('variant[2][price]', values.variant[2].price)
 
-            // for (const value of dataForm.values()) {
-            //     console.log(value);
-            // }
+            for (const value of dataForm.values()) {
+                console.log(value);
+            }
             // console.log(...dataForm)
 
             await axios.post("https://project-wo.herokuapp.com/product", dataForm, {
@@ -124,7 +124,7 @@ export default function TambahProduct(props) {
             }).then(res => {
                 if (res.status == 200 || res.status == 201) {
                     window.alert(res.data.message)
-                    setVisible(false)
+                    setVisibleTambah(false)
                 }
                 console.log(res)
             })
@@ -153,7 +153,7 @@ export default function TambahProduct(props) {
                 Tambah Product <PlusOutlined />
             </Button>
             <Modal title="Tambah Product"
-                visible={visible}
+                visible={VisibleTambah}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={[
@@ -209,20 +209,30 @@ export default function TambahProduct(props) {
                             <Option value="Bekasi" >Bekasi</Option>
                         </Select>
                     </Form.Item>
+                    {/* <Form.Item
+                        name="image"
+                        label="Upload"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        extra="Silahkan upload gambar anda"
+                    >
+                        <Upload name="image" listType="picture" >
+                            <Button icon={<UploadOutlined />}>Click to upload</Button>
+                        </Upload>
+                    </Form.Item> */}
                     <input
                         id="img"
-                        style={{ display: "none" }}
+                        // style={{ display: "none" }}
                         type="file"
                         accept="image/*"
-                        className="form-control block w-full px-4 py-1 text-base font-normal text-gray-700 
+                        className="form-control block w-full px-4 py-1 text-base font-normal text-gray-700  mb-5
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
                         onChange={onChangeFoto}
                     />
-
-                    <button className="inline-block px-6 py-2 mb-5 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
+                    {/* <button className="inline-block px-6 py-2 mb-5 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
                         <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
-                    </button>
+                    </button> */}
 
 
                     <Form.List name="variant">
@@ -291,17 +301,7 @@ export default function TambahProduct(props) {
                         </Select>
                     </Form.Item>
 
-                    {/* <Form.Item
-                        name="image"
-                        label="Upload"
-                        valuePropName="fileList"
-                        getValueFromEvent={normFile}
-                        extra="Silahkan upload gambar anda"
-                    >
-                        <Upload name="logo" listType="picture" >
-                            <Button icon={<UploadOutlined />}>Click to upload</Button>
-                        </Upload>
-                    </Form.Item> */}
+
                     <Form.Item
                         label="Deskripsi"
                         name="description"
@@ -327,7 +327,7 @@ export default function TambahProduct(props) {
                         <Select placeholder="--Pilih status"
                         >
                             <Option value="Tersedia" onChange={onChangeStatus}>Tersedia</Option>
-                            <Option value="Tidak-Tersedia" onChange={onChangeStatus}>Non-Tersedia</Option>
+                            <Option value="Tidak-Tersedia" onChange={onChangeStatus}>Tidak Tersedia</Option>
                         </Select>
                     </Form.Item>
                     <Form.Item

@@ -85,16 +85,16 @@ export default function MerchantRegis() {
             data.append('image', image)
             data.append('merchant_name', namaToko)
 
-            console.log(data)
+
 
             const res = await axios.post("https://project-wo.herokuapp.com/auth/register", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 }
             }).then(result => {
-                console.log(result.data.statusCode)
-                if (result.data.statusCode == 201 || result.data.statusCode == 200) {
-                    window.alert(result.data.message = "Selamat anda telah mendaftar silahkan login")
+                console.log(result)
+                if (result.status == 201 || result.status == 200) {
+                    window.alert("Selamat anda telah mendaftar silahkan login")
                     router.push('/auth/login')
                 } else {
                     window.alert("Gagal mendaftar")
@@ -175,9 +175,8 @@ export default function MerchantRegis() {
                                         className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                        value={username} onChange={onChangeUsername}
-                                        placeholder="Masukan Username Anda"
-
+                                        value={no_telp} onChange={onChangeNotel}
+                                        placeholder="Masukan No Telepon Anda"
                                     />
                                 </div>
                                 <div className="mb-4">
@@ -186,11 +185,12 @@ export default function MerchantRegis() {
                                         className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                        value={no_telp} onChange={onChangeNotel}
-                                        placeholder="Masukan No Telepon Anda"
+                                        value={username} onChange={onChangeUsername}
+                                        placeholder="Masukan Username Anda"
 
                                     />
                                 </div>
+
                                 <div className="mb-4">
                                     <input
                                         type="password"

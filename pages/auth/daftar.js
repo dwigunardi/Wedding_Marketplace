@@ -164,8 +164,8 @@ export default function Daftar() {
                                         className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                        value={username} onChange={onChangeUsername}
-                                        placeholder="Masukan Username Anda"
+                                        value={no_telp} onChange={onChangeNotel}
+                                        placeholder="Masukan No Telepon Anda"
 
                                     />
                                 </div>
@@ -175,11 +175,12 @@ export default function Daftar() {
                                         className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
-                                        value={no_telp} onChange={onChangeNotel}
-                                        placeholder="Masukan No Telepon Anda"
+                                        value={username} onChange={onChangeUsername}
+                                        placeholder="Masukan Username Anda"
 
                                     />
                                 </div>
+
                                 <div className="mb-4">
                                     <input
                                         type="password"

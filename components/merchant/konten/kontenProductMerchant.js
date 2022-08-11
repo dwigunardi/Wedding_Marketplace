@@ -14,9 +14,15 @@ const { Search, TextArea } = Input;
 
 function getColumns(deleteModal, updateModal, imageModal) {
     return [
+        // {
+        //     title: 'id',
+        //     dataIndex: 'id',
+        //     key: 'id',
+
+        // },
 
         {
-            title: 'Name Product',
+            title: 'Name',
             dataIndex: 'name',
             key: 'name',
 
@@ -32,7 +38,7 @@ function getColumns(deleteModal, updateModal, imageModal) {
             key: 'variant',
             render: (_, data) => (
                 <>
-                    <Row justify='space-evenly space-x-2'>
+                    <Row justify='space-evenly space-x-2' >
                         <Col>
                             <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
                             {data.variant.map((v) => {
@@ -209,20 +215,19 @@ export default function MerchantProduct() {
 
     const [form] = Form.useForm();
 
+
     useEffect((params = {}) => {
         const getToken = localStorage.getItem("token_customer")
         const decode = jwt_decode(getToken)
         setToken(decode)
-        axios.get(`https://project-wo.herokuapp.com/users/${decode.user_id}`, {
+        axios.get(`https://project-wo.herokuapp.com/users/detail/${decode.user_id}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
             }
         }).then(res => {
-            // console.log(res.data.data)
-            if (!res.data.data.merchant[0]) {
-                window.alert("data tidak ada harap menambahkan data")
-            }
-            else {
+            console.log(res.data)
+            if (res.status == 200) {
+
                 setMerchantId(res.data.data.merchant[0].id)
                 axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=&category=&merchant=${res.data.data.merchant[0].id}`, {
                     headers: {
@@ -238,6 +243,9 @@ export default function MerchantProduct() {
                     }
                 })
             }
+            else {
+                window.alert("data tidak ada harap menambahkan data")
+            }
         })
         setPagination({
             ...params.pagination,
@@ -246,6 +254,21 @@ export default function MerchantProduct() {
 
 
     }, []);
+    const onSearch = (value) => {
+        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=${value}&location=&category=&merchant=${merchantId}`).then(res => {
+
+            setProduct(res.data.items)
+            // console.log(res.data.items)
+        })
+    };
+
+    const onSelect = (value) => {
+        // console.log('onSelect', value);
+        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=${value}&category=&merchant=${merchantId}`).then(res => {
+            setProduct(res.data.items)
+            // console.log(res.data.items)
+        })
+    }
 
 
     const handleTableChange = (newPagination, filters, sorter) => {
@@ -337,7 +360,7 @@ export default function MerchantProduct() {
 
             const processImage = await axios
                 .put(
-                    `https://project-wo.herokuapp.com/users/edit/image/${modalTaskIdDua}`,
+                    `https://project-wo.herokuapp.com/product/edit/image/${modalTaskIdDua}`,
                     formData,
                     { headers: { "content-type": "multipart/form-data" } }
                 )
@@ -355,26 +378,28 @@ export default function MerchantProduct() {
         try {
             const data = await form.getFieldsValue();
             // console.log(data)
-            const dataForm = new FormData()
-            dataForm.append("id", data.id)
-            dataForm.append("name", data.name)
-            dataForm.append('availability', data.availability)
-            dataForm.append('location', data.location)
-            // dataForm.append('image', foto)
-            dataForm.append("description", data.description)
-            dataForm.append("category_id", data.category)
-            dataForm.append("merchant_id", merchantId)
+            // const dataForm = new FormData()
+            // dataForm.append("id", data.id)
+            // dataForm.append("name", data.name)
+            // dataForm.append('availability', data.availability)
+            // dataForm.append('location', data.location)
+            // // dataForm.append('image', foto)
+            // dataForm.append("description", data.description)
+            // dataForm.append("category_id", data.category)
+            // dataForm.append("merchant_id", merchantId)
 
-            for (let i = 0; i < data.variant.length; i++) {
-                dataForm.append(`variant[${i}][name]`, data.variant[i].name)
-                dataForm.append(`variant[${i}][price]`, data.variant[i].price)
-            }
-            for (const value of dataForm.values()) {
-                console.log(value);
-            }
-            await axios.put(`https://project-wo.herokuapp.com/product/${data.id}`, dataForm, {
+            // for (let i = 0; i < data.variant.length; i++) {
+            //     dataForm.append(`variant[${i}][name]`, data.variant[i].name)
+            //     dataForm.append(`variant[${i}][price]`, data.variant[i].price)
+            // }
+            // for (const value of dataForm.values()) {
+            //     console.log(value);
+            // }
+            // console.log(data)
+            await axios.put(`https://project-wo.herokuapp.com/product/${data.id}`, data, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
+                    "content-type": "application/json"
                 }
             }).then(res => {
                 console.log(res)
@@ -398,9 +423,9 @@ export default function MerchantProduct() {
     const imageModal = async (record) => {
         setLoadingDua(true)
         if (record) {
-            await setModalTaskIdTiga(record);
+            // await setModalTaskIdTiga(record);
             setVisibleTiga(true);
-            await axios.get(`https://project-wo.herokuapp.com/product/image/${modalTaskIdTiga}`).then(res => {
+            await axios.get(`https://project-wo.herokuapp.com/product/image/${record}`).then(res => {
                 setImageUrl(res.config.url)
             })
         } else {
@@ -430,23 +455,6 @@ export default function MerchantProduct() {
     };
 
     // const getToken = localStorage.getItem('token_customer')
-
-
-    const onSearch = (value) => {
-        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=${value}&location=&category=&merchant=${merchantId}`).then(res => {
-            console.log(res)
-            setProduct(res.data.items)
-            // console.log(res.data.items)
-        })
-    };
-
-    const onSelect = (value) => {
-        // console.log('onSelect', value);
-        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=${value}&category=&merchant=${merchantId}`).then(res => {
-            setProduct(res.data.items)
-            // console.log(res.data.items)
-        })
-    };
     return (
         <>
             <Content>
@@ -461,7 +469,6 @@ export default function MerchantProduct() {
                                 enterButton
                                 size="large"
                                 onSearch={onSearch}
-
                             />
 
                         </Col>
@@ -590,7 +597,7 @@ export default function MerchantProduct() {
                                         label="Upload"
                                         valuePropName="fileList"
                                         getValueFromEvent={normFile}
-                                        extra="longgggggggggggggggggggggggggggggggggg"
+
                                     >
                                         <Upload customRequest={(args) => uploadHandler(args)} multiple={false}>
                                             <Button icon={<UploadOutlined />}>Click to Upload</Button>
@@ -710,9 +717,14 @@ export default function MerchantProduct() {
                             <Modal
                                 title="Image"
                                 visible={visibleTiga}
-                                onOk={handleOkModalImage}
+                                // onOk={handleOkModalImage}
                                 onCancel={handleCancel}
                                 confirmLoading={confirmLoading}
+                                footer={[
+                                    <Button key="back" onClick={handleCancel}>
+                                        Return
+                                    </Button>,
+                                ]}
                             >
                                 <img src={imageUrl} width={500} height={500} />
                             </Modal>
