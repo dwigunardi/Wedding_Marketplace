@@ -8,7 +8,7 @@ const { Option } = Select;
 
 export default function TambahProduct(props) {
 
-    // const token = localStorage.getItem('token_customer')
+    // const token = localStorage.getItem('token_merchant')
     // const decode = jwt_decode(token)
     const [VisibleTambah, setVisibleTambah] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -120,7 +120,7 @@ export default function TambahProduct(props) {
             await axios.post("https://project-wo.herokuapp.com/product", dataForm, {
                 headers: {
                     "Content-Type": "multipart/form-data",
-                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                    'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
                 }
             }).then(res => {
                 if (res.status == 200 || res.status == 201) {

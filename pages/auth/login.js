@@ -1,7 +1,7 @@
 import Background from "../../public/Image/banner-wed-5.png"
 import Image from "next/image"
 import Logo from "../../public/Image/sahin-love.png"
-import { Col, Row, Grid, Layout, Button, Input } from "antd"
+import { Col, Row, Grid, Layout, Button, Input, message } from "antd"
 import "antd/dist/antd.css"
 import "tailwindcss/tailwind.css"
 import { useState, Fragment } from "react"
@@ -59,11 +59,11 @@ export default function Login() {
                 console.log(decode.role)
                 window.alert(result.data.message)
                 if (decode.role == "Admin") {
-                    localStorage.setItem('token_customer', result.data.access_token)
+                    localStorage.setItem('token_admin', result.data.access_token)
                     router.push("/admin/dashboard")
 
                 } else if (decode.role == "Merchant") {
-                    localStorage.setItem('token_customer', result.data.access_token)
+                    localStorage.setItem('token_merchant', result.data.access_token)
                     router.push("/merchant/dashboard")
                 } else if (decode.role == "Costumer") {
                     localStorage.setItem('token_customer', result.data.access_token)
@@ -74,7 +74,7 @@ export default function Login() {
                 }
             })
         } catch (error) {
-            window.alert(error, error.message = "Password atau username salah")
+            message.error(error, error.message = "Password atau username salah")
             console.error(error);
         }
     }

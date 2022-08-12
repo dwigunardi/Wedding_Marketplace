@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, ConfigProvider } from "antd";
+import { Layout, ConfigProvider, message } from "antd";
 import NavbarAdmin from "./layoutHeader";
 import Sidebar from "./layoutSider";
 import 'antd/dist/antd.variable.css'
@@ -17,10 +17,10 @@ ConfigProvider.config({
 function MainLayout({ children }) {
     const router = useRouter()
     useEffect(() => {
-        const getToken = localStorage.getItem('token_customer')
+        const getToken = localStorage.getItem('token_admin')
 
         if (!getToken) {
-            window.alert("Anda belom login dan tidak berhak mengakses")
+            message.error("Anda belom login dan tidak berhak mengakses")
             router.push("/auth/login")
         }
 

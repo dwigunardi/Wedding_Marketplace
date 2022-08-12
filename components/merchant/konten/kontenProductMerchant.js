@@ -217,12 +217,12 @@ export default function MerchantProduct() {
 
 
     useEffect((params = {}) => {
-        const getToken = localStorage.getItem("token_customer")
+        const getToken = localStorage.getItem("token_merchant")
         const decode = jwt_decode(getToken)
         setToken(decode)
         axios.get(`https://project-wo.herokuapp.com/users/detail/${decode.user_id}`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
             }
         }).then(res => {
             // console.log(res.data)
@@ -231,7 +231,7 @@ export default function MerchantProduct() {
                 setMerchantId(res.data.data.merchant[0].id)
                 axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=&category=&merchant=${res.data.data.merchant[0].id}`, {
                     headers: {
-                        'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                        'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
                     }
                 }).then(result => {
                     // console.log(result)
@@ -296,7 +296,7 @@ export default function MerchantProduct() {
     const handleOkModalDelete = () => {
         axios.delete(`https://project-wo.herokuapp.com/product/delete/${modalTaskId}`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
             }
         }).then(res => {
 
@@ -398,7 +398,7 @@ export default function MerchantProduct() {
             // console.log(data)
             await axios.put(`https://project-wo.herokuapp.com/product/${data.id}`, data, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
+                    'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`,
                     "content-type": "application/json"
                 }
             }).then(res => {
@@ -454,7 +454,7 @@ export default function MerchantProduct() {
         setVisibleTiga(false)
     };
 
-    // const getToken = localStorage.getItem('token_customer')
+    // const getToken = localStorage.getItem('token_merchant')
     return (
         <>
             <Content>

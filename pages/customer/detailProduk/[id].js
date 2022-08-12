@@ -5,7 +5,7 @@ import FooterCustomer from "../../../components/footer";
 import Navigasi from "../../../components/navigasi";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { Col, Row, Space, Layout, Select, ConfigProvider } from "antd";
+import { Col, Row, Space, Layout, Select, ConfigProvider, Collapse, message } from "antd";
 import { ShoppingCartOutlined, BookOutlined } from "@ant-design/icons";
 import { useRouter, Router } from "next/router";
 import Image from "next/image";
@@ -20,9 +20,13 @@ ConfigProvider.config({
         primaryColor: '#EC4899',
     },
 });
-
+const { Panel } = Collapse;
 const { Option } = Select;
-
+const text = `
+  A dog is a type of domesticated animal.
+  Known for its loyalty and faithfulness,
+  it can be found as a welcome guest in many households across the world.
+`;
 export default function ProductIdCustomer() {
 
 
@@ -37,7 +41,7 @@ export default function ProductIdCustomer() {
     useEffect(() => {
 
         if (localStorage.getItem("token_customer") === null) {
-            alert("anda Belom Login Untuk Melanjutkan Transaksi Anda harus Login")
+            message.error("anda Belom Login Untuk Melanjutkan Transaksi Anda harus Login")
         } else {
             const getToken = localStorage.getItem("token_customer")
             const decode = jwt_decode(getToken)
@@ -45,7 +49,7 @@ export default function ProductIdCustomer() {
         }
         axios.get("https://project-wo.herokuapp.com/product").then(res => {
             setProduct(res.data.items)
-            console.log(res.data)
+            // console.log(res.data)
             // for (let i = 0; i < res.data.items.length; i++) {
             //     setVariant([res.data.items[i].variant])
             //     // console.log(res.data.items[i].variant)
@@ -60,14 +64,16 @@ export default function ProductIdCustomer() {
     const dataSelected = product.find((data) => data.id == id);
     const selectedVariant = dataSelected?.variant[0]
     const handleChange = (value) => {
-        console.log(`selected ${value}`);
+        // console.log(`selected ${value}`);
         const selectedVariant = dataSelected?.variant?.find(d => d.id == value)
         setHarga(true)
         setVariant(selectedVariant);
 
     };
 
-
+    const onChange = (key) => {
+        console.log(key);
+    };
     // const variantSelected = variant.find((data) => data.variant)
     // console.log(dataSelected)
 
@@ -82,22 +88,21 @@ export default function ProductIdCustomer() {
             </Layout>
             <Content className="h-3/4 mt-20 p-10">
                 <Row justify="space-evenly">
-                    <Col span="10" >
+                    <Col span="8" >
                         <Image loader={() => dataSelected?.image}
                             src={`https://project-wo.herokuapp.com/product/image/${dataSelected?.image}`}
                             priority={true}
                             unoptimized={true}
                             width={450}
                             height={350} />
-                        <p className="text-base font-semibold mt-2 ">
+                        <p className="text-base font-semibold mt-2 text-justify">
                             {dataSelected?.description}
                         </p>
                     </Col>
 
                     <Col
-                        style={{ textAlign: "start", marginLeft: 20 }}
-                        span="10"
-                        pull={2}
+                        style={{ textAlign: "justify" }}
+                        span="5" offset={2}
                     >
                         <h2 className="font-bold text-2xl text-black">{dataSelected?.name}</h2>
                         <h2 className="font-semibold text-xl my-3 text-black">
@@ -118,35 +123,57 @@ export default function ProductIdCustomer() {
                         }
                         <div className="my-5">
                             <Select
-                                defaultValue="Variant"
+                                placeholder="---Pilih variant"
                                 style={{
-                                    width: 120,
+                                    width: 150,
                                 }}
                                 onChange={handleChange}
                             >
                                 {dataSelected?.variant.map((data) => {
                                     return (
                                         <>
-                                            <Option value={data.id}>{data.name}</Option>
+                                            <Option value={data.id} key={data.id}>{data.name}</Option>
                                         </>
                                     )
                                 })}
                             </Select>
                         </div>
+                        <div className="my-5">
 
 
-                        <Link href="/cart">
-                            <button
-                                type="button"
+                            <Link href="/cart">
+                                <button
+                                    type="button"
 
-                                className=" space-x-2 justify-end inline-block px-6 bg-pink-500 text-white font-medium text-xs leading-tight shadow-md 
+                                    className=" space-x-2 justify-end inline-block px-6 bg-pink-500 text-white font-medium text-xs leading-tight shadow-md 
                                 focus:shadow-lg hover:bg-white active:bg-pink-700 hover:text-pink-500 hover:border-pink-500
                                 transition-all ease-in-out"
-                            >
-                                <BookOutlined className="mr-2 mb-2 text-xl" />
-                                <Space className="text-sm mt-2">Book Now</Space>
-                            </button>
-                        </Link>
+                                >
+                                    <BookOutlined className="mr-2 mb-2 text-xl" />
+                                    <Space className="text-sm mt-2">Book Now</Space>
+                                </button>
+                            </Link>
+
+                        </div>
+                    </Col>
+                    <Col span="8">
+                        <Collapse defaultActiveKey={['1']} onChange={onChange}>
+                            <Panel header="Wedding Planner & MC" key="1">
+                                <ol style={{ listStyleType: "circle", }} className="ml-5">
+                                    <li>Unlimited consultation before wedding day </li>
+                                    <li>1x Technical Meeting with All Vendors</li>
+                                    <li>Arranging Wedding Checklist & Rundown Details</li>
+                                    <li>Included d-day crew (1 Coordinator & 5 Crews)</li>
+                                    <li>MC for Akad / Holy Matrimony & Reception</li>
+                                </ol>
+                            </Panel>
+                            <Panel header="This is panel header 2" key="2">
+                                <p>{text}</p>
+                            </Panel>
+                            <Panel header="This is panel header 3" key="3">
+                                <p>{text}</p>
+                            </Panel>
+                        </Collapse>
                     </Col>
                 </Row>
 

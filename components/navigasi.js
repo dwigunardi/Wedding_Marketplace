@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 import logo from "../public/Image/sahin-love.png"
 import Link from 'next/link'
-import { Space, Dropdown, Menu, Button, ConfigProvider } from 'antd'
+import { Space, Dropdown, Menu, Button, ConfigProvider, message } from 'antd'
 import {
     UserOutlined,
     DownOutlined, LogoutOutlined, ShoppingCartOutlined
@@ -57,7 +57,7 @@ export default function Navigasi() {
     async function buttonLogout() {
         try {
             const remove = localStorage.clear()
-            window.alert("Anda telah keluar")
+            message.info("Anda telah keluar")
             router.push("/auth/login")
 
         } catch (error) {
@@ -69,22 +69,20 @@ export default function Navigasi() {
         <Menu
             items={[
                 {
-                    label: '1st menu item',
+                    label: <Link href={`/customer/profile/${username}`}>
+                        <a>Profile</a>
+                    </Link>,
                     key: '1',
                     icon: <UserOutlined />,
                 },
                 {
-                    label: <Button onClick={buttonLogout}>
+                    label: <Button type='danger' onClick={buttonLogout}>
                         Logout
                     </Button>,
                     key: '2',
                     icon: <LogoutOutlined />,
                 },
-                {
-                    label: '3rd menu item',
-                    key: '3',
-                    icon: <UserOutlined />,
-                },
+
             ]}
         />
     );
@@ -151,7 +149,7 @@ export default function Navigasi() {
                         <ul className="items-center justify-center  md:flex md:space-x-6 md:space-y-0">
                             <li className="text-pink-500 ">
                                 <Link href="/">
-                                    <a className={`text-pink-500 hover:text-white 
+                                    <a className={`text-pink-500 hover:text-white hover:bg-pink-500 
                                  pt-5 pb-6 px-5 text-lg ${currentRoute === "/" ? "active" : "non-active"}`}>
                                         Home
                                     </a>
@@ -235,12 +233,8 @@ export default function Navigasi() {
                     </div>
                 </div>
             </div >
-            <style jsx>{`.non-active {
-                    color: #ec4899;
-                  }
-                  .non-active:hover {
-                    color : #ec4899
-                  }
+            <style jsx>{`
+                
                   /* Specific styles for active links */
                   .active {
                     color: white;

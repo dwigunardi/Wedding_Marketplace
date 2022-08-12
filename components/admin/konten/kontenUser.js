@@ -109,7 +109,7 @@ export default function KontenUsers() {
 
             const getUsers = await axios.get("https://project-wo.herokuapp.com/users", {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                    'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
                 }
             },
             ).then(response => {
@@ -152,7 +152,7 @@ export default function KontenUsers() {
     const handleOkModal = () => {
         axios.delete(`https://project-wo.herokuapp.com/users/delete/${modalTaskId}`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
             }
         }).then(res => {
             console.log(res)
@@ -172,7 +172,7 @@ export default function KontenUsers() {
     const onSearch = function (value) {
         axios.get(`https://project-wo.herokuapp.com/users/search/users/?page=1&limit=20&search=${value}&role=`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
             }
         }).then(res => {
             setDataUser(res.data.items)
@@ -183,7 +183,7 @@ export default function KontenUsers() {
         console.log('onSelect', value);
         axios.get(`https://project-wo.herokuapp.com/users/search/users/?page=1&limit=20&search=&role=${value}`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
             }
         }).then(res => {
             setDataUser(res.data.items)

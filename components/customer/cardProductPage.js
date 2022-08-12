@@ -21,10 +21,10 @@ export default function CardProductPage(props) {
     ;
     return (
         <>
-            <Row justify="start space-x-5">
-                {props.product.map((data => {
+            <Row justify="start">
+                {props.product.map((data) => {
                     return (<>
-                        <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 20 }} xs={{ span: 20 }} className="pt-5">
+                        <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 20 }} xs={{ span: 20 }} className="pt-5 mr-5" key={data.id}>
                             <Link href={`/customer/detailProduk/${data.id}`}>
                                 <a> <Card
                                     hoverable
@@ -49,7 +49,7 @@ export default function CardProductPage(props) {
 
                         </Col>
                     </>)
-                }))}
+                })}
             </Row>
         </>
     )

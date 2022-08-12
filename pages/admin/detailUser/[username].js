@@ -25,11 +25,11 @@ export default function detailUserId() {
     const [myDate, setMyDate] = useState('')
     async function validate() {
         try {
-            const getToken = localStorage.getItem("token_customer")
+            const getToken = localStorage.getItem("token_admin")
             const decode = jwt_decode(getToken)
             const getData = await axios.get("https://project-wo.herokuapp.com/users", {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                    'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
                 }
 
             }).then(response => {
@@ -97,7 +97,7 @@ export default function detailUserId() {
             const data = await formUpdate.getFieldsValue();
             await axios.put(`https://project-wo.herokuapp.com/users/edit/${myData.id}`, data, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
+                    'Authorization': `Bearer ${localStorage.getItem("token_admin")}`,
                     "content-type": "application/json"
                 }
             }).then(res => {
@@ -128,7 +128,7 @@ export default function detailUserId() {
                         headers:
                         {
                             "content-type": "multipart/form-data",
-                            'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
+                            'Authorization': `Bearer ${localStorage.getItem("token_admin")}`,
                         }
                     }
                 )

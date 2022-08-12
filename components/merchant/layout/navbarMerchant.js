@@ -30,7 +30,7 @@ const NavbarMerchant = () => {
 
     async function validate() {
         try {
-            const token = await localStorage.getItem('token_customer')
+            const token = await localStorage.getItem('token_merchant')
             const decode = await jwt_decode(token)
             const user = decode.username
             const roleId = decode.role

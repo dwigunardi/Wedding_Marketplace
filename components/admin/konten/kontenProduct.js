@@ -216,7 +216,7 @@ export default function ProductContent() {
             ...params.pagination,
             total: productId.length
         });
-        const getToken = localStorage.getItem("token_customer")
+        const getToken = localStorage.getItem("token_admin")
         const decode = jwt_decode(getToken)
         setToken(decode)
     }, []);

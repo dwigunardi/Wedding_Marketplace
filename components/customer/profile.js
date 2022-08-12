@@ -5,17 +5,17 @@ import {
 } from '@ant-design/icons';
 import { Content } from "antd/lib/layout/layout";
 import { useRouter, Router } from "next/router";
-import MainLayout from "../../../components/admin/layout/mainLayout";
 import Image from "next/image";
-import ImgPlaceholder from "../../../public/Image/img-placeholder.png"
+// import ImgPlaceholder from "../../../public/Image/img-placeholder.png"
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import BackButton from "../../../pages/backButton";
+import BackButton from "../../pages/backButton";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 
 
-export default function detail() {
+
+export default function DetailCustomer() {
     const [form] = Form.useForm();
     const [formUpdate] = Form.useForm()
     const [dataUser, setDataUser] = useState({})
@@ -25,11 +25,11 @@ export default function detail() {
     const [myDate, setMyDate] = useState('')
     async function validate() {
         try {
-            const getToken = localStorage.getItem("token_admin")
+            const getToken = localStorage.getItem("token_customer")
             const decode = jwt_decode(getToken)
             const getData = await axios.get(`https://project-wo.herokuapp.com/users/detail/${decode.user_id}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
                 }
             }).then(response => {
                 if (response.status == 200 || response.status == 201) {
@@ -87,7 +87,7 @@ export default function detail() {
             const data = await formUpdate.getFieldsValue();
             await axios.put(`https://project-wo.herokuapp.com/users/edit/${dataUser.id}`, data, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token_admin")}`,
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
                     "content-type": "application/json"
                 }
             }).then(res => {
@@ -118,7 +118,7 @@ export default function detail() {
                         headers:
                         {
                             "content-type": "multipart/form-data",
-                            'Authorization': `Bearer ${localStorage.getItem("token_admin")}`,
+                            'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
                         }
                     }
                 )
@@ -196,8 +196,9 @@ export default function detail() {
 
     return (
         <>
+
             <Content>
-                <h1 className='mt-6 ml-14 text-2xl'>Form Detail User</h1>
+
                 <Row justify="center" align="middle" className='mt-6 ' >
                     <Col lg={{ span: 16 }} sm={{ span: 20 }}>
                         <div className="rounded-lg shadow-lg bg-white ">

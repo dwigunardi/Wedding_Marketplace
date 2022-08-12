@@ -36,13 +36,13 @@ export default function detailMerchantId() {
     const [formUpdate] = Form.useForm()
 
     useEffect(() => {
-        const getToken = localStorage.getItem("token_customer")
+        const getToken = localStorage.getItem("token_merchant")
         const decode = jwt_decode(getToken)
         setToken(getToken)
         setDataToken(decode)
         axios.get(`https://project-wo.herokuapp.com/users/detail/${decode.user_id}`, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
             }
         }).then(response => {
             console.log(response)
@@ -88,7 +88,7 @@ export default function detailMerchantId() {
             const data = await formUpdate.getFieldsValue();
             await axios.put(`https://project-wo.herokuapp.com/users/edit/${dataUser.id}`, data, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
+                    'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`,
                     "content-type": "application/json"
                 }
             }).then(res => {
@@ -119,7 +119,7 @@ export default function detailMerchantId() {
                         headers:
                         {
                             "content-type": "multipart/form-data",
-                            'Authorization': `Bearer ${localStorage.getItem("token_customer")}`,
+                            'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`,
                         }
                     }
                 )
@@ -194,7 +194,7 @@ export default function detailMerchantId() {
     //         // }
     //         await axios.put(`https://project-wo.herokuapp.com/users/${myData.id}`, {
     //             headers: {
-    //                 'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+    //                 'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
     //             }
     //         }, dataUpdate).then(res => {
     //             // console.log(res)

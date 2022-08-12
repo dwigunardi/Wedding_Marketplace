@@ -15,7 +15,7 @@ ConfigProvider.config({
 export default function MerchantLayout({ children }) {
     const router = useRouter()
     useEffect(() => {
-        const getToken = localStorage.getItem('token_customer')
+        const getToken = localStorage.getItem('token_merchant')
 
         if (!getToken) {
             window.alert("Anda belom login dan tidak berhak mengakses")

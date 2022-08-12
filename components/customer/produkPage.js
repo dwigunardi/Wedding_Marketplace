@@ -60,12 +60,17 @@ const searchResult = (query) =>
 export default function ContentProduct() {
 
     const [product, setProduct] = useState([])
+    const [meta, setMeta] = useState({})
+    const [links, setLinks] = useState({})
     // autocomplete state handle
     const [options, setOptions] = useState([]);
 
     useEffect(() => {
         axios.get("https://project-wo.herokuapp.com/product/").then(res => {
+            console.log(res)
             setProduct(res.data.items)
+            setMeta(res.data.meta)
+            setLinks(res.data.links)
         })
         // return () => {
         //     cleanup
@@ -82,6 +87,8 @@ export default function ContentProduct() {
         message.info(`Anda Memilih ${key}`);
         axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=${key}&category=&merchant=`).then(res => {
             setProduct(res.data.items)
+            setMeta(res.data.meta)
+            setLinks(res.data.links)
             // console.log(res)
         })
     };
@@ -128,6 +135,8 @@ export default function ContentProduct() {
         axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=${value}&location=&category=&merchant=`).then(res => {
             setProduct(res.data.items)
             // console.log(res.data.items)
+            setMeta(res.data.meta)
+            setLinks(res.data.links)
         })
     };
 
@@ -135,7 +144,12 @@ export default function ContentProduct() {
         console.log('onSelect', value);
     };
 
-
+    const onChangePaginate = (e) => {
+        console.log(e)
+        axios.get(`https://project-wo.herokuapp.com/product?page=${e}&limit=20`).then(res => {
+            setProduct(res.data.items)
+        })
+    }
     return (
         <>
             <Layout style={{ backgroundColor: "white" }}>
@@ -150,7 +164,7 @@ export default function ContentProduct() {
                 <Layout style={{ backgroundColor: "white" }}>
 
                     <Sider className="ml-20 bg-white" style={{ backgroundColor: "white" }}>
-                        <Row justify="center" >
+                        <Row justify="space-evenly" >
 
                             <Col>
                                 <Card
@@ -193,7 +207,7 @@ export default function ContentProduct() {
                                 <CardProductPage product={product} />
                                 <Row justify="center" align="middle" style={{ height: "160px" }}>
                                     <Col span={6}>
-                                        <Pagination defaultCurrent={1} total={product.length} />
+                                        <Pagination defaultCurrent={1} total={meta.totalItems} onChange={onChangePaginate} />
                                     </Col>
                                 </Row>
                             </Col>

@@ -51,7 +51,7 @@ function ProductHome() {
     // format to money
     const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
     ;
-
+    // console.log(product.slice(1, 5))
     return (
         <>
             <div className="text-center mt-5 py-10">
@@ -214,12 +214,8 @@ function ProductHome() {
                         {/* card product */}
 
                         <Row justify="center space-x-5">
-                            {product.map((data) => {
-                                const thouSep = ".";
-                                const decSep = ",";
-                                // format to money
-                                const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
-                                ;
+                            {product.slice(1, 5).map((data) => {
+
                                 return (
                                     <>
                                         <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
