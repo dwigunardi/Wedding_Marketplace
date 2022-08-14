@@ -1,4 +1,4 @@
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, Select, Upload } from 'antd';
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, Select, Upload, message } from 'antd';
 import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined, UploadOutlined, MinusCircleOutlined, } from '@ant-design/icons';
 import Link from "next/link";
 import React, { useEffect, useState } from 'react';
@@ -36,36 +36,39 @@ function getColumns(deleteModal, updateModal, imageModal) {
             title: 'Variant',
             dataIndex: 'variant',
             key: 'variant',
-            render: (_, data) => (
-                <>
-                    <Row justify='space-evenly space-x-2' >
-                        <Col>
-                            <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
-                            {data.variant.map((v) => {
-                                return (
-                                    <>
-                                        <ol>
-                                            <li style={{ listStyleType: "circle" }}>{v.name}</li>
-                                        </ol>
-                                    </>
-                                )
-                            })}
-                        </Col>
-                        <Col>
-                            <h1 className='border-b-2 border-pink-500'>Variant Price</h1>
-                            {data.variant.map((v) => {
-                                return (
-                                    <>
-                                        <ol>
-                                            <li style={{ listStyleType: "circle" }}>{v.price}</li>
-                                        </ol>
-                                    </>
-                                )
-                            })}
-                        </Col>
-                    </Row>
-                </>
-            )
+            render: (_, data) => {
+
+                return (
+                    <>
+                        <Row justify='space-evenly space-x-2' >
+                            <Col>
+                                <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
+                                {data.variant.map((v) => {
+                                    return (
+                                        <>
+                                            <ol>
+                                                <li style={{ listStyleType: "circle" }}>{v.name}</li>
+                                            </ol>
+                                        </>
+                                    )
+                                })}
+                            </Col>
+                            <Col>
+                                <h1 className='border-b-2 border-pink-500'>Variant Price</h1>
+                                {data.variant.map((v) => {
+                                    return (
+                                        <>
+                                            <ol>
+                                                <li style={{ listStyleType: "circle" }}>{v.price}</li>
+                                            </ol>
+                                        </>
+                                    )
+                                })}
+                            </Col>
+                        </Row>
+                    </>
+                )
+            }
         },
         {
             title: 'Category',
@@ -215,42 +218,48 @@ export default function MerchantProduct() {
 
     const [form] = Form.useForm();
 
+    async function getData(params = {}) {
+        try {
+            const getToken = await localStorage.getItem("token_merchant")
+            const decode = await jwt_decode(getToken)
+            setToken(decode)
+            await axios.get(`https://project-wo.herokuapp.com/users/detail/${decode.user_id}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
+                }
+            }).then(res => {
+                // console.log(res.data)
+                if (res.status == 200) {
 
-    useEffect((params = {}) => {
-        const getToken = localStorage.getItem("token_merchant")
-        const decode = jwt_decode(getToken)
-        setToken(decode)
-        axios.get(`https://project-wo.herokuapp.com/users/detail/${decode.user_id}`, {
-            headers: {
-                'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
-            }
-        }).then(res => {
-            // console.log(res.data)
-            if (res.status == 200) {
+                    setMerchantId(res.data.data.merchant[0].id)
+                    axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=&category=&merchant=${res.data.data.merchant[0].id}`, {
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
+                        }
+                    }).then(result => {
+                        // console.log(result)
+                        if (result.status == 200 || result.status == 201) {
+                            setProduct(result.data.items)
+                            // setMerchantId(res.data.items)
+                        } else {
+                            message.warning("data tidak ada harap menambahkan data")
+                        }
+                    })
+                }
+                else {
+                    message.warning("data tidak ada harap menambahkan data")
+                }
+            })
+            setPagination({
+                ...params.pagination,
+                // total: product.length
+            });
+        } catch (error) {
 
-                setMerchantId(res.data.data.merchant[0].id)
-                axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=&category=&merchant=${res.data.data.merchant[0].id}`, {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
-                    }
-                }).then(result => {
-                    // console.log(result)
-                    if (result.status == 200 || result.status == 201) {
-                        setProduct(result.data.items)
-                        // setMerchantId(res.data.items)
-                    } else {
-                        window.alert("data tidak ada harap menambahkan data")
-                    }
-                })
-            }
-            else {
-                window.alert("data tidak ada harap menambahkan data")
-            }
-        })
-        setPagination({
-            ...params.pagination,
-            // total: product.length
-        });
+        }
+    }
+    useEffect(() => {
+        getData()
 
 
     }, []);
@@ -301,6 +310,7 @@ export default function MerchantProduct() {
         }).then(res => {
 
         })
+        getData()
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
@@ -367,7 +377,7 @@ export default function MerchantProduct() {
                 .then((res) => {
                     // message.success("berhasil Upload File")
                     // onChangeImage(res.data.data.filename)
-                    console.log(res)
+                    // console.log(res)
                 });
         } catch (e) {
             console.log(e, "apa errornya")
@@ -395,8 +405,8 @@ export default function MerchantProduct() {
             // for (const value of dataForm.values()) {
             //     console.log(value);
             // }
-            // console.log(data)
-            await axios.put(`https://project-wo.herokuapp.com/product/${data.id}`, data, {
+            console.log(data)
+            await axios.put(`https://project-wo.herokuapp.com/product/edit/${data.id}`, data, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`,
                     "content-type": "application/json"
@@ -404,6 +414,7 @@ export default function MerchantProduct() {
             }).then(res => {
                 console.log(res)
             })
+            getData()
             setModalTextDua('The modal will be closed after two seconds');
             setConfirmLoading(true);
             setTimeout(() => {
@@ -469,6 +480,7 @@ export default function MerchantProduct() {
                                 enterButton
                                 size="large"
                                 onSearch={onSearch}
+
                             />
 
                         </Col>
@@ -520,8 +532,7 @@ export default function MerchantProduct() {
                                 confirmLoading={confirmLoading}
                                 onCancel={handleCancel}
                             >
-                                <p className='text-pink-500'>Apakah anda yakin akan meghapus ? user yang Memiliki ID </p>
-                                <p className='text-red-500'>{JSON.stringify(modalTaskId)}</p>
+                                <p className='text-pink-500'>Apakah anda yakin akan meghapus ?</p>
                             </Modal>
                             <Modal
                                 title="Konfirmasi Update Data"
@@ -593,7 +604,7 @@ export default function MerchantProduct() {
                                         <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
                                     </button> */}
                                     <Form.Item
-                                        name="upload"
+
                                         label="Upload"
                                     // valuePropName="fileList"
                                     // getValueFromEvent={normFile}

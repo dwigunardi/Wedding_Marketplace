@@ -1,4 +1,4 @@
-import { Button, Input, Modal, Form, Select, Upload, Space } from 'antd';
+import { Button, Input, Modal, Form, Select, Upload, Space, message } from 'antd';
 import React, { useState } from 'react';
 import { PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import { useRouter } from "next/router"
@@ -124,7 +124,7 @@ export default function TambahProduct(props) {
                 }
             }).then(res => {
                 if (res.status == 200 || res.status == 201) {
-                    window.alert(res.data.message)
+                    message.success(`${res.data.message} Menambah Product`)
                     setVisibleTambah(false)
                 }
                 console.log(res)

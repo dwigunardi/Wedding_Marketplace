@@ -1,11 +1,12 @@
 import React from "react";
-import { Layout, ConfigProvider } from "antd";
+import { Layout, ConfigProvider, message } from "antd";
 import 'antd/dist/antd.variable.css'
 import 'tailwindcss/tailwind.css'
 import NavbarMerchant from "./navbarMerchant";
 import SiderMerchant from "./siderMerchant";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
+import jwt_decode from "jwt-decode";
 const { Footer, Header, Sider } = Layout
 ConfigProvider.config({
     theme: {
@@ -16,14 +17,13 @@ export default function MerchantLayout({ children }) {
     const router = useRouter()
     useEffect(() => {
         const getToken = localStorage.getItem('token_merchant')
-
-        if (!getToken) {
-            window.alert("Anda belom login dan tidak berhak mengakses")
-            router.push("/auth/login")
+        if (!getToken || jwt_decode(getToken).role != 'Merchant') {
+            message.error("Anda belom login dan tidak berhak mengakses")
+            Router.back()
+            return
         }
-
-
     }, []);
+
     return (
 
         <Layout

@@ -2,7 +2,7 @@ import Navigasi from "../../../components/navigasi";
 import { useRouter, Router } from "next/router";
 import { useEffect, useState } from "react";
 import jwt_decode from "jwt-decode";
-import { Button, Col, Row, ConfigProvider } from "antd";
+import { Button, Col, Row, ConfigProvider, message } from "antd";
 import 'antd/dist/antd.variable.css'
 import Beranda from "../../beranda";
 import FooterCustomer from "../../../components/footer";
@@ -24,7 +24,7 @@ export default function LandingCustomer(props) {
     useEffect(() => {
         const getToken = localStorage.getItem('token_customer')
         if (!getToken) {
-            window.alert("Anda belom login dan tidak berhak mengakses")
+            message.error("Anda belom login dan tidak berhak mengakses")
             router.push("/auth/login")
         }
 

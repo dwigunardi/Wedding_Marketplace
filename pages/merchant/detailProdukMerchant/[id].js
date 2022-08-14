@@ -6,9 +6,6 @@ import Image from "next/image";
 import { React, useState, useEffect } from "react";
 import axios from "axios";
 import BackButton from "../../backButton";
-import image1 from "../../../public/Image/card-product/aminta-hotel.webp"
-import image2 from "../../../public/Image/card-product/Fieris Hotel Rawamangun.webp"
-import image3 from "../../../public/Image/card-product/Mang Kabayan Vida Bekasi.webp"
 import 'tailwindcss/tailwind.css'
 import { Editor } from '@tinymce/tinymce-react';
 const { TextArea } = Input;

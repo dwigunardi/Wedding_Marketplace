@@ -1,4 +1,4 @@
-import { Col, Row, Card, Button, Form, Input, Space, Modal, Upload } from "antd";
+import { Col, Row, Card, Button, Form, Input, Space, Modal, Upload, message } from "antd";
 import {
     InboxOutlined, UploadOutlined, EyeTwoTone,
     EyeInvisibleOutlined
@@ -123,7 +123,7 @@ export default function detail() {
                     }
                 )
                 .then((res) => {
-                    // message.success("berhasil Upload File")
+                    message.success("berhasil Upload File")
                     // onChangeImage(res.data.data.filename)
                     console.log(res)
                 });

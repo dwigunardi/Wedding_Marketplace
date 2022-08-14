@@ -1,13 +1,13 @@
+import { Col, Row, Grid, Layout, Button, Input, message } from "antd"
+import 'antd/dist/antd.variable.css'
+import "tailwindcss/tailwind.css"
 import Background from "../../public/Image/banner-wed-5.png"
 import Image from "next/image"
 import Logo from "../../public/Image/sahin-love.png"
-import { Col, Row, Grid, Layout, Button, Input, message } from "antd"
-import "antd/dist/antd.css"
-import "tailwindcss/tailwind.css"
-import { useState, Fragment } from "react"
+import { useState, Fragment, useEffect } from "react"
 import axios, { AxiosError } from "axios";
 import Link from "next/link"
-import { useRouter } from "next/router"
+import Router, { useRouter } from "next/router"
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import jwt_decode from "jwt-decode";
 
@@ -27,6 +27,19 @@ export default function Login() {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [token, setToken] = useState('')
+    const router = useRouter()
+    useEffect(() => {
+        const getTokenAdmin = localStorage.getItem("token_admin")
+        const getTokenMerchant = localStorage.getItem("token_merchant")
+        const getTokenCostumer = localStorage.getItem("token_customer")
+        if (getTokenAdmin || getTokenMerchant || getTokenCostumer) {
+            message.info("Anda Sudah Login")
+            Router.back()
+        }
+    }, []);
+
+
+
     const onChangeUsername = (e) => {
         const value = e.target.value
         setUsername(value)
@@ -39,8 +52,6 @@ export default function Login() {
     const onFormSubmit = (e) => {
         e.preventDefault()
     }
-
-    const router = useRouter()
     const submitLogin = async () => {
 
         try {
@@ -48,7 +59,7 @@ export default function Login() {
                 username: username,
                 password: password
             }
-            console.log(formData)
+            // console.log(formData)
 
             const request = await axios.post("https://project-wo.herokuapp.com/auth/login", formData, {
                 headers: { 'content-type': 'application/json' }
@@ -57,26 +68,27 @@ export default function Login() {
 
                 const decode = jwt_decode(result.data.access_token)
                 console.log(decode.role)
-                window.alert(result.data.message)
+                message.info("username atau password salah")
                 if (decode.role == "Admin") {
                     localStorage.setItem('token_admin', result.data.access_token)
                     router.push("/admin/dashboard")
+                    message.success("Hai! admin selamat datang!!")
 
                 } else if (decode.role == "Merchant") {
                     localStorage.setItem('token_merchant', result.data.access_token)
                     router.push("/merchant/dashboard")
+                    message.success("Hai! Merchant Selamat Bergabung!!")
                 } else if (decode.role == "Costumer") {
                     localStorage.setItem('token_customer', result.data.access_token)
                     router.push(`/customer/landing/${decode.username}`)
-                }
-                else {
-                    window.alert("username atau password salah")
+                    message.success("Hai! Customer Selamat Datang!!")
                 }
             })
         } catch (error) {
-            message.error(error, error.message = "Password atau username salah")
+            message.error(error.message = "Username Atau Password Salah!")
             console.error(error);
         }
+
     }
 
 

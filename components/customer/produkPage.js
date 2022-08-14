@@ -148,6 +148,7 @@ export default function ContentProduct() {
         console.log(e)
         axios.get(`https://project-wo.herokuapp.com/product?page=${e}&limit=20`).then(res => {
             setProduct(res.data.items)
+            console.log(res)
         })
     }
     return (
@@ -207,7 +208,7 @@ export default function ContentProduct() {
                                 <CardProductPage product={product} />
                                 <Row justify="center" align="middle" style={{ height: "160px" }}>
                                     <Col span={6}>
-                                        <Pagination defaultCurrent={1} total={meta.totalItems} onChange={onChangePaginate} />
+                                        <Pagination defaultCurrent={1} total={meta.itemCount} onChange={onChangePaginate} defaultPageSize={8} />
                                     </Col>
                                 </Row>
                             </Col>

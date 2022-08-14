@@ -6,7 +6,7 @@ import "antd/dist/antd.css"
 import "tailwindcss/tailwind.css"
 import Link from "next/link"
 import { useRouter } from "next/router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { LoadingOutlined, PlusOutline, UploadOutlined } from '@ant-design/icons';
 import axios from "axios"
 
@@ -108,7 +108,16 @@ export default function Daftar() {
 
     }
 
+    useEffect(() => {
+        const getTokenAdmin = localStorage.getItem("token_admin")
+        const getTokenMerchant = localStorage.getItem("token_merchant")
+        const getTokenCostumer = localStorage.getItem("token_customer")
+        if (getTokenAdmin || getTokenMerchant || getTokenCostumer) {
+            message.info("Anda Sudah Login")
+            Router.back()
+        }
 
+    }, []);
 
     return (
         <>

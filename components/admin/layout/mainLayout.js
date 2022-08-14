@@ -6,7 +6,8 @@ import 'antd/dist/antd.variable.css'
 import 'tailwindcss/tailwind.css'
 import Link from "next/link";
 import { useEffect } from "react";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
+import jwt_decode from "jwt-decode";
 const { Footer, Header, Sider } = Layout
 
 ConfigProvider.config({
@@ -18,13 +19,11 @@ function MainLayout({ children }) {
     const router = useRouter()
     useEffect(() => {
         const getToken = localStorage.getItem('token_admin')
-
-        if (!getToken) {
+        if (!getToken || jwt_decode(getToken).role != 'Admin') {
             message.error("Anda belom login dan tidak berhak mengakses")
-            router.push("/auth/login")
+            Router.back()
+            return
         }
-
-
     }, []);
     return (
 

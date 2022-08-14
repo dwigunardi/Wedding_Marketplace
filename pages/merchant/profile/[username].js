@@ -386,7 +386,7 @@ export default function detailMerchantId() {
                                             <Form.Item
                                                 name="upload"
                                                 label="Upload"
-                                                valuePropName="fileList"
+                                            // valuePropName="fileList"
 
 
                                             >

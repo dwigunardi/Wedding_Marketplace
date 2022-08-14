@@ -6,7 +6,7 @@ import Navigasi from "../../../components/navigasi";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { Col, Row, Space, Layout, Select, ConfigProvider, Collapse, message } from "antd";
-import { ShoppingCartOutlined, BookOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, BookOutlined, ShopOutlined, AppstoreOutlined } from "@ant-design/icons";
 import { useRouter, Router } from "next/router";
 import Image from "next/image";
 import cardImg1 from '../../../public/Image/card-product/aminta-hotel.webp'
@@ -35,6 +35,7 @@ export default function ProductIdCustomer() {
     const [product, setProduct] = useState([])
     const [variant, setVariant] = useState([])
     const [userId, setUserId] = useState('')
+    const [transaksiId, setTransaksiId] = useState('')
     const [harga, setHarga] = useState(false)
     const router = useRouter();
     const { id } = router.query;
@@ -76,7 +77,37 @@ export default function ProductIdCustomer() {
     };
     // const variantSelected = variant.find((data) => data.variant)
     // console.log(dataSelected)
+    const submitTransaksi = async function () {
+        try {
+            const myData = await {
+                user_id: userId,
+                product_id: dataSelected?.id,
+                variant_id: variant.id,
+                total_price: variant.price
+            }
+            console.log(myData)
+            if (myData.variant_id == undefined) {
+                message.info("Periksa lagi pesanan anda")
+            } else if (myData.total_price == undefined) {
+                message.info("Variant tidak boleh kosong")
+            }
+            await axios.post("https://project-wo.herokuapp.com/transaction", myData).then(res => {
+                console.log(res.data.data.id)
+                if (res.status == 200 || res.status == 201) {
+                    setTransaksiId(res.data.data.id)
+                    message.success("Product berhasil di Booking")
+                    setTimeout(() => {
+                        message.info("Anda akan Di arahkan Ke halaman Transaksi")
+                        router.push(`/customer/transaksi/${userId}`)
+                    }, 2000);
+                }
 
+
+            })
+        } catch (error) {
+            message.error("Anda Belom Login dan tidak dapat melanjutkan transaksi")
+        }
+    }
     const thouSep = ".";
     const decSep = ",";
     // format to money
@@ -84,7 +115,7 @@ export default function ProductIdCustomer() {
     return (
         <>
             <Layout style={{ backgroundColor: "white" }}>
-                <Navigasi />
+                <Navigasi idTransaksi={transaksiId} />
             </Layout>
             <Content className="h-3/4 mt-20 p-10">
                 <Row justify="space-evenly">
@@ -139,26 +170,25 @@ export default function ProductIdCustomer() {
                             </Select>
                         </div>
                         <div className="my-5">
+                            <AppstoreOutlined className="mr-2 mb-2 text-xl" />
+                            <Space className="text-base mt-2">Category</Space>
+                            <p className="text-pink-500 text-xl">{dataSelected?.category.name}</p>
+                        </div>
+                        <div className="my-5">
+                            <ShopOutlined className="mr-2 mb-2 text-xl" />
+                            <Space className="text-base mt-2">Partner</Space>
 
-
-                            <Link href="/cart">
-                                <button
-                                    type="button"
-
-                                    className=" space-x-2 justify-end inline-block px-6 bg-pink-500 text-white font-medium text-xs leading-tight shadow-md 
-                                focus:shadow-lg hover:bg-white active:bg-pink-700 hover:text-pink-500 hover:border-pink-500
-                                transition-all ease-in-out"
-                                >
-                                    <BookOutlined className="mr-2 mb-2 text-xl" />
-                                    <Space className="text-sm mt-2">Book Now</Space>
-                                </button>
-                            </Link>
-
+                            <p className="text-pink-500">{dataSelected?.merchant.name}</p>
+                        </div>
+                        <div className="my-5">
+                            <AppstoreOutlined className="mr-2 mb-2 text-xl" />
+                            <Space className="text-base mt-2">Availability</Space>
+                            <p className="text-pink-500 text-xl">{dataSelected?.availability}</p>
                         </div>
                     </Col>
                     <Col span="8">
-                        <Collapse defaultActiveKey={['1']} onChange={onChange}>
-                            <Panel header="Wedding Planner & MC" key="1">
+                        <Collapse accordion >
+                            <Panel header="Wedding Planner & MC" key="1" >
                                 <ol style={{ listStyleType: "circle", }} className="ml-5">
                                     <li>Unlimited consultation before wedding day </li>
                                     <li>1x Technical Meeting with All Vendors</li>
@@ -167,13 +197,78 @@ export default function ProductIdCustomer() {
                                     <li>MC for Akad / Holy Matrimony & Reception</li>
                                 </ol>
                             </Panel>
-                            <Panel header="This is panel header 2" key="2">
-                                <p>{text}</p>
+                            <Panel header="Decorations" key="2">
+                                <ol style={{ listStyleType: "circle", }} className="ml-5">
+                                    <li>Unlimited consultation before wedding day </li>
+                                    <li>Mix Fresh Flower and Artificial</li>
+                                    <li>Welcome Sign (Printing)</li>
+                                    <li>1 Set Akad Nikah / Holy Matrimony (6 chairs & Hias Meja)</li>
+                                    <li>Pelaminan (Backdrop 6x3m, Mini Garden, Permadani)</li>
+                                    <li>Aisle (4 Standing Flowers / 12 Titik Jalur Peacock)</li>
+                                    <li>Meja VIP decoration (Centerpiece Flowers)</li>
+                                    <li>Foyer (2 Kotak Angpao, Meja Penerima Tamu)</li>
+                                </ol>
+                                <h2>Complimentary : Hand Bouquet & Corsage</h2>
+                                <h2>+ Add Ons</h2>
+                                <ol style={{ listStyleType: "circle", }} className="ml-5">
+                                    <li>Photo Gallery / Photo Spot Decoration</li>
+                                    <li> Upgrade Items / FLowers</li>
+                                </ol>
+
                             </Panel>
-                            <Panel header="This is panel header 3" key="3">
-                                <p>{text}</p>
+                            <Panel header="Catering" key="3">
+                                <ol style={{ listStyleType: "circle", }} className="ml-5">
+                                    <li>Buffet according to ordered pax</li>
+                                    <li>Stalls up to 4 menus</li>
+                                    <li>Dessert Condiments (Fruit, Pudding)</li>
+                                    <li>Drink (Water, Soda, Tea)</li>
+                                </ol>
+                            </Panel>
+                            <Panel header="Documentation" key="4">
+                                <ol style={{ listStyleType: "circle", }} className="ml-5">
+                                    <li>Photo and Videos by our professional vendors</li>
+                                    <li>1 Photographer & 1 Videographer</li>
+                                    <li>Cover 4-6 hours works</li>
+                                    <li>3-5 minute highlight Video</li>
+                                    <li>50-100 Edited Photos</li>
+                                    <li>All files via Google Drive</li>
+                                </ol>
+                            </Panel>
+                            <Panel header="Entertainment, Sound System, and Lighting" key="5">
+                                <ol style={{ listStyleType: "circle", }} className="ml-5">
+                                    <li>Entertainment (Singer, musician)</li>
+                                    <li>Included 2 wireless microphones </li>
+                                    <li>3,000-5,000 watt sound system</li>
+                                    <li>Lighting for Backdrop Pelaminan</li>
+                                </ol>
+                            </Panel>
+                            <Panel header="Bridal & Make Up" key="6">
+                                <ol style={{ listStyleType: "circle", }} className="ml-5">
+                                    <li>Make up for bride </li>
+                                    <li>2 rented gown for bride (Akad/Holy & Reception)</li>
+                                    <li>2 rented suit for groom (Beskap / Jas)</li>
+                                    <li>2 Moms Makeup</li>
+                                </ol>
                             </Panel>
                         </Collapse>
+
+                        <div className="mt-20">
+
+
+
+                            <button
+                                type="button"
+                                onClick={submitTransaksi}
+                                className=" space-x-2 justify-end inline-block px-6 bg-pink-500 text-white font-medium text-xs leading-tight shadow-md 
+                                focus:shadow-lg hover:bg-white active:bg-pink-700 hover:text-pink-500 hover:border-pink-500
+                                transition-all ease-in-out w-full"
+                            >
+                                <BookOutlined className="mr-2 mb-2 text-xl" />
+                                <Space className="text-sm mt-2">Book Now</Space>
+                            </button>
+
+
+                        </div>
                     </Col>
                 </Row>
 

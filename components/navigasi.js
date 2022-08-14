@@ -20,10 +20,11 @@ ConfigProvider.config({
     },
 });
 
-export default function Navigasi() {
+export default function Navigasi(props) {
     const [navbar, setNavbar] = useState(false);
     const [isLogged, setLogged] = useState(false)
     const [username, setUsername] = useState('')
+    const [id, setId] = useState('')
     const router = useRouter();
     const currentRoute = router.pathname;
 
@@ -33,7 +34,8 @@ export default function Navigasi() {
 
             const decode = jwt_decode(token)
             const user = decode.username
-            console.log(decode);
+            const id = decode.user_id
+            // console.log(decode);
             if (user) {
                 setUsername(user)
 
@@ -45,6 +47,9 @@ export default function Navigasi() {
             } else {
                 setLogged(false)
             }
+            if (id) {
+                setId(id)
+            }
 
         } catch (error) {
 
@@ -52,7 +57,6 @@ export default function Navigasi() {
     }
     useEffect(() => {
         validate()
-
     }, []);
     async function buttonLogout() {
         try {
@@ -161,26 +165,60 @@ export default function Navigasi() {
                                  pt-5 pb-6 px-5 text-lg ${currentRoute === "/product" ? "active" : "non-active"}`}>Product</a>
                                 </Link>
                             </li>
-                            <li className="text-pink-500 ">
+                            {/* <li className="text-pink-500 ">
                                 <Link href=""><a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-6 px-5 text-lg'>Transaksi</a></Link>
-                            </li>
+                            </li> */}
                         </ul>
 
                         <div className="mt-3 space-y-2 lg:hidden md:hidden sm:inline-block">
+                            {isLogged ? (
+                                <>
+                                    <div className='flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 '>
+                                        <ul className="items-center justify-center  md:flex md:space-x-6 md:space-y-0">
+                                            <li className="text-pink-500 ">
+                                                <Link href={`/customer/transaksi/${id}`}  >
+                                                    <a>
+                                                        <ShoppingCartOutlined className='text-2xl' />
+                                                    </a>
+                                                </Link>
+                                            </li>
+                                            <li className="text-pink-500 ">
+                                                <div className='text-center text-pink-500 space-x-2'>
+                                                    <Space className='text-center '>
+                                                        <UserOutlined className=' text-2xl' />
+                                                        <Dropdown overlay={menu} trigger={['click']}>
+                                                            <a onClick={(e) => e.preventDefault()} className="text-lg">
+                                                                {username}
+                                                                <DownOutlined />
+                                                            </a>
+                                                        </Dropdown>
+                                                    </Space>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <Link href="/auth/login">
+                                        <button
+                                            className="transition ease-in-out hover:-translate-x-2 hover:scale-110 delay-150 px-5 py-2 
+                                 text-pink-500 mr-4 border-solid border-pink-500 border-2 rounded-full shadow hover:bg-pink-500
+                                  hover:text-white ..."
+                                        >
+                                            Login
+                                        </button>
+                                    </Link>
+                                    <Link href="/auth/landingOpsi">
+                                        <button
+                                            className="transition ease-in-out hover:-translate-x-2 hover:scale-110 delay-150 px-5 py-2 text-pink-500 bg-white rounded-md shadow hover:bg-pink-500 hover:text-white ..."
+                                        >
+                                            Daftar
+                                        </button>
+                                    </Link>
+                                </>
 
-                            <a
-                                href=""
-                                className="inline-block w-full px-4 py-2 text-center text-white bg-pink-500 rounded-md shadow hover:bg-white hover:text-pink-500 border-solid border-2 border-pink-500"
-                            >
-                                Login
-                            </a>
-                            <a
-                                href=""
-                                className="inline-block w-full px-4 py-2 my-2 text-center text-pink-800 border-solid border-2
-                                 border-pink-500 rounded-md shadow hover:bg-pink-500 hover:text-white"
-                            >
-                                Daftar
-                            </a>
+                            )}
                         </div>
                     </div>
                     <div className="hidden space-x-2 md:inline-block">
@@ -189,8 +227,10 @@ export default function Navigasi() {
                                 <div className='flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0 '>
                                     <ul className="items-center justify-center  md:flex md:space-x-6 md:space-y-0">
                                         <li className="text-pink-500 ">
-                                            <Link href="/customer/ganti">
-                                                <ShoppingCartOutlined className='text-2xl' />
+                                            <Link href={`/customer/transaksi/${id}`}  >
+                                                <a>
+                                                    <ShoppingCartOutlined className='text-2xl' />
+                                                </a>
                                             </Link>
                                         </li>
                                         <li className="text-pink-500 ">

@@ -2,7 +2,7 @@ import {
     UserOutlined,
     DownOutlined, LogoutOutlined
 } from '@ant-design/icons';
-import { Col, Layout, Menu, Row, Space, Dropdown, Button } from 'antd';
+import { Col, Layout, Menu, Row, Space, Dropdown, Button, message } from 'antd';
 import React, { useState, useEffect } from 'react';
 import Router, { useRouter } from 'next/router';
 import 'antd/dist/antd.css'
@@ -56,7 +56,7 @@ const NavbarAdmin = () => {
     async function buttonLogout() {
         try {
             const remove = localStorage.clear()
-            window.alert("Anda telah keluar")
+            message.info("Anda telah keluar")
             router.push("/auth/login")
 
         } catch (error) {

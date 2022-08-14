@@ -134,7 +134,7 @@ function getColumns(deleteModal, imageModal) {
                 <Space size="middle">
 
 
-                    <Link href={`/merchant/detailProdukMerchant/${record.id}`}>
+                    <Link href={`/admin/detailProduct/${record.id}`}>
                         <Tooltip placement="top" title="Detail">
                             <Button
                                 style={{ color: "#4ade80", borderColor: "#4ade80" }}
@@ -192,7 +192,7 @@ export default function ProductContent() {
     const [form] = Form.useForm();
 
 
-    async function getData() {
+    async function getData(params = {}) {
         try {
             await axios.get("https://project-wo.herokuapp.com/product").then(result => {
                 if (result.status == 200) {
@@ -203,32 +203,26 @@ export default function ProductContent() {
                 }
                 return result
             })
+            setPagination({
+                ...params.pagination,
+                total: product.length
+            });
         } catch (error) {
 
         }
     }
-    useEffect((params = {}) => {
+    useEffect(() => {
 
         getData({
             pagination,
         })
-        setPagination({
-            ...params.pagination,
-            total: productId.length
-        });
+
         const getToken = localStorage.getItem("token_admin")
         const decode = jwt_decode(getToken)
         setToken(decode)
     }, []);
 
-    const handleTableChange = (newPagination, filters, sorter) => {
-        getData({
-            sortField: sorter.field,
-            sortOrder: sorter.order,
-            pagination: newPagination,
-            ...filters,
-        });
-    };
+
 
     const deleteModal = (record) => {
         if (record) {
@@ -242,16 +236,22 @@ export default function ProductContent() {
 
     };
     const handleOkModalDelete = () => {
-        axios.delete(`https://project-wo.herokuapp.com/product/delete/${modalTaskId}`).then(res => {
-
+        axios.delete(`https://project-wo.herokuapp.com/product/delete/${modalTaskId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
+            }
+        }).then(res => {
+            console.log(res)
+            console.log(pagination)
         })
+        product
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
             setVisible(false);
             setConfirmLoading(false);
         }, 2000);
-        // location.reload()
+
     };
     const imageModal = async (record) => {
         setLoadingDua(true)
@@ -300,7 +300,14 @@ export default function ProductContent() {
             // console.log(res.data.items)
         })
     };
-
+    const handleTableChange = (newPagination, filters, sorter) => {
+        getData({
+            sortField: sorter.field,
+            sortOrder: sorter.order,
+            pagination: newPagination,
+            ...filters,
+        });
+    };
     return (
         <>
             <Content>
@@ -361,8 +368,8 @@ export default function ProductContent() {
                                 confirmLoading={confirmLoading}
                                 onCancel={handleCancel}
                             >
-                                <p className='text-pink-500'>Apakah anda yakin akan meghapus ? user yang Memiliki ID </p>
-                                <p className='text-red-500'>{JSON.stringify(modalTaskId)}</p>
+                                <p className='text-pink-500'>Apakah anda yakin akan meghapus ?</p>
+
                             </Modal>
                         </Col>
                     </Row>

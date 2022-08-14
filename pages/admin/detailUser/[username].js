@@ -101,7 +101,7 @@ export default function detailUserId() {
                     "content-type": "application/json"
                 }
             }).then(res => {
-                setDataUser(res.data.data)
+                validate()
             })
             setConfirmLoading(true);
             setTimeout(() => {
@@ -314,7 +314,7 @@ export default function detailUserId() {
                                                 span: 16,
                                             }}>
                                             <Button>
-                                                Active
+                                                Active : {myData.isActive}
                                             </Button>
                                         </Form.Item>
 
@@ -330,15 +330,15 @@ export default function detailUserId() {
                                                 <Button htmlType="button" onClick={onReset}>
                                                     Reset
                                                 </Button>
-                                                <Button htmlType="button" onClick={showModal}>
+                                                {/* <Button htmlType="button" onClick={showModal}>
                                                     Update
-                                                </Button>
+                                                </Button> */}
                                             </Space>
                                         </Form.Item>
                                     </Form>
 
                                     {/* modal update */}
-                                    <Modal
+                                    {/* <Modal
                                         title="Update Data"
                                         visible={visible}
                                         onOk={handleOkModalUpdate}
@@ -408,7 +408,7 @@ export default function detailUserId() {
                                             </Form.Item>
                                         </Form>
 
-                                    </Modal>
+                                    </Modal> */}
                                 </div>
                             </div>
 

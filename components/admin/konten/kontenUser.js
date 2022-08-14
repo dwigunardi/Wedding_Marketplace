@@ -156,7 +156,9 @@ export default function KontenUsers() {
             }
         }).then(res => {
             console.log(res)
+
         })
+        validate()
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
@@ -254,8 +256,7 @@ export default function KontenUsers() {
                             confirmLoading={confirmLoading}
                             onCancel={handleCancel}
                         >
-                            <p className='text-pink-500'>Apakah anda yakin akan meghapus ? user yang Memiliki ID </p>
-                            <p className='text-red-500'>{JSON.stringify(modalTaskId)}</p>
+                            <p className='text-pink-500'>Apakah anda yakin akan meghapus ?</p>
                         </Modal>
                     </Col>
                 </Row>

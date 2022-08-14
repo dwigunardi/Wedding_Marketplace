@@ -3,15 +3,35 @@ import { Content } from "antd/lib/layout/layout";
 import { useRouter, Router } from "next/router";
 import MainLayout from "../../../components/admin/layout/mainLayout";
 import Image from "next/image";
-import { useState } from "react";
+import { React, useState, useEffect } from "react";
 import BackButton from "../../backButton";
-import image1 from "../../../public/Image/card-product/aminta-hotel.webp"
-import image2 from "../../../public/Image/card-product/Fieris Hotel Rawamangun.webp"
-import image3 from "../../../public/Image/card-product/Mang Kabayan Vida Bekasi.webp"
 import 'tailwindcss/tailwind.css'
 import { Editor } from '@tinymce/tinymce-react';
 const { TextArea } = Input;
 export default function DetailProduct() {
+
+    const [dataProduct, setDataProduct] = useState([])
+    const [variant, setVariant] = useState({
+        name: '',
+        price: ''
+    })
+    const [form] = Form.useForm();
+    async function validate() {
+        try {
+            const getData = await axios.get("https://project-wo.herokuapp.com/product").then(response => {
+                console.log(response)
+                if (response.status == 200 || response.status == 201) {
+                    setDataProduct(response.data.items)
+                }
+            })
+        } catch (error) {
+
+        }
+
+    }
+    useEffect(() => {
+        validate()
+    }, []);
 
 
 
@@ -24,16 +44,36 @@ export default function DetailProduct() {
     };
     const router = useRouter();
     const { id } = router.query;
-    const dataSelected = data.find((data) => data.id == id);
-    const [defaultValues, setDefaultValues] = useState({
-        product: `${dataSelected?.product}`,
-        venue: `${dataSelected?.venue}`,
-        lokasi: `${dataSelected?.lokasi}`,
-        varian: `${dataSelected?.varian}`,
-        harga: `${dataSelected?.harga}`,
+    const dataSelected = dataProduct.find((dataProduct) => dataProduct.id == id);
 
+    const myData = {
+        id: `${dataSelected?.id}`,
+        availability: `${dataSelected?.availability}`,
+        description: `${dataSelected?.description}`,
+        location: `${dataSelected?.location}`,
+        name: `${dataSelected?.name}`,
+        merchant: `${dataSelected?.merchant.name}`,
+        category: `${dataSelected?.category.name}`,
+        image: `${dataSelected?.image}`,
+        // variant: [dataSelected?.variant.map((data) => {
+        //     return (
+        //         <Tag color={'volcano'} >
+        //             {data}
+        //         </Tag>
+        //     );
+        // })]
+    }
+    const dataImg = `https://project-wo.herokuapp.com/product/image/${myData.image}`
+    form.setFieldsValue({
+        name: myData.name,
+        availability: myData.availability,
+        location: myData.location,
+        merchant: myData.merchant,
+        category: myData.category,
+        description: myData.description,
+        variant: myData.variant
     })
-    const [form] = Form.useForm();
+
     return (
         <>
             <MainLayout>
@@ -41,9 +81,16 @@ export default function DetailProduct() {
                     <h1 className='mt-6 ml-14 text-2xl'>Form Detail Product</h1>
                     <div className="rounded-lg shadow-lg bg-white mx-10 mb-10">
                         <Row justify="space-between" align="middle">
-                            <Col lg={{ span: 12 }} md={{ span: 12 }} sm={{ span: 24 }}>
+                            <Col lg={{ span: 11 }} md={{ span: 12 }} sm={{ span: 24 }} offset={1}>
 
-                                {dataSelected?.foto}
+                                <Image
+                                    loader={() => dataImg}
+                                    src={dataImg}
+                                    priority={true}
+                                    unoptimized={true}
+                                    width={400}
+                                    height={300}
+                                />
                                 <div className="mt-5 p-5">
                                     <Form
                                         layout="vertical"
@@ -54,15 +101,6 @@ export default function DetailProduct() {
                                         wrapperCol={{
                                             span: 16,
                                         }}
-                                        initialValues={{
-                                            product: `${dataSelected?.product}`,
-                                            venue: `${dataSelected?.venue}`,
-                                            lokasi: `${dataSelected?.lokasi}`,
-                                            varian: `${dataSelected?.varian}`,
-                                            harga: `${dataSelected?.harga}`,
-                                            deskripsi: `${dataSelected?.deskripsi}`,
-
-                                        }}
                                         onFinish={onFinish}
                                         onFinishFailed={onFinishFailed}
                                         autoComplete="off"
@@ -70,7 +108,7 @@ export default function DetailProduct() {
                                     >
                                         <Form.Item
                                             label="Deskripsi"
-                                            name="deskripsi"
+                                            name="description"
                                             rules={[
                                                 {
                                                     required: true,
@@ -84,7 +122,7 @@ export default function DetailProduct() {
                                     </Form>
                                 </div>
                             </Col>
-                            <Col lg={{ span: 11 }} md={{ span: 11 }} sm={{ span: 24 }} offset={1}>
+                            <Col lg={{ span: 12 }} md={{ span: 12 }} sm={{ span: 24 }} className="mt-5">
 
                                 <Form
                                     layout="vertical"
@@ -95,15 +133,7 @@ export default function DetailProduct() {
                                     wrapperCol={{
                                         span: 20,
                                     }}
-                                    initialValues={{
-                                        product: `${dataSelected?.product}`,
-                                        venue: `${dataSelected?.venue}`,
-                                        lokasi: `${dataSelected?.lokasi}`,
-                                        varian: `${dataSelected?.varian}`,
-                                        harga: `${dataSelected?.harga}`,
-                                        deskripsi: `${dataSelected?.deskripsi}`,
 
-                                    }}
                                     onFinish={onFinish}
                                     onFinishFailed={onFinishFailed}
                                     autoComplete="off"
@@ -111,7 +141,7 @@ export default function DetailProduct() {
                                 >
                                     <Form.Item
                                         label="Product"
-                                        name="product"
+                                        name="name"
                                         rules={[
                                             {
                                                 required: true,
@@ -122,8 +152,8 @@ export default function DetailProduct() {
                                         <Input />
                                     </Form.Item>
                                     <Form.Item
-                                        label="Venue"
-                                        name="venue"
+                                        label="Category"
+                                        name="category"
                                         rules={[
                                             {
                                                 required: true,
@@ -135,7 +165,7 @@ export default function DetailProduct() {
                                     </Form.Item>
                                     <Form.Item
                                         label="Lokasi"
-                                        name="lokasi"
+                                        name="location"
                                         rules={[
                                             {
                                                 required: true,
@@ -146,8 +176,8 @@ export default function DetailProduct() {
                                         <Input />
                                     </Form.Item>
                                     <Form.Item
-                                        label="Varian"
-                                        name="varian"
+                                        label="Availability"
+                                        name="availability"
                                         rules={[
                                             {
                                                 required: true,
@@ -158,8 +188,8 @@ export default function DetailProduct() {
                                         <Input />
                                     </Form.Item>
                                     <Form.Item
-                                        label="Harga"
-                                        name="harga"
+                                        label="Pemilik"
+                                        name="merchant"
                                         rules={[
                                             {
                                                 required: true,
@@ -173,25 +203,23 @@ export default function DetailProduct() {
                                         wrapperCol={{
 
                                             span: 16,
-                                        }}>
+                                        }}
+                                        name="variant"
+                                    >
 
-                                        {dataSelected?.status.map((tag) => {
+                                        {/* {myData.variant.map((data) => {
                                             let color = ''
-                                            if (tag === 'Tersedia') {
-                                                color = 'green';
-                                            }
-                                            else if (tag === 'Non-Tersedia') {
-                                                color = 'volcano';
-                                            }
+                                            // if (name) {
+                                            //     color = 'green';
+                                            // }
+                                            // else if (price) {
+                                            //     color = 'volcano';
+                                            // }
 
 
-                                            return (
-                                                <Tag color={color} key={tag}>
-                                                    {tag.toUpperCase()}
-                                                </Tag>
-                                            );
+                                           
                                         })}
-                                        { }
+                                        { } */}
 
                                     </Form.Item>
 
