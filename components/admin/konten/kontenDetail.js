@@ -52,7 +52,7 @@ export default function detail() {
     const router = useRouter();
     const { username } = router.query;
 
-    const date = new Date(dataUser.createdAt)
+    // const date = new Date(dataUser.createdAt)
 
     // console.log(myDate)
     form.setFieldsValue({

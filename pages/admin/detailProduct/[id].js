@@ -1,10 +1,11 @@
-import { Col, Row, Card, Button, Form, Input, Space, Tag, } from "antd";
+import { Col, Row, Card, Button, Form, Input, Space, Tag, message, } from "antd";
 import { Content } from "antd/lib/layout/layout";
 import { useRouter, Router } from "next/router";
 import MainLayout from "../../../components/admin/layout/mainLayout";
 import Image from "next/image";
 import { React, useState, useEffect } from "react";
 import BackButton from "../../backButton";
+import axios from "axios";
 import 'tailwindcss/tailwind.css'
 import { Editor } from '@tinymce/tinymce-react';
 const { TextArea } = Input;
@@ -25,7 +26,9 @@ export default function DetailProduct() {
                 }
             })
         } catch (error) {
-
+            if (error) {
+                message.error(error.message)
+            }
         }
 
     }

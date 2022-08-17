@@ -1,5 +1,5 @@
 import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input, Modal, Select } from 'antd';
-import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EyeOutlined, DeleteOutlined, PrinterOutlined } from '@ant-design/icons';
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
@@ -196,6 +196,20 @@ export default function KontenUsers() {
         validate()
     }, []);
 
+    async function ExportXl() {
+        try {
+            await axios.get("https://project-wo.herokuapp.com/users/export/data", {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
+                }
+            }).then(res => {
+                window.open(res.data.filename)
+            })
+        } catch (error) {
+
+        }
+
+    }
 
     return (
         <>
@@ -216,6 +230,12 @@ export default function KontenUsers() {
 
                         </AutoComplete>
 
+                    </Col>
+                    <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
+
+                        <Button type='primary' onClick={ExportXl}
+                            style={{ color: "white", width: "150px", height: "40px", borderRadius: "20px", fontSize: "18px" }}
+                            icon={<PrinterOutlined style={{ fontSize: "20px" }} />}>Print</Button>
                     </Col>
                     <Col lg={{ span: 4, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }} >
 

@@ -41,7 +41,7 @@ export default function Transaksi() {
                     'Authorization': `Bearer ${getToken}`
                 }
             }).then(res => {
-                // console.log(res)
+                console.log(res)
                 if (res.status == 200 || res.status == 201) {
                     setTransaksi([res.data.data])
                     setDataTransaksi(res.data.data)
@@ -64,12 +64,29 @@ export default function Transaksi() {
 
     async function SubmitProof() {
         try {
+
+
+            // if (approve == "Menunggu Pembayaran") {
+            //     setApprove("Menunggu Persetujuan")
+            // } else if (approve == "Menunggu Persetujuan") {
+            //     setApprove("Approved")
+            //     message.info("Status Pembayaran anda sedang di Pantau")
+            // } else if (approve == "Approved") {
+            //     setApprove("Selesai")
+            //     message.success("Status Pembayaran anda telah Selesai Mohon Cetak Invoice")
+            // } else if (approve == "Selesai") {
+            //     message.success("Status Pembayaran anda telah Selesai Mohon Cetak Invoice")
+            //     Router.back()
+            // }
             const data = {
-                user_id: dataTransaksi.user.id,
-                product_id: dataTransaksi.product.id,
-                variant_id: dataTransaksi.variant.id,
-                total_price: dataTransaksi.total_price,
-                status: "Menunggu Persetujuan",
+                // user_id: dataTransaksi.user.id,
+                // product_id: dataTransaksi.product.id,
+                // variant_id: dataTransaksi.variant.id,
+                // // total_price: dataTransaksi.total_price,
+                // start_date: dataTransaksi.startDate,
+                // end_date: dataTransaksi.endDate,
+                // address: dataTransaksi.address,
+                status: "Menunggu Approvement",
             }
             await axios.put(`https://project-wo.herokuapp.com/transaction/edit/${id}`, data, {
                 headers: {
@@ -78,15 +95,21 @@ export default function Transaksi() {
                 }
             }).then(res => {
                 if (res.status == 200 || res.status == 201) {
-                    console.log(res)
-                    message.success("Berhasil Upload Bukti Pembayaran")
-                    setApprove("Menunggu Persetujuan")
+                    // console.log(res)
+                    message.success("Berhasil Submit dan tunggu approve dari Admin")
+                    setApprove("Menunggu Approvement")
+                }
+                if (approve == "Menunggu Approvement") {
+                    setTimeout(() => {
+                        message.info("Anda Sudah MengUpload Bukti Pembayaran Harap Menunggu Keputusan Admin")
+                    }, 3000);
                 }
             })
 
+
         } catch (error) {
             if (error) {
-                message.error("Gagal Meng Upload")
+                message.info(error.message)
             }
         }
     }
@@ -137,9 +160,9 @@ export default function Transaksi() {
             return (<>
                 <Button className="w-full" shape="round" type="danger" icon={<StopOutlined />}>Expired</Button>
             </>)
-        } else if (approve == "Menunggu Persetujuan") {
+        } else if (approve == "Menunggu Approvement") {
             return (<>
-                <Button className="w-full" shape="round" style={{ backgroundColor: "#4C6FFF", color: "white" }} icon={<InfoOutlined />}>Menunggu Persetujuan</Button>
+                <Button className="w-full" shape="round" style={{ backgroundColor: "#4C6FFF", color: "white" }} icon={<InfoOutlined />}>Menunggu Approvement</Button>
             </>)
         } else if (approve == "Approved") {
             return (<>
@@ -151,12 +174,42 @@ export default function Transaksi() {
             </>)
         }
     }
+
+
+    const Pages = async function () {
+        try {
+            if (approve == "Approve") {
+                return (<>
+                    <div className="h-screen">
+                        <Row justify="center">
+                            <Col> <h1 className="text-5xl">INI SUDAH SELESAI</h1>
+                                <Link href={`/customer/transaksi/invoice/${id}`} >
+                                    <Button> Cetak invoice</Button>
+                                </Link>
+
+                            </Col>
+                        </Row>
+                    </div>
+                </>
+                )
+            }
+            else if (approve == "Menunggu Pembayaran" || approve == "Menunggu Persetujuan") {
+                return (<>
+                    <div>Belom Selesai</div>
+                </>)
+            }
+        } catch (error) {
+
+        }
+    }
     return (
         <>
             <Layout style={{ backgroundColor: "white" }}>
                 <Navigasi />
             </Layout>
             <Content>
+                {/* {Pages()} */}
+
 
                 <Row justify="space-evenly">
                     <Col span={12} className="mt-32">
@@ -200,6 +253,48 @@ export default function Transaksi() {
                                             <td className="text-sm text-gray-900 font-light  py-4 whitespace-nowrap">
                                                 Standard Upload Transaction Proof
                                             </td>
+
+                                        </tr>
+                                        <tr className="bg-white border-b">
+                                            <td className="text-sm text-gray-900 font-light  py-4 whitespace-nowrap">
+                                                Start Date
+                                            </td>
+                                            {transaksi.map((data) => {
+                                                return (
+                                                    <>
+                                                        <td className="text-sm text-gray-900 font-light  py-4 whitespace-nowrap">
+                                                            {data.startDate}
+                                                        </td>
+                                                    </>
+                                                )
+                                            })}
+                                        </tr>
+                                        <tr className="bg-white border-b">
+                                            <td className="text-sm text-gray-900 font-light  py-4 whitespace-nowrap">
+                                                End Date
+                                            </td>
+                                            {transaksi.map((data) => {
+                                                return (
+                                                    <>
+                                                        <td className="text-sm text-gray-900 font-light  py-4 whitespace-nowrap">
+                                                            {data.endDate}
+                                                        </td>
+                                                    </>
+                                                )
+                                            })}
+                                        </tr>
+                                        <tr className="bg-white border-b">
+                                            <td className="text-sm text-gray-900 font-light  py-4 whitespace-nowrap">
+                                                Address
+                                            </td>
+                                            {transaksi.map((data) => {
+                                                return (
+                                                    <td className="text-sm text-gray-900 font-light  py-4 whitespace-nowrap">
+                                                        {data.address}
+                                                    </td>
+                                                )
+                                            })}
+
 
                                         </tr>
                                     </tbody>
@@ -295,6 +390,9 @@ export default function Transaksi() {
                                     >
                                         Submit Proof
                                     </Button>
+                                    <Button onClick={() => <Invoice></Invoice>}>
+
+                                    </Button>
                                 </Col>
                             </Row>
 
@@ -343,6 +441,8 @@ export default function Transaksi() {
                         </Card>
                     </Col>
                 </Row>
+
+
             </Content>
             <FooterCustomer />
         </>

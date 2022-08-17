@@ -62,7 +62,7 @@ function ContentMain() {
                         Nama kami selanjutnya diambil dari kata DAPAT DI ANDALKAN.</h4>
                 </Col>
             </Row>
-            <Row justify='center' align='middle' style={{ height: "100vh" }} className="bg-pink-500 p-5">
+            <Row justify='center' align='middle' style={{ height: "100%" }} className="bg-pink-500 p-5">
                 <Col lg={{ span: 8 }} md={{ span: 8 }} sm={{ span: 22 }} xs={{ span: 22 }}>
                     <h1 className='text-white transition-all ease-in-out delay-150 hover:translate-x-3 hover:scale-110 text-8xl'>Why Us</h1>
                 </Col>

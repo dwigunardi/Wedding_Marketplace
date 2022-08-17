@@ -68,7 +68,7 @@ export default function Login() {
 
                 const decode = jwt_decode(result.data.access_token)
                 console.log(decode.role)
-                message.info("username atau password salah")
+
                 if (decode.role == "Admin") {
                     localStorage.setItem('token_admin', result.data.access_token)
                     router.push("/admin/dashboard")
@@ -85,8 +85,11 @@ export default function Login() {
                 }
             })
         } catch (error) {
-            message.error(error.message = "Username Atau Password Salah!")
-            console.error(error);
+            if (error) {
+                message.error(error.message = "Username Atau Password Salah!")
+                console.error(error);
+            }
+
         }
 
     }

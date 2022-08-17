@@ -1,5 +1,5 @@
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input, Modal, Select } from 'antd';
-import { EyeOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input, Modal, Select, message } from 'antd';
+import { EyeOutlined, DeleteOutlined, EditOutlined, CheckOutlined, CloseOutlined, PrinterOutlined } from '@ant-design/icons';
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
@@ -13,16 +13,10 @@ const { Option } = Select;
 function getColumns(deleteModal, updateModal, imageModal) {
     return [
         {
-            title: 'id',
-            dataIndex: 'id',
-            key: 'id',
-            render: (text) => <a>{text}</a>,
-        },
-        {
-            title: 'User',
+            title: 'User Name',
             dataIndex: 'user',
             key: 'user',
-            render: (_, record) => <a> {record.user.name} </a>
+            render: (_, record) => <a className='mx-6'> {record.user.name} </a>
         },
         {
             title: 'Product',
@@ -30,38 +24,79 @@ function getColumns(deleteModal, updateModal, imageModal) {
             key: 'product',
             render: (_, record) => <a> {record.product.name} </a>
         },
+        // {
+        //     title: 'Tgl/transaksi',
+        //     dataIndex: 'createdAt',
+        //     key: 'creeatedAt',
+        //     render: (_, record) => <a> {record.createdAt.split("T")[0]} </a>
+        // },
+
         {
-            title: 'Tgl/transaksi',
-            dataIndex: 'createdAt',
-            key: 'creeatedAt',
-            render: (_, record) => <a> {record.createdAt.split("T")[0]} </a>
+            title: 'Mulai Tanggal Booking',
+            dataIndex: 'startDate',
+            key: 'startDate',
+            render: (_, record) => <a> {record.startDate} </a>
+        },
+        {
+            title: 'Akhir Tanggal Booking',
+            dataIndex: 'endDate',
+            key: 'endDate',
+            render: (_, record) => <a> {record.endDate} </a>
+        },
+        {
+
+            dataIndex: 'address',
+            key: 'address',
+            render: (_, record) => {
+                return (
+                    <>
+                        <Row>
+                            <Col span={5}>
+                                <p style={{ display: 'none', }}>{record.address}</p>
+                            </Col>
+                        </Row>
+                    </>
+                )
+            }
         },
         {
             title: 'Variant',
             dataIndex: 'variant',
             key: 'variant',
-            render: (_, data) => (
-                <>
-                    <Row justify='space-evenly' >
-                        <Col>
-                            <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
+            render: (_, data) => {
+                const thouSep = ".";
+                const decSep = ",";
+                // format to money
+                const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
+                ;
+                return (
+                    <>
+                        <Row justify='space-evenly' >
+                            <Col>
+                                <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
 
-                            <ol>
-                                <li style={{ listStyleType: "circle" }}>{data.variant.name}</li>
-                            </ol>
+                                <ol>
+                                    <li style={{ listStyleType: "circle" }}>{data.variant.name}</li>
+                                </ol>
 
-                        </Col>
-                        <Col>
-                            <h1 className='border-b-2 border-pink-500'>Variant Price</h1>
+                            </Col>
+                            <Col>
+                                <h1 className='border-b-2 border-pink-500'>Variant Price</h1>
 
-                            <ol>
-                                <li style={{ listStyleType: "circle" }}>{data.variant.price}</li>
-                            </ol>
+                                <ol>
+                                    <li style={{ listStyleType: "circle" }}>
+                                        Rp.
+                                        {
+                                            toMoney(data.variant.price)
+                                        }
+                                    </li>
+                                </ol>
 
-                        </Col>
-                    </Row>
-                </>
-            )
+                            </Col>
+                        </Row>
+                    </>
+                )
+            }
         },
         {
             title: 'Total',
@@ -113,21 +148,21 @@ function getColumns(deleteModal, updateModal, imageModal) {
             render: (_, record) => (
                 <Space size="middle">
 
-                    <Tooltip placement="left" title="Update">
+                    <Tooltip placement="left" title="Approve">
                         <Button
                             onClick={() => updateModal(record)}
                             style={{ color: "#0d6efd", borderColor: "#0d6efd" }}
-                            icon={<EditOutlined />}
+                            icon={<CheckOutlined />}
                         >
 
                         </Button>
                     </Tooltip>
 
-                    <Tooltip placement="right" title="Delete">
+                    <Tooltip placement="right" title="Decline">
                         <Button
                             onClick={() => deleteModal(record.id)}
                             type="danger"
-                            icon={<DeleteOutlined />}
+                            icon={<CloseOutlined />}
                             danger={true}
                         >
                         </Button>
@@ -173,6 +208,8 @@ export default function KontenTransaksi() {
 
 
 
+
+
     const searchInput = useRef(null);
 
     const [loading, setLoading] = useState(false);
@@ -199,7 +236,7 @@ export default function KontenTransaksi() {
             })
             setPagination({
                 ...params.pagination,
-                total: dataUser.length
+                // total: dataUser.length
             });
 
         } catch (error) {
@@ -231,17 +268,18 @@ export default function KontenTransaksi() {
 
     };
     const handleOkModalDelete = () => {
-        axios.delete(`https://project-wo.herokuapp.com/product/delete/${modalTaskId}`, {
+        axios.delete(`https://project-wo.herokuapp.com/transaction/delete/${modalTaskId}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
             }
         }).then(res => {
 
         })
-        getData()
+
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
+            validate()
             setVisible(false);
             setConfirmLoading(false);
         }, 2000);
@@ -267,9 +305,9 @@ export default function KontenTransaksi() {
     };
 
     const updateModal = (record) => {
-        // console.log(record)
+        console.log(record)
         if (record) {
-            setModalTaskIdDua(record.id);
+            setModalTaskIdDua(record);
             setVisibleDua(true);
 
         } else {
@@ -278,9 +316,19 @@ export default function KontenTransaksi() {
     };
     const handleOkModalUpdate = async () => {
         try {
-            const data = await form.getFieldsValue();
 
-            await axios.put(`https://project-wo.herokuapp.com/transaction/edit/${data.id}`, data, {
+            const data = await {
+                // total_price: modalTaskIdDua.total_price,
+                // user_id: modalTaskIdDua.user.id,
+                // variant_id: modalTaskIdDua.variant.id,
+                // product_id: modalTaskIdDua.product.id,
+                status: "Approved",
+                // start_date: modalTaskIdDua.startDate,
+                // end_date: modalTaskIdDua.endDate,
+                // address: modalTaskIdDua.address,
+            }
+            console.log(data)
+            await axios.put(`https://project-wo.herokuapp.com/transaction/edit/${modalTaskIdDua.id}`, data, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token_admin")}`,
                     "content-type": "application/json"
@@ -288,10 +336,11 @@ export default function KontenTransaksi() {
             }).then(res => {
                 console.log(res)
             })
-            getData()
+
             setModalTextDua('The modal will be closed after two seconds');
             setConfirmLoading(true);
             setTimeout(() => {
+                validate()
                 setVisibleDua(false);
                 setConfirmLoading(false);
             }, 2000);
@@ -306,7 +355,7 @@ export default function KontenTransaksi() {
 
     //start Image modal
     const imageModal = async (record) => {
-        setLoadingDua(true)
+
         if (record) {
             // await setModalTaskIdTiga(record);
             setVisibleTiga(true);
@@ -315,8 +364,9 @@ export default function KontenTransaksi() {
             })
         } else {
             setVisibleTiga(false)
+            message.info("User ini belom meng upload proof")
         }
-        setLoadingDua(false)
+
 
     };
     const handleOkModalImage = () => {
@@ -365,12 +415,31 @@ export default function KontenTransaksi() {
     }, []);
 
 
+    async function ExportXl() {
+        try {
+            await axios.get("https://project-wo.herokuapp.com/transaction/export/data", {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
+                }
+            }).then(res => {
+                console.log(res.data.filename)
+                window.open(res.data.filename)
+                document.body.append(res.data.filename)
+
+            })
+        } catch (error) {
+
+        }
+
+    }
+
+
     return (
         <>
             <Content>
                 <h1 className='mt-4 ml-14 text-2xl'>Table Transaksi</h1>
                 <Row className='mt-4 ' justify='space-between'>
-                    <Col lg={{ span: 10, offset: 2 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
+                    <Col lg={{ span: 5, offset: 2 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
                         <AutoComplete
                             dropdownMatchSelectWidth={252}
                             style={{
@@ -390,15 +459,26 @@ export default function KontenTransaksi() {
                         <Select
                             defaultValue="All"
                             style={{
-                                width: 110,
+                                width: 150,
                             }}
                             onChange={onSelect}
                             placeholder="Filter"
                         >
-                            <Option value="All">All</Option>
+
+                            <Option value="">All</Option>
                             <Option value="Menunggu Pembayaran">Menunggu Pembayaran</Option>
+                            <Option value="Menunggu Approvement">Menunggu Approvement</Option>
+                            <Option value="Approved">Approved</Option>
+                            <Option value="Selesai">Selesai</Option>
+                            <Option value="Expired">Expired</Option>
 
                         </Select>
+                    </Col>
+                    <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
+
+                        <Button type='primary' onClick={ExportXl}
+                            style={{ color: "white", width: "150px", height: "40px", borderRadius: "20px", fontSize: "18px" }}
+                            icon={<PrinterOutlined style={{ fontSize: "20px" }} />}>Print</Button>
                     </Col>
                 </Row>
                 <Row justify="center" align="middle" style={{ overflow: "auto" }}>
@@ -409,6 +489,7 @@ export default function KontenTransaksi() {
                             // scroll={{
                             //     y: 270,
                             // }}
+
                             dataSource={dataUser}
                             pagination={pagination}
                             loading={loading}
@@ -424,14 +505,14 @@ export default function KontenTransaksi() {
                             <p className='text-pink-500'>Apakah anda yakin akan meghapus ?</p>
                         </Modal>
                         <Modal
-                            title="Konfirmasi Update Data"
+                            title="Konfirmasi Approve Data"
                             visible={visibleDua}
                             onOk={handleOkModalUpdate}
                             confirmLoading={confirmLoading}
                             onCancel={handleCancel}
                         >
 
-                            <p className='text-red-500'>{JSON.stringify(modalTaskIdDua)}</p>
+                            <p className='text-red-500'>Approve Transaksi pada user ini ?</p>
                         </Modal>
                         <Modal
                             title="Image"
@@ -452,6 +533,7 @@ export default function KontenTransaksi() {
 
 
             </Content>
+
         </>
     )
 }

@@ -55,7 +55,8 @@ export default function Daftar() {
     }
 
     const onChangeImage = (e) => {
-        const value = e.target.files[0]
+        // const value = e.target.files[0]
+        const value = e.file.originFileObj
         setImage(value)
     }
 
@@ -95,15 +96,19 @@ export default function Daftar() {
             }).then(result => {
                 console.log(result.data.statusCode)
                 if (result.data.statusCode == 201 || result.data.statusCode == 200) {
-                    window.alert(result.data.message)
+                    message.info(result.data.message)
                     router.push('/auth/login')
                 } else {
-                    window.alert("Gagal mendaftar")
+                    message.alert("Gagal mendaftar")
                 }
 
             })
         } catch (error) {
-            console.error(error);
+            if (error) {
+                message.error("Gagal Mendaftar")
+                console.error(error);
+            }
+
         }
 
     }
@@ -223,7 +228,7 @@ export default function Daftar() {
 
                                 </div>
                                 <div className="mb-4">
-                                    <input
+                                    {/* <input
                                         id="img"
                                         style={{ display: "none" }}
                                         type="file"
@@ -236,7 +241,18 @@ export default function Daftar() {
 
                                     <button className="inline-block px-6 py-4 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
                                         <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
-                                    </button>
+                                    </button> */}
+                                    <Form.Item
+                                        rules={[
+                                            {
+                                                required: true,
+                                            },
+                                        ]}
+                                    >
+                                        <Upload multiple={false} onChange={onChangeImage} listType="picture">
+                                            <Button type="primary" icon={<UploadOutlined />} style={{ width: "510px" }}>Upload Photo Anda</Button>
+                                        </Upload>
+                                    </Form.Item>
 
                                 </div>
                                 <div className="text-center pt-1 mb-12 pb-1">

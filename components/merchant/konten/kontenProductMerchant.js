@@ -100,7 +100,7 @@ function getColumns(deleteModal, updateModal, imageModal) {
                             style={{ color: "#0d6efd", borderColor: "#0d6efd", overflow: "hidden" }}
                         // icon={<EyeOutlined />}
                         >
-                            Double Klik
+                            Show Image
                         </Button>
                     </Tooltip>
                 </>

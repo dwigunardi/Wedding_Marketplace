@@ -38,36 +38,44 @@ function getColumns(deleteModal, imageModal) {
             title: 'Variant',
             dataIndex: 'variant',
             key: 'variant',
-            render: (_, data) => (
-                <>
-                    <Row justify='space-evenly space-x-2' >
-                        <Col>
-                            <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
-                            {data.variant.map((v) => {
-                                return (
-                                    <>
-                                        <ol>
-                                            <li style={{ listStyleType: "circle" }}>{v.name}</li>
-                                        </ol>
-                                    </>
-                                )
-                            })}
-                        </Col>
-                        <Col>
-                            <h1 className='border-b-2 border-pink-500'>Variant Price</h1>
-                            {data.variant.map((v) => {
-                                return (
-                                    <>
-                                        <ol>
-                                            <li style={{ listStyleType: "circle" }}>{v.price}</li>
-                                        </ol>
-                                    </>
-                                )
-                            })}
-                        </Col>
-                    </Row>
-                </>
-            )
+            render: (_, data) => {
+                const thouSep = ".";
+                const decSep = ",";
+                // format to money
+                const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
+                ;
+
+                return (
+                    <>
+                        <Row justify='space-evenly space-x-2' >
+                            <Col>
+                                <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
+                                {data.variant.map((v) => {
+                                    return (
+                                        <>
+                                            <ol>
+                                                <li style={{ listStyleType: "circle" }}>{v.name}</li>
+                                            </ol>
+                                        </>
+                                    )
+                                })}
+                            </Col>
+                            <Col>
+                                <h1 className='border-b-2 border-pink-500'>Variant Price</h1>
+                                {data.variant.map((v) => {
+                                    return (
+                                        <>
+                                            <ol>
+                                                <li style={{ listStyleType: "circle" }}>Rp. {toMoney(v.price)}</li>
+                                            </ol>
+                                        </>
+                                    )
+                                })}
+                            </Col>
+                        </Row>
+                    </>
+                )
+            }
         },
         {
             title: 'Category',
@@ -95,7 +103,7 @@ function getColumns(deleteModal, imageModal) {
                             style={{ color: "#0d6efd", borderColor: "#0d6efd", overflow: "hidden" }}
                         // icon={<EyeOutlined />}
                         >
-                            Double Klik
+                            Open Image
                         </Button>
                     </Tooltip>
                 </>
@@ -253,19 +261,19 @@ export default function ProductContent() {
         }, 2000);
 
     };
-    const imageModal = async (record) => {
-        setLoadingDua(true)
+    const imageModal = (record) => {
+
         if (record) {
-            await setModalTaskIdTiga(record);
+            setModalTaskIdTiga(record);
             setVisibleTiga(true);
-            await axios.get(`https://project-wo.herokuapp.com/product/image/${modalTaskIdTiga}`).then(res => {
+            axios.get(`https://project-wo.herokuapp.com/product/image/${record}`).then(res => {
                 setImageUrl(res.config.url)
             })
         } else {
             setVisibleTiga(false)
         }
-        setLoadingDua(false)
-        console.log(modalTaskIdTiga)
+
+        // console.log(modalTaskIdTiga)
 
     };
     const handleOkModalImage = () => {
@@ -370,6 +378,20 @@ export default function ProductContent() {
                             >
                                 <p className='text-pink-500'>Apakah anda yakin akan meghapus ?</p>
 
+                            </Modal>
+                            <Modal
+                                title="Image"
+                                visible={visibleTiga}
+                                // onOk={handleOkModalImage}
+                                onCancel={handleCancel}
+                                confirmLoading={confirmLoading}
+                                footer={[
+                                    <Button key="back" onClick={handleCancel}>
+                                        Return
+                                    </Button>,
+                                ]}
+                            >
+                                <img src={imageUrl} width={500} height={500} />
                             </Modal>
                         </Col>
                     </Row>

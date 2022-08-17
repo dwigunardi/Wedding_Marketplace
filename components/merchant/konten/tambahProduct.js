@@ -44,7 +44,7 @@ export default function TambahProduct(props) {
     }
     const onChangeFoto = (e) => {
         const value = e.file.originFileObj
-        console.log(value)
+        // console.log(value)
         setFoto(value)
     }
     const onChangeStatus = (e) => {

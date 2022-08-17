@@ -5,7 +5,7 @@ import FooterCustomer from "../../../components/footer";
 import Navigasi from "../../../components/navigasi";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { Col, Row, Space, Layout, Select, ConfigProvider, Collapse, message } from "antd";
+import { Col, Row, Space, Layout, Select, ConfigProvider, Collapse, message, Form, Input, DatePicker, Modal } from "antd";
 import { ShoppingCartOutlined, BookOutlined, ShopOutlined, AppstoreOutlined } from "@ant-design/icons";
 import { useRouter, Router } from "next/router";
 import Image from "next/image";
@@ -31,12 +31,19 @@ export default function ProductIdCustomer() {
 
 
     const { Header, Footer, Sider, Content } = Layout;
-
+    const [form] = Form.useForm();
     const [product, setProduct] = useState([])
     const [variant, setVariant] = useState([])
     const [userId, setUserId] = useState('')
     const [transaksiId, setTransaksiId] = useState('')
     const [harga, setHarga] = useState(false)
+    const [visible, setVisible] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalText, setModalText] = useState('Content of the modal');
+    const [startDate, setStartDate] = useState('')
+    const [endDate, setEndDate] = useState('')
+    const [address, setAddress] = useState('')
+
     const router = useRouter();
     const { id } = router.query;
     useEffect(() => {
@@ -75,37 +82,78 @@ export default function ProductIdCustomer() {
     const onChange = (key) => {
         console.log(key);
     };
+
+    const showModal = () => {
+        setVisible(true);
+
+    };
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setVisible(false);
+    };
+    const onFinishFailed = (errorInfo) => {
+        console.log('Failed:', errorInfo);
+    };
+    const onChangeStartDate = (e) => {
+        console.log(e._d)
+        const value = e?._d
+        setStartDate(value)
+    }
+    const onChangeEndDate = (e) => {
+        // console.log(e)
+        const value = e?._d
+        setEndDate(value)
+    }
+    const onChangeAddress = (e) => {
+        const value = e.target.value
+        setAddress(value)
+    }
     // const variantSelected = variant.find((data) => data.variant)
     // console.log(dataSelected)
-    const submitTransaksi = async function () {
+    const submitTransaksi = async function (values) {
+
         try {
             const myData = await {
                 user_id: userId,
                 product_id: dataSelected?.id,
                 variant_id: variant.id,
-                total_price: variant.price
+                total_price: variant.price,
+                start_date: startDate,
+                end_date: endDate,
+                address: address,
             }
-            console.log(myData)
+
+            // console.log(myData)
             if (myData.variant_id == undefined) {
                 message.info("Periksa lagi pesanan anda")
             } else if (myData.total_price == undefined) {
                 message.info("Variant tidak boleh kosong")
             }
-            await axios.post("https://project-wo.herokuapp.com/transaction", myData).then(res => {
+            await axios.post("https://project-wo.herokuapp.com/transaction", myData, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                }
+            }).then(res => {
                 console.log(res.data.data.id)
                 if (res.status == 200 || res.status == 201) {
                     setTransaksiId(res.data.data.id)
+                    setConfirmLoading(true);
                     message.success("Product berhasil di Booking")
                     setTimeout(() => {
+                        setVisible(false);
+                        setConfirmLoading(false)
                         message.info("Anda akan Di arahkan Ke halaman Transaksi")
                         router.push(`/customer/transaksi/${userId}`)
                     }, 2000);
+
                 }
-
-
             })
+
         } catch (error) {
-            message.error("Anda Belom Login dan tidak dapat melanjutkan transaksi")
+            if (error) {
+                message.error("Anda Belom Login dan tidak dapat melanjutkan transaksi")
+            }
+
         }
     }
     const thouSep = ".";
@@ -258,7 +306,7 @@ export default function ProductIdCustomer() {
 
                             <button
                                 type="button"
-                                onClick={submitTransaksi}
+                                onClick={showModal}
                                 className=" space-x-2 justify-end inline-block px-6 bg-pink-500 text-white font-medium text-xs leading-tight shadow-md 
                                 focus:shadow-lg hover:bg-white active:bg-pink-700 hover:text-pink-500 hover:border-pink-500
                                 transition-all ease-in-out w-full"
@@ -271,7 +319,69 @@ export default function ProductIdCustomer() {
                         </div>
                     </Col>
                 </Row>
+                <Modal
+                    title="Isi Lengkap"
+                    visible={visible}
+                    onOk={submitTransaksi}
+                    confirmLoading={confirmLoading}
+                    onCancel={handleCancel}
 
+                >
+
+
+                    <Form
+                        form={form}
+                        className="w-full"
+                        // onFinish={submitTransaksi}
+                        onFinishFailed={onFinishFailed}
+                        autoComplete="off"
+
+                    >
+                        <Form.Item
+                            label="Start Date"
+                            name="start_date"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'choose your date',
+                                },
+                            ]}
+                        >
+                            <DatePicker className="w-full" onChange={onChangeStartDate} format="YYYY-MM-DD" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="End Date"
+                            name="end_date"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'choose your date',
+                                },
+                            ]}
+                        >
+                            <DatePicker onChange={onChangeEndDate} className="w-full" />
+                        </Form.Item>
+                        <Form.Item
+                            label="Address"
+                            name="address"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'input your address',
+                                },
+                            ]}
+                        >
+                            <Input.TextArea onChange={onChangeAddress} className="w-full h-1/2" />
+                        </Form.Item>
+
+                        {/* <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Submit
+                        </Button>
+                    </Form.Item> */}
+                    </Form>
+                </Modal>
             </Content>
 
             <FooterCustomer />

@@ -18,7 +18,7 @@ ConfigProvider.config({
         primaryColor: '#EC4899',
     },
 });
-function getColumns() {
+function getColumns(deleteModal) {
     return [
         {
             title: "Product name",
@@ -53,6 +53,27 @@ function getColumns() {
             title: "Status",
             dataIndex: "status",
             key: "status",
+            render: (_, record) => {
+                function TagStatus() {
+                    if (record.status == "Menunggu Pembayaran") {
+                        return <Tag color="gold">{record.status}</Tag>
+                    } else if (record.status == "Menunggu Approvement") {
+                        return <Tag color="blue">{record.status}</Tag>
+                    } else if (record.status === "Approved") {
+                        return <Button style={{ color: "#4ade80", borderColor: "#4ade80", }}>Cetak Invoice</Button>
+                    } else if (record.status == "Expired") {
+                        return <Tag color="volcano">{record.status}</Tag>
+                    } else if (record.status == "Selesai") {
+                        return <Tag color="green">{record.status}</Tag>
+                    }
+                }
+
+                return (
+                    <>
+                        {TagStatus()}
+                    </>
+                )
+            }
         },
         {
             title: "Action",
@@ -63,15 +84,23 @@ function getColumns() {
                 return (<>
                     <Space size="middle">
                         <Link href={`/customer/transaksi/uploadProof/${record.id}`}>
-                            <Tooltip placement="top" title="Bayar">
+                            <Tooltip placement="top" title="Detail">
                                 <Button
                                     style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
-
                                 >
-                                    Bayar
+                                    Detail
                                 </Button>
                             </Tooltip>
                         </Link>
+                        <Tooltip placement="right" title="Delete">
+                            <Button
+                                onClick={() => deleteModal(record.id)}
+                                type="danger"
+                                danger={true}
+                            >
+                                Cancel
+                            </Button>
+                        </Tooltip>
                     </Space>
                 </>)
             }
@@ -82,6 +111,11 @@ function getColumns() {
 
 export default function Transaksi() {
 
+    //state modal delete
+    const [visible, setVisible] = useState(false);
+    const [modalText, setModalText] = useState('Content of the modal');
+    const [modalTaskId, setModalTaskId] = useState('');
+    const [confirmLoading, setConfirmLoading] = useState(false);
     const [transaksi, setTransaksi] = useState([])
     const [pagination, setPagination] = useState({
         current: 1,
@@ -101,7 +135,7 @@ export default function Transaksi() {
                     'Authorization': `Bearer ${getToken}`
                 }
             }).then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.status == 200 || res.status == 201) {
                     setTransaksi(res.data.items)
                 }
@@ -118,8 +152,42 @@ export default function Transaksi() {
         getData()
 
     }, []);
-
     const dataSelected = transaksi.filter((data) => data.user.id == id)
+
+    const deleteModal = (record) => {
+        if (record) {
+            setModalTaskId(record);
+            setVisible(true);
+
+        } else {
+            setVisible(false)
+        }
+
+
+    };
+    const handleOkModalDelete = () => {
+        axios.delete(`https://project-wo.herokuapp.com/transaction/delete/${modalTaskId}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
+            console.log(res)
+            getData()
+        })
+
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setVisible(false);
+            setConfirmLoading(false);
+        }, 2000);
+        // location.reload()
+    };
+
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setVisible(false);
+    };
     // const dataTransaksi = [
     //     {
     //         product: dataSelected?.product.name,
@@ -131,7 +199,7 @@ export default function Transaksi() {
 
     //     }
     // ]
-    console.log(dataSelected)
+    // console.log(dataSelected)
     return (
         <>
             <Layout style={{ backgroundColor: "white" }}>
@@ -154,15 +222,23 @@ export default function Transaksi() {
                             xs={{ span: 24 }}
                         >
                             <Table
-                                columns={getColumns()}
+                                columns={getColumns(deleteModal)}
                                 dataSource={dataSelected}
                                 size="large"
-                                pagination={false}
+                                pagination={pagination}
                                 scroll={{ y: 300 }}
                             />
                         </Col>
                     </Row>
-
+                    <Modal
+                        title="Konfirmasi Pembatalan"
+                        visible={visible}
+                        onOk={handleOkModalDelete}
+                        confirmLoading={confirmLoading}
+                        onCancel={handleCancel}
+                    >
+                        <p className='text-pink-500'>Apakah anda yakin akan Membatalkan ?</p>
+                    </Modal>
                 </div>
             </Content>
 
