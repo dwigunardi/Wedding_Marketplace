@@ -94,6 +94,7 @@ export default function detail() {
                 setDataUser(res.data.data)
             })
             setConfirmLoading(true);
+            validate()
             setTimeout(() => {
                 setVisible(false);
                 setConfirmLoading(false);
@@ -125,7 +126,8 @@ export default function detail() {
                 .then((res) => {
                     message.success("berhasil Upload File")
                     // onChangeImage(res.data.data.filename)
-                    console.log(res)
+                    validate()
+                    // console.log(res)
                 });
         } catch (e) {
             console.log(e, "apa errornya")
@@ -133,7 +135,7 @@ export default function detail() {
         }
     };
 
-    const orig = `https://project-wo.herokuapp.com/users/image/${dataUser.image}`
+    const orig = `https://project-wo.herokuapp.com/file/${dataUser.image}`
     const onChangeName = (e) => {
         const value = e.target.value
         setNameUpdate(value)
@@ -215,6 +217,11 @@ export default function detail() {
                                             alt=""
                                         />
                                     </a>
+
+                                    <Upload customRequest={(args) => uploadHandler(args)} multiple={false} showUploadList={false}>
+                                        <Button icon={<UploadOutlined />}></Button>
+                                    </Upload>
+
                                     <br />
 
                                 </Col>
@@ -382,17 +389,6 @@ export default function detail() {
 
                                         >
                                             <Input />
-                                        </Form.Item>
-                                        <Form.Item
-                                            name="upload"
-                                            label="Upload"
-
-
-
-                                        >
-                                            <Upload customRequest={(args) => uploadHandler(args)} multiple={false}>
-                                                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                                            </Upload>
                                         </Form.Item>
                                     </Form>
 

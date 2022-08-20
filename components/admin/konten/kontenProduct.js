@@ -252,7 +252,7 @@ export default function ProductContent() {
             console.log(res)
             console.log(pagination)
         })
-        product
+        getData()
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
@@ -266,7 +266,8 @@ export default function ProductContent() {
         if (record) {
             setModalTaskIdTiga(record);
             setVisibleTiga(true);
-            axios.get(`https://project-wo.herokuapp.com/product/image/${record}`).then(res => {
+            axios.get(`https://project-wo.herokuapp.com/file/${record}`).then(res => {
+                // console.log(res)
                 setImageUrl(res.config.url)
             })
         } else {

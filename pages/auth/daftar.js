@@ -77,29 +77,39 @@ export default function Daftar() {
     const submitDaftar = async () => {
 
         try {
-            const data = new FormData()
-            data.append('name', name)
-            data.append('username', username)
-            data.append('email', email)
-            data.append('no_telp', no_telp)
-            data.append('password', password)
-            data.append('role_id', roleId)
-            data.append('image', image)
+            // const data = new FormData()
+            // data.append('name', name)
+            // data.append('username', username)
+            // data.append('email', email)
+            // data.append('no_telp', no_telp)
+            // data.append('password', password)
+            // data.append('role_id', roleId)
+            // // data.append('image', image)
 
-            for (const value of data.values()) {
-                console.log(value);
+            // for (const value of data.values()) {
+            //     console.log(value);
+            // }  
+            const data = {
+                name: name,
+                username: username,
+                email: email,
+                no_telp: no_telp,
+                password: password,
+                role_id: roleId,
+
             }
+
             const res = await axios.post("https://project-wo.herokuapp.com/auth/register", data, {
                 headers: {
-                    "Content-Type": "multipart/form-data",
+                    "Content-Type": "application/json",
                 }
             }).then(result => {
                 console.log(result.data.statusCode)
                 if (result.data.statusCode == 201 || result.data.statusCode == 200) {
-                    message.info(result.data.message)
+                    message.info("Success Mendaftar Silahkan Login")
                     router.push('/auth/login')
                 } else {
-                    message.alert("Gagal mendaftar")
+                    message.info("Gagal mendaftar")
                 }
 
             })
@@ -242,7 +252,7 @@ export default function Daftar() {
                                     <button className="inline-block px-6 py-4 border-2 border-pink-500 text-pink-500 font-medium text-xs leading-tight uppercase rounded-full hover:bg-black hover:bg-opacity-5 focus:outline-none focus:ring-0 transition duration-150 ease-in-out">
                                         <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
                                     </button> */}
-                                    <Form.Item
+                                    {/* <Form.Item
                                         rules={[
                                             {
                                                 required: true,
@@ -252,7 +262,7 @@ export default function Daftar() {
                                         <Upload multiple={false} onChange={onChangeImage} listType="picture">
                                             <Button type="primary" icon={<UploadOutlined />} style={{ width: "510px" }}>Upload Photo Anda</Button>
                                         </Upload>
-                                    </Form.Item>
+                                    </Form.Item> */}
 
                                 </div>
                                 <div className="text-center pt-1 mb-12 pb-1">

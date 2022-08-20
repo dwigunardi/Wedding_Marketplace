@@ -69,9 +69,10 @@ function getColumns(deleteModal, updateModal, imageModal) {
                 // format to money
                 const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
                 ;
+                // console.log(data.variant.name)
                 return (
                     <>
-                        <Row justify='space-evenly' >
+                        {/* <Row justify='space-evenly' >
                             <Col>
                                 <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
 
@@ -93,7 +94,7 @@ function getColumns(deleteModal, updateModal, imageModal) {
                                 </ol>
 
                             </Col>
-                        </Row>
+                        </Row> */}
                     </>
                 )
             }
@@ -267,15 +268,26 @@ export default function KontenTransaksi() {
 
 
     };
-    const handleOkModalDelete = () => {
-        axios.delete(`https://project-wo.herokuapp.com/transaction/delete/${modalTaskId}`, {
+    const handleOkModalDelete = async () => {
+        const data = await {
+            // total_price: modalTaskIdDua.total_price,
+            // user_id: modalTaskIdDua.user.id,
+            // variant_id: modalTaskIdDua.variant.id,
+            // product_id: modalTaskIdDua.product.id,
+            status: "Declined",
+            // start_date: modalTaskIdDua.startDate,
+            // end_date: modalTaskIdDua.endDate,
+            // address: modalTaskIdDua.address,
+        }
+        // console.log(data)
+        await axios.put(`https://project-wo.herokuapp.com/transaction/edit/${modalTaskId}`, data, {
             headers: {
-                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
+                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`,
+                "content-type": "application/json"
             }
         }).then(res => {
-
+            console.log(res)
         })
-
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
@@ -327,7 +339,7 @@ export default function KontenTransaksi() {
                 // end_date: modalTaskIdDua.endDate,
                 // address: modalTaskIdDua.address,
             }
-            console.log(data)
+            // console.log(data)
             await axios.put(`https://project-wo.herokuapp.com/transaction/edit/${modalTaskIdDua.id}`, data, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token_admin")}`,
@@ -359,7 +371,7 @@ export default function KontenTransaksi() {
         if (record) {
             // await setModalTaskIdTiga(record);
             setVisibleTiga(true);
-            await axios.get(`https://project-wo.herokuapp.com/transaction/image/${record}`).then(res => {
+            await axios.get(`https://project-wo.herokuapp.com/file/${record}`).then(res => {
                 setImageUrl(res.config.url)
             })
         } else {
@@ -395,18 +407,20 @@ export default function KontenTransaksi() {
                 'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
             }
         }).then(res => {
-            setDataUser(res.data.items)
+            // setDataUser(res.data.items)
+            console.log(res)
             // console.log(res.data.items)
         })
     }
     const onSelect = (value) => {
-        console.log('onSelect', value);
+        console.log(value);
         axios.get(`https://project-wo.herokuapp.com/transaction/search/transaction/?page=1&limit=20&search=&status=${value}`, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
             }
         }).then(res => {
-            setDataUser(res.data.items)
+            console.log(res)
+            // setDataUser(res.data.items)
             // console.log(res.data.items)
         })
     };
@@ -422,7 +436,7 @@ export default function KontenTransaksi() {
                     'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
                 }
             }).then(res => {
-                console.log(res.data.filename)
+                console.log(res)
                 window.open(res.data.filename)
                 document.body.append(res.data.filename)
 
@@ -502,7 +516,7 @@ export default function KontenTransaksi() {
                             confirmLoading={confirmLoading}
                             onCancel={handleCancel}
                         >
-                            <p className='text-pink-500'>Apakah anda yakin akan meghapus ?</p>
+                            <p className='text-pink-500'>Apakah anda yakin akan menolak transaksi ini ?</p>
                         </Modal>
                         <Modal
                             title="Konfirmasi Approve Data"

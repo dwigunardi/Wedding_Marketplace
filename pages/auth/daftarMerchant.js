@@ -75,35 +75,46 @@ export default function MerchantRegis() {
     const submitDaftar = async () => {
 
         try {
-            const data = new FormData()
-            data.append('name', name)
-            data.append('username', username)
-            data.append('email', email)
-            data.append('no_telp', no_telp)
-            data.append('password', password)
-            data.append('role_id', roleId)
-            data.append('image', image)
-            data.append('merchant_name', namaToko)
+            //     const data = new FormData()
+            //     data.append('name', name)
+            //     data.append('username', username)
+            //     data.append('email', email)
+            //     data.append('no_telp', no_telp)
+            //     data.append('password', password)
+            //     data.append('role_id', roleId)
+            //     // data.append('image', image)
+            //     data.append('merchant_name', namaToko)
 
-
+            const data = {
+                name: name,
+                username: username,
+                email: email,
+                no_telp: no_telp,
+                password: password,
+                role_id: roleId,
+                merchant_name: namaToko
+            }
 
             const res = await axios.post("https://project-wo.herokuapp.com/auth/register", data, {
                 headers: {
-                    "Content-Type": "multipart/form-data",
+                    "Content-Type": "application/json",
                 }
             }).then(result => {
                 console.log(result)
                 if (result.status == 201 || result.status == 200) {
-                    window.alert("Selamat anda telah mendaftar silahkan login")
+                    message.success("Selamat anda telah mendaftar silahkan login")
                     router.push('/auth/login')
                 } else {
-                    window.alert("Gagal mendaftar")
+                    message.info("Gagal mendaftar")
                 }
 
             })
         } catch (error) {
-            console.error(error);
-            window.alert(error, error.message)
+            if (error) {
+                console.error(error);
+                message.error(error.message)
+            }
+
         }
 
     }
@@ -231,7 +242,7 @@ export default function MerchantRegis() {
                                     />
 
                                 </div>
-                                <div className="mb-4">
+                                {/* <div className="mb-4">
                                     <input
                                         id="img"
                                         style={{ display: "none" }}
@@ -247,7 +258,7 @@ export default function MerchantRegis() {
                                         <label htmlFor="img"><UploadOutlined /> upload Photo anda </label>
                                     </button>
 
-                                </div>
+                                </div> */}
                                 <div className="text-center pt-1 mb-12 pb-1">
                                     <button
                                         type="submit"

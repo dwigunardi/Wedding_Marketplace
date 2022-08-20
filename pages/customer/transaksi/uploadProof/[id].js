@@ -4,7 +4,7 @@ import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, For
 import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined, UploadOutlined, MinusCircleOutlined, StopOutlined, InfoOutlined, CheckOutlined } from '@ant-design/icons';
 import { Content } from "antd/lib/layout/layout";
 import React, { useEffect, useState } from "react";
-import { useRouter, Router } from "next/router";
+import Router, { useRouter } from "next/router";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
@@ -98,12 +98,15 @@ export default function Transaksi() {
                     // console.log(res)
                     message.success("Berhasil Submit dan tunggu approve dari Admin")
                     setApprove("Menunggu Approvement")
+                    getData()
+                    if (approve == "Menunggu Approvement") {
+                        setTimeout(() => {
+                            message.info("Anda Sudah MengUpload Bukti Pembayaran Harap Menunggu Keputusan Admin")
+                            Router.back()
+                        }, 3000);
+                    }
                 }
-                if (approve == "Menunggu Approvement") {
-                    setTimeout(() => {
-                        message.info("Anda Sudah MengUpload Bukti Pembayaran Harap Menunggu Keputusan Admin")
-                    }, 3000);
-                }
+
             })
 
 

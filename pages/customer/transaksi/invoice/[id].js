@@ -4,36 +4,103 @@ import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-
+import { Col, Divider, message, Row, Table } from 'antd';
+import 'antd/dist/antd.css';
+import ReactPDF, { Page, Text, View, Document, StyleSheet, } from '@react-pdf/renderer';
+import logo from "../../../../public/Image/sahin-love.png"
+import "./Invoice.module.css"
 
 
 export default function Invoice() {
-
+    const [data, setData] = useState({})
+    const [dataProduct, setDataProduct] = useState([])
+    const [dataUser, setDataUser] = useState([])
     const router = useRouter()
     const { id } = router.query;
 
 
+    async function getDataAll() {
+        try {
+            const getToken = await localStorage.getItem("token_customer")
+            await axios.get(`https://project-wo.herokuapp.com/transaction/detail/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${getToken}`
+                }
+            }).then(res => {
+
+                if (res.status == 200 || res.status == 201) {
+                    setData(res.data.data)
+                    axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=&category=&merchant=`).then(res => {
+                        // console.log(res)
+                        setDataProduct(res.data.items)
+                        axios.get(`https://project-wo.herokuapp.com/users`, {
+                            headers: {
+                                'Authorization': `Bearer ${getToken}`
+                            }
+                        }).then(result => {
+                            // console.log(result.data.items)
+                            if (result.status == 200 || result.status == 201) {
+                                setDataUser(result.data.items)
+
+                            }
+
+                        })
+                    })
+                }
+
+            })
+        } catch (error) {
+            if (error) {
+                message.error("Data tidak ditemukan tolong kembali lagi")
+            }
+        }
+    }
+    useEffect(() => {
+        getDataAll()
+        setTimeout(() => {
+            window.print()
+        }, 5000);
+    }, []);
+
+    const dataSelected = dataProduct.find((dataProduct) => dataProduct.id == data.product.id);
+    const merchantSelected = dataUser.find((data) => data.merchant[0]?.id == dataSelected.merchant?.id)
+
+    console.log("inidata dari dataselected", merchantSelected)
+    const thouSep = ".";
+    const decSep = ",";
+    // format to money
+    const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
+    ;
+
     return (
         <>
-            <>
-                <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                    <div className="w-3/5 bg-white shadow-lg">
-                        <div className="flex justify-between p-4">
-                            <div>
-                                <h1 className="text-3xl italic font-extrabold tracking-widest text-indigo-500">
-                                    Larainfo
-                                </h1>
+            <Document>
+                <Page size="A4">
+                    <View>
+                        <Row justify="center" >
+                            <Col span={10}>
+
+                                {/* <h1 className="text-3xl italic font-extrabold tracking-widest text-indigo-500">
+                                                Larainfo
+                                            </h1> */}
+                                <Image src={logo} objectFit={'contain'} width={150} height={100} />
+
+
+                            </Col>
+                            <Col span={10}>
                                 <p className="text-base">
-                                    If account is not paid within 7 days the credits details supplied as
-                                    confirmation.
+                                    Invoice digunakan sebagai Bukti pada saat anda melanjutkan transaksi kepada pihak merchant
                                 </p>
-                            </div>
-                            <div className="p-2">
-                                <ul className="flex">
-                                    <li className="flex flex-col items-center p-2 border-l-2 border-indigo-200">
+                            </Col>
+                        </Row>
+                        <Row justify="space-between">
+                            <Col>
+                                <div className="p-2">
+
+                                    <div className="p-2 border-l-2 border-pink-200">
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            className="w-6 h-6 text-blue-600"
+                                            className="w-6 h-6 text-pink-600 mx-auto"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -45,141 +112,147 @@ export default function Invoice() {
                                                 d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
                                             />
                                         </svg>
-                                        <span className="text-sm">www.larainfo.com</span>
-                                        <span className="text-sm">www.lorememhh.com</span>
-                                    </li>
-                                    <li className="flex flex-col p-2 border-l-2 border-indigo-200">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="w-6 h-6 text-blue-600"
+                                        <span className="text-sm text-center">www.Sahin.com</span>
+                                    </div>
+
+                                </div>
+                            </Col>
+                            <Col>
+                                <div className="p-2">
+
+                                    <div className="p-2 border-l-2 border-pink-200">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                            className="w-6 h-6 text-pink-600 mx-auto"
                                             fill="none"
                                             viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                                            />
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                                            />
+                                            stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                            <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3" />
+                                            <circle cx="12" cy="10" r="3" /><circle cx="12" cy="12" r="10" />
                                         </svg>
-                                        <span className="text-sm">
-                                            2821 Kensington Road,Avondale Estates, GA 30002 USA
-                                        </span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div className="w-full h-0.5 bg-indigo-500" />
+                                        <span className="text-sm text-center">{data.user?.name}</span>
+                                    </div>
+
+                                </div>
+                            </Col>
+                            <Col>
+                                <div className=" p-2 border-l-2 border-pink-200">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="w-6 h-6 text-pink-600 mx-auto"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                                        />
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                                        />
+                                    </svg>
+                                    <span className="text-sm">
+                                        {data.address}
+                                    </span>
+                                </div>
+                            </Col>
+                        </Row>
+                        <div className="w-full h-0.5 bg-pink-500" />
                         <div className="flex justify-between p-4">
                             <div>
                                 <h6 className="font-bold">
                                     Order Date :{" "}
-                                    <span className="text-sm font-medium"> 12/12/2022</span>
+                                    <span className="text-sm font-medium text-pink-500">{data?.startDate} </span>
                                 </h6>
                                 <h6 className="font-bold">
-                                    Order ID : <span className="text-sm font-medium"> 12/12/2022</span>
+                                    Order ID : <span className="text-sm font-medium text-pink-500">{data?.id}</span>
                                 </h6>
                             </div>
                             <div className="w-40">
                                 <address className="text-sm">
-                                    <span className="font-bold"> Billed To : </span>
-                                    Joe Smith 795 Folsom Ave San Francisco, CA 94107 P: (123) 456-7890
+                                    <span className="font-bold"> Billed To : {data?.user?.name}</span>
+
                                 </address>
                             </div>
                             <div className="w-40">
                                 <address className="text-sm">
-                                    <span className="font-bold">Ship To :</span>
-                                    Joe doe 800 Folsom Ave San Francisco, CA 94107 P: + 111-456-7890
+                                    <span className="font-bold">Event Location : {data?.address}</span>
+
                                 </address>
                             </div>
                             <div />
                         </div>
+                        <h1 className="ml-10 text-lg font-bold">Information about merchant</h1>
+                        <p className="ml-10 text-pink-500">
+                            You are recommended to contact!</p>
+                        <Row>
+
+                            <Col>
+                                <ul className="ml-10 text-pink-500 ">
+                                    <li>
+                                        Merchant Name : {merchantSelected?.name}
+                                    </li>
+                                    <li>
+                                        Shop Name : {dataSelected?.merchant?.name}
+                                    </li>
+                                    <li>
+                                        Email : {merchantSelected?.email}
+                                    </li>
+                                    <li>
+                                        No Telp : {merchantSelected?.no_telp}
+                                    </li>
+                                </ul>
+                            </Col>
+                        </Row>
                         <div className="flex justify-center p-4">
-                            <div className="border-b border-gray-200 shadow">
+                            <div className="border-b border-pink-200 shadow">
                                 <table className="">
-                                    <thead className="bg-gray-50">
+                                    <thead className="bg-pink-50">
                                         <tr>
-                                            <th className="px-4 py-2 text-xs text-gray-500 ">#</th>
-                                            <th className="px-4 py-2 text-xs text-gray-500 ">
+                                            <th className="px-4 py-2 text-xs text-pink-500 ">#</th>
+                                            <th className="px-4 py-2 text-xs text-pink-500 ">
                                                 Product Name
                                             </th>
-                                            <th className="px-4 py-2 text-xs text-gray-500 ">Quantity</th>
-                                            <th className="px-4 py-2 text-xs text-gray-500 ">Rate</th>
-                                            <th className="px-4 py-2 text-xs text-gray-500 ">Subtotal</th>
+                                            <th className="px-4 py-2 text-xs text-pink-500 ">Variant</th>
+                                            <th className="px-4 py-2 text-xs text-pink-500 ">Location</th>
+                                            <th className="px-4 py-2 text-xs text-pink-500 ">Product price</th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white">
                                         <tr className="whitespace-nowrap">
-                                            <td className="px-6 py-4 text-sm text-gray-500">1</td>
+                                            <td className="px-6 py-4 text-sm text-pink-500">1</td>
                                             <td className="px-6 py-4">
-                                                <div className="text-sm text-gray-900">
-                                                    Amazon Brand - Symactive Men's Regular Fit T-Shirt
+                                                <div className="text-sm text-pink-900">
+                                                    {data?.product?.name}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4">
-                                                <div className="text-sm text-gray-500">4</div>
+                                                <div className="text-sm text-pink-500">{data?.variant?.name}</div>
                                             </td>
-                                            <td className="px-6 py-4 text-sm text-gray-500">$20</td>
-                                            <td className="px-6 py-4">$30</td>
+                                            <td className="px-6 py-4 text-sm text-pink-500">{data?.product?.location}</td>
+                                            <td className="px-6 py-4 text-pink-500">Rp. {toMoney(data?.total_price)}</td>
                                         </tr>
-                                        <tr className="whitespace-nowrap">
-                                            <td className="px-6 py-4 text-sm text-gray-500">2</td>
-                                            <td className="px-6 py-4">
-                                                <div className="text-sm text-gray-900">
-                                                    Amazon Brand - Symactive Men's Regular Fit T-Shirt
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="text-sm text-gray-500">2</div>
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-gray-500">$60</td>
-                                            <td className="px-6 py-4">$12</td>
-                                        </tr>
-                                        <tr className="border-b-2 whitespace-nowrap">
-                                            <td className="px-6 py-4 text-sm text-gray-500">3</td>
-                                            <td className="px-6 py-4">
-                                                <div className="text-sm text-gray-900">
-                                                    Amazon Brand - Symactive Men's Regular Fit T-Shirt
-                                                </div>
-                                            </td>
-                                            <td className="px-6 py-4">
-                                                <div className="text-sm text-gray-500">1</div>
-                                            </td>
-                                            <td className="px-6 py-4 text-sm text-gray-500">$10</td>
-                                            <td className="px-6 py-4">$13</td>
-                                        </tr>
-                                        <tr className="">
-                                            <td colSpan={3} />
-                                            <td className="text-sm font-bold">Sub Total</td>
-                                            <td className="text-sm font-bold tracking-wider">
-                                                <b>$950</b>
-                                            </td>
-                                        </tr>
+
+
                                         {/*end tr*/}
                                         <tr>
                                             <th colSpan={3} />
-                                            <td className="text-sm font-bold">
-                                                <b>Tax Rate</b>
-                                            </td>
-                                            <td className="text-sm font-bold">
-                                                <b>$1.50%</b>
-                                            </td>
+
+
                                         </tr>
                                         {/*end tr*/}
-                                        <tr className="text-white bg-gray-800">
+                                        <tr className="text-white bg-pink-800">
                                             <th colSpan={3} />
                                             <td className="text-sm font-bold">
                                                 <b>Total</b>
                                             </td>
                                             <td className="text-sm font-bold">
-                                                <b>$999.0</b>
+                                                <b>Rp.{toMoney(data?.total_price)}</b>
                                             </td>
                                         </tr>
                                         {/*end tr*/}
@@ -198,51 +271,25 @@ export default function Invoice() {
                                         To be paid by cheque or credit card or direct payment online.
                                     </li>
                                     <li>
-                                        If account is not paid within 7 days the credits details supplied.
+                                        if you have received this invoice, immediately chat with the relevant merchant
                                     </li>
                                 </ul>
                             </div>
                             <div className="p-4">
                                 <h3>Signature</h3>
-                                <div className="text-4xl italic text-indigo-500">AAA</div>
+                                <div className="text-4xl italic text-pink-500">AAA</div>
                             </div>
                         </div>
-                        <div className="w-full h-0.5 bg-indigo-500" />
+                        <div className="w-full h-0.5 bg-pink-500" />
                         <div className="p-4">
                             <div className="flex items-center justify-center">
                                 Thank you very much for doing business with us.
                             </div>
-                            <div className="flex items-end justify-end space-x-3">
-                                <button className="px-4 py-2 text-sm text-green-600 bg-green-100">
-                                    Print
-                                </button>
-                                <button className="px-4 py-2 text-sm text-blue-600 bg-blue-100">
-                                    Save
-                                </button>
-                                <button className="px-4 py-2 text-sm text-red-600 bg-red-100">
-                                    Cancel
-                                </button>
-                            </div>
+
                         </div>
-                    </div>
-                </div>
-                <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                    <div className="w-6/12 mt-4 text-left bg-white shadow-lg">
-                        <div className="flex justify-between px-8 py-6">
-                            <div className="flex items-center">sale invoice</div>
-                            <div className="flex items-center gap-4">
-                                <button className="px-2 py-1 bg-gray-200 hover:bg-gray-400">
-                                    Save
-                                </button>
-                                <button className="px-2 py-1 bg-gray-200 hover:bg-gray-400">
-                                    Print
-                                </button>
-                            </div>
-                        </div>
-                        <div className="w-full h-0.5 bg-gray-800" />
-                    </div>
-                </div>
-            </>
+                    </View>
+                </Page>
+            </Document>
 
         </>
     )

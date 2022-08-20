@@ -60,11 +60,18 @@ function getColumns(deleteModal) {
                     } else if (record.status == "Menunggu Approvement") {
                         return <Tag color="blue">{record.status}</Tag>
                     } else if (record.status === "Approved") {
-                        return <Button style={{ color: "#4ade80", borderColor: "#4ade80", }}>Cetak Invoice</Button>
+                        return (<>
+                            <Link href={`/customer/transaksi/invoice/${record.id}`}>
+                                <Button style={{ color: "#4ade80", borderColor: "#4ade80", }} >Cetak Invoice</Button>
+                            </Link>
+                        </>)
                     } else if (record.status == "Expired") {
                         return <Tag color="volcano">{record.status}</Tag>
                     } else if (record.status == "Selesai") {
                         return <Tag color="green">{record.status}</Tag>
+                    }
+                    else if (record.status == "Declined") {
+                        return <Tag color="volcano">{record.status}</Tag>
                     }
                 }
 
@@ -80,28 +87,122 @@ function getColumns(deleteModal) {
             key: "action",
             dataIndex: "action",
             render: (_, record) => {
+                function buttonStatus() {
+                    if (record.status == "Menunggu Pembayaran") {
+                        return (
+                            <>
+                                <Space size="middle">
+                                    <Link href={`/customer/transaksi/uploadProof/${record.id}`}>
+                                        <Tooltip placement="top" title="Detail">
+                                            <Button
+                                                style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
+                                            >
+                                                Detail
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
+                                    <Tooltip placement="right" title="Delete">
+                                        <Button
+                                            onClick={() => deleteModal(record.id)}
+                                            type="danger"
+                                            danger={true}
+                                        >
+                                            Cancel
+                                        </Button>
+                                    </Tooltip>
+                                </Space>
+                            </>
+                        )
+
+                    } else if (record.status == "Menunggu Approvement") {
+                        return (
+                            <>
+                                <Space size="middle">
+                                    <Link href={`/customer/transaksi/info/${record.id}`}>
+                                        <Tooltip placement="top" title="Detail">
+                                            <Button
+                                                style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
+                                            >
+                                                Detail
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
+                                </Space>
+                            </>
+                        )
+
+                    } else if (record.status == "Approved") {
+                        return (
+                            <>
+                                <Space size="middle">
+                                    <Link href={`/customer/transaksi/result/${record.id}`}>
+                                        <Tooltip placement="top" title="Detail">
+                                            <Button
+                                                style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
+                                            >
+                                                Detail
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
+                                </Space>
+                            </>
+                        )
+                    } else if (record.status == "Expired") {
+                        return (
+                            <>
+                                <Space size="middle">
+
+                                    <Tooltip placement="top" title="Detail">
+                                        <Button
+                                            style={{ color: "red", borderColor: "red", width: "100px" }}
+                                        >
+                                            Expired
+                                        </Button>
+                                    </Tooltip>
+
+                                </Space>
+                            </>
+                        )
+                    } else if (record.status == "Declined") {
+                        return (
+                            <>
+                                <Space size="middle">
+
+                                    <Tooltip placement="top" title="Detail">
+                                        <Button
+                                            style={{ color: "red", borderColor: "red", width: "100px" }}
+                                        >
+                                            Declined
+                                        </Button>
+                                    </Tooltip>
+
+                                </Space>
+                            </>
+                        )
+                    } else if (record.status == "Selesai") {
+                        return (
+                            <>
+                                <Space size="middle">
+                                    <Link href={`/customer/transaksi/selesai/${record.id}`}>
+                                        <Tooltip placement="top" title="Detail">
+                                            <Button
+                                                style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
+                                            >
+                                                Detail
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
+                                </Space>
+                            </>
+                        )
+                    }
+
+
+                }
 
                 return (<>
-                    <Space size="middle">
-                        <Link href={`/customer/transaksi/uploadProof/${record.id}`}>
-                            <Tooltip placement="top" title="Detail">
-                                <Button
-                                    style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
-                                >
-                                    Detail
-                                </Button>
-                            </Tooltip>
-                        </Link>
-                        <Tooltip placement="right" title="Delete">
-                            <Button
-                                onClick={() => deleteModal(record.id)}
-                                type="danger"
-                                danger={true}
-                            >
-                                Cancel
-                            </Button>
-                        </Tooltip>
-                    </Space>
+
+                    {buttonStatus()}
                 </>)
             }
         },

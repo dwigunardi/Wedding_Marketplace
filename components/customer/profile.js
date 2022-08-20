@@ -1,4 +1,4 @@
-import { Col, Row, Card, Button, Form, Input, Space, Modal, Upload } from "antd";
+import { Col, Row, Card, Button, Form, Input, Space, Modal, Upload, message } from "antd";
 import {
     InboxOutlined, UploadOutlined, EyeTwoTone,
     EyeInvisibleOutlined
@@ -123,8 +123,9 @@ export default function DetailCustomer() {
                     }
                 )
                 .then((res) => {
-                    // message.success("berhasil Upload File")
+                    message.success("berhasil Upload File")
                     // onChangeImage(res.data.data.filename)
+                    setDataUser(res.data.data)
                     console.log(res)
                 });
         } catch (e) {
@@ -202,9 +203,9 @@ export default function DetailCustomer() {
                 <Row justify="center" align="middle" className='mt-6 ' >
                     <Col lg={{ span: 16 }} sm={{ span: 20 }}>
                         <div className="rounded-lg shadow-lg bg-white ">
-                            <Row justify="center" align="middle">
+                            <Row justify="center" align="middle" className="mb-10">
                                 <Col>
-                                    <a href="#!" className="mx-20">
+                                    <a href="#!">
                                         <Image
                                             className="rounded-t-lg"
                                             loader={() => dataUser.image}
@@ -216,8 +217,9 @@ export default function DetailCustomer() {
                                             alt=""
                                         />
                                     </a>
-                                    <br />
-
+                                    <Upload customRequest={(args) => uploadHandler(args)} multiple={false} showUploadList={false}>
+                                        <Button icon={<UploadOutlined />}></Button>
+                                    </Upload>
                                 </Col>
                             </Row>
                             <div className="w-full border-b-2" ></div>
