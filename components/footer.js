@@ -51,7 +51,7 @@ function FooterCustomer() {
                             </p>
                             <p className="mb-4">
                                 <a href="#!" className="text-white">
-                                    Agen
+
                                 </a>
                             </p>
                         </Col>

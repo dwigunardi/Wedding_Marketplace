@@ -485,6 +485,7 @@ export default function KontenTransaksi() {
                             <Option value="Approved">Approved</Option>
                             <Option value="Selesai">Selesai</Option>
                             <Option value="Expired">Expired</Option>
+                            <Option value="Decline">Decline</Option>
 
                         </Select>
                     </Col>

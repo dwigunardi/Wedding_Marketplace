@@ -3,64 +3,73 @@ import {
     CreditCardOutlined,
     UserOutlined,
     FileOutlined,
+    InboxOutlined,
 } from '@ant-design/icons';
+import { useEffect, useState } from "react";
+import jwt_decode from 'jwt-decode'
+import axios from "axios";
+// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
 const { Header, Content, Sider } = Layout;
 
 
 export default function ContentDashBoard() {
-    // data bohongan
-    const data = [
-        {
-            key: 2,
-            Nama: "Ariel Winardi",
-            NomorPemesanan: 19072022,
-            tanggalBeli: "09-07-2022",
-            jumlah: 120000,
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        },
-        {
-            key: 1,
-            Nama: "Dwi Gunawan",
-            NomorPemesanan: 11072022,
-            tanggalBeli: "11-07-2022",
-            jumlah: 180000,
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        },
-        {
-            key: 3,
-            Nama: "Galuh Sudariono",
-            NomorPemesanan: 15072022,
-            tanggalBeli: "15-07-2022",
-            jumlah: 200000,
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        },
-        {
-            key: 4,
-            Nama: "Budi wicaksono",
-            email: "budi_wicaksono@gaguna.com",
-            jumlah: 0,
-            status: ["Non-Aktif"],
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        },
-        {
-            key: 5,
-            Nama: "Munawir",
-            email: "Munawir@hot.com",
-            jumlah: 0,
-            status: ["Aktif"],
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        }
-    ];
-    const totalTransaksi = data.length - 2;
-    const totalPendapatan = data.reduce((i, obj) => {
-        return i + obj.jumlah;
-    }, 0);
-    const totalCustomer = data.length;
+
+
+    const [dataUser, setDataUser] = useState([])
+    const [dataProduct, setDataProduct] = useState([])
+    const [dataTransaksi, setDataTransaksi] = useState([])
+
+
+    useEffect(() => {
+        const controller = new AbortController()
+        const getToken = localStorage.getItem("token_admin")
+        const decode = jwt_decode(getToken)
+        axios.get("https://project-wo.herokuapp.com/users", {
+            signal: controller.signal,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
+            }
+        }).then(res => {
+            if (res.status == 200 || res.status == 201) {
+                console.log(res)
+                setDataUser(res.data.items)
+            }
+        })
+        axios.get("https://project-wo.herokuapp.com/product", {
+            signal: controller.signal,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
+            }
+        }).then(res => {
+            if (res.status == 200 || res.status == 201) {
+                console.log(res)
+                setDataProduct(res.data.items)
+            }
+        })
+        axios.get("https://project-wo.herokuapp.com/transaction", {
+            signal: controller.signal,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
+            }
+        }).then(res => {
+            if (res.status == 200 || res.status == 201) {
+                console.log(res)
+                setDataTransaksi(res.data.items)
+            }
+        })
+        return () => {
+            controller.abort()
+        };
+    }, []);
+
+
+    const totalTransaksi = dataTransaksi.length;
+    // const totalPendapatan = data.reduce((i, obj) => {
+    //     return i + obj.jumlah;
+    // }, 0);
+    const totalUser = dataUser.length;
+    const totalProduct = dataProduct.length
 
     const cardStyle = {
         width: 300,
@@ -95,44 +104,66 @@ export default function ContentDashBoard() {
                     <Col lg={{ span: 6 }} md={{ span: 6 }} sm={{ span: 20 }}
                         className="shadow-lg  hover:translate-x-2 hover: transition-all delay-300 duration-300 ease-in-out hover:scale-110">
                         <Card
-                            title="Total Pemesanan"
+                            title="Total User"
                             headStyle={cardHead2}
                             bordered={false}
                         >
                             <Row justify="space-evenly" align="middle" style={{ fontSize: '32pt' }} className="text-slate-500">
-                                <Col >{totalTransaksi}</Col>
-                                <Col ><FileOutlined /></Col>
+                                <Col >{totalUser}  </Col>
+                                <Col ><UserOutlined /></Col>
                             </Row>
                         </Card>
                     </Col>
                     <Col lg={{ span: 6 }} md={{ span: 6 }} sm={{ span: 20 }}
                         className="shadow-lg  hover:translate-x-2 hover: transition-all delay-300 duration-300 ease-in-out hover:scale-110">
                         <Card
-                            title="Total Pembayaran"
+                            title="Total product"
                             bordered={false}
                             headStyle={cardHead}
 
                         >
                             <Row justify="space-evenly" align="middle" style={{ fontSize: '32pt' }} className="text-slate-500">
-                                <Col >{totalPendapatan}</Col>
-                                <Col ><CreditCardOutlined /></Col>
+                                <Col >{totalProduct}</Col>
+                                <Col ><InboxOutlined /></Col>
                             </Row>
                         </Card>
                     </Col>
                     <Col lg={{ span: 6 }} md={{ span: 6 }} sm={{ span: 20 }}
                         className="shadow-lg  hover:translate-x-2 hover: transition-all delay-300 duration-300 ease-in-out hover:scale-110">
                         <Card
-                            title="Total Customer"
+                            title="Total Transaksi"
                             headStyle={cardHead3}
                             bordered={false}
                         >
                             <Row justify="space-evenly" align="middle" style={{ fontSize: '32pt' }} className="text-slate-500">
-                                <Col >{totalCustomer}</Col>
-                                <Col ><UserOutlined /></Col>
+                                <Col >{totalTransaksi}</Col>
+                                <Col ><CreditCardOutlined /></Col>
                             </Row>
                         </Card>
                     </Col>
                 </Row>
+
+                {/* <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                        width={500}
+                        height={300}
+                        data={dataTransaksi}
+                        margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="startDate" stroke="#8884d8" activeDot={{ r: 8 }} />
+                        <Line type="monotone" dataKey="endDate" stroke="#82ca9d" />
+                    </LineChart>
+                </ResponsiveContainer> */}
             </Content >
         </>
     )
