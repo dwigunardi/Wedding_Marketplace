@@ -67,15 +67,15 @@ export default function DetailCustomer() {
 
     const showModal = () => {
         setVisible(true);
-        formUpdate.setFieldsValue({
-            id: dataUser.id,
-            name: dataUser.name,
-            username: dataUser.username,
-            email: dataUser.email,
-            no_telp: dataUser.no_telp,
-            createdAt: myDate,
-            image: dataUser.image
-        })
+        // formUpdate.setFieldsValue({
+        //     id: dataUser.id,
+        //     name: dataUser.name,
+        //     username: dataUser.username,
+        //     email: dataUser.email,
+        //     no_telp: dataUser.no_telp,
+        //     createdAt: myDate,
+        //     image: dataUser.image
+        // })
         // console.log(data)
     };
     const handleCancel = () => {
@@ -95,6 +95,8 @@ export default function DetailCustomer() {
             })
             setConfirmLoading(true);
             setTimeout(() => {
+                message.success("Data Berhasil di Update")
+                validate()
                 setVisible(false);
                 setConfirmLoading(false);
             }, 2000);
@@ -203,24 +205,25 @@ export default function DetailCustomer() {
                 <Row justify="center" align="middle" className='mt-6 ' >
                     <Col lg={{ span: 16 }} sm={{ span: 20 }}>
                         <div className="rounded-lg shadow-lg bg-white ">
-                            <Row justify="center" align="middle" className="mb-10">
-                                <Col>
-                                    <a href="#!">
-                                        <Image
-                                            className="rounded-t-lg"
-                                            loader={() => dataUser.image}
-                                            priority={true}
-                                            unoptimized={true}
-                                            src={`https://project-wo.herokuapp.com/product/image/${dataUser.image}`}
-                                            width={150}
-                                            height={150}
-                                            alt=""
-                                        />
-                                    </a>
+                            <Row justify="center" align="middle" className="p-5">
+                                <Col span={5}>
+
+                                    <Image
+                                        className="rounded-t-lg"
+                                        loader={() => dataUser.image}
+                                        priority={true}
+                                        unoptimized={true}
+                                        src={`https://project-wo.herokuapp.com/product/image/${dataUser.image}`}
+                                        width={150}
+                                        height={150}
+                                        alt=""
+                                    />
                                     <Upload customRequest={(args) => uploadHandler(args)} multiple={false} showUploadList={false}>
-                                        <Button icon={<UploadOutlined />}></Button>
+                                        <Button icon={<UploadOutlined />}>Upload Photo</Button>
                                     </Upload>
+
                                 </Col>
+
                             </Row>
                             <div className="w-full border-b-2" ></div>
                             <div className="p-6">
@@ -235,7 +238,7 @@ export default function DetailCustomer() {
                                     }}
                                     // onFinish={onFinish}
                                     onFinishFailed={onFinishFailed}
-
+                                    disabled={true}
                                     autoComplete="off"
 
                                 >
@@ -316,19 +319,19 @@ export default function DetailCustomer() {
                                             span: 16,
                                         }}
                                     >
-                                        <Space>
 
-                                            <BackButton />
-                                            <Button htmlType="button" onClick={onReset}>
-                                                Reset
-                                            </Button>
-                                            <Button htmlType="button" onClick={showModal}>
-                                                Update
-                                            </Button>
-                                        </Space>
                                     </Form.Item>
                                 </Form>
+                                <Space>
 
+                                    <BackButton />
+                                    <Button htmlType="button" onClick={onReset}>
+                                        Reset
+                                    </Button>
+                                    <Button htmlType="button" onClick={showModal}>
+                                        Update
+                                    </Button>
+                                </Space>
                                 {/* modal update */}
                                 <Modal
                                     title="Update Data"
@@ -354,14 +357,14 @@ export default function DetailCustomer() {
                                         initialValues={dataUser}
                                     >
                                         <Form.Item
-                                            label="Name"
+                                            label=" Ganti Nama"
                                             name="name"
 
                                         >
                                             <Input />
                                         </Form.Item>
                                         <Form.Item
-                                            label="Username"
+                                            label="Ganti username"
                                             name="username"
                                             rules={[
                                                 {
@@ -373,29 +376,27 @@ export default function DetailCustomer() {
                                             <Input />
                                         </Form.Item>
                                         <Form.Item
-                                            label="Email"
+                                            label="Ganti Email"
                                             name="email"
 
                                         >
                                             <Input />
                                         </Form.Item>
                                         <Form.Item
-                                            label="Phone"
+                                            label="Ganti No telpon"
                                             name="no_telp"
 
                                         >
                                             <Input />
                                         </Form.Item>
                                         <Form.Item
-                                            name="upload"
-                                            label="Upload"
+                                            name="password"
+                                            label="Ganti Password"
 
 
 
                                         >
-                                            <Upload customRequest={(args) => uploadHandler(args)} multiple={false}>
-                                                <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                                            </Upload>
+                                            <Input.Password iconRender={(visible) => (visible ? <EyeTwoTone style={{ color: "pink" }} /> : <EyeInvisibleOutlined style={{ color: "pink" }} />)} />
                                         </Form.Item>
                                     </Form>
 

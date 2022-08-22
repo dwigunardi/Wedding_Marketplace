@@ -9,6 +9,7 @@ import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
+import Countdown from "react-countdown";
 
 ConfigProvider.config({
     theme: {
@@ -179,30 +180,28 @@ export default function Transaksi() {
     }
 
 
-    const Pages = async function () {
+    const countdown = async function () {
         try {
-            if (approve == "Approve") {
-                return (<>
-                    <div className="h-screen">
-                        <Row justify="center">
-                            <Col> <h1 className="text-5xl">INI SUDAH SELESAI</h1>
-                                <Link href={`/customer/transaksi/invoice/${id}`} >
-                                    <Button> Cetak invoice</Button>
-                                </Link>
-
-                            </Col>
-                        </Row>
-                    </div>
-                </>
-                )
+            const data = {
+                status: "Expired",
             }
-            else if (approve == "Menunggu Pembayaran" || approve == "Menunggu Persetujuan") {
-                return (<>
-                    <div>Belom Selesai</div>
-                </>)
-            }
+            await axios.put(`https://project-wo.herokuapp.com/transaction/edit/${id}`, data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                }
+            }).then(res => {
+                if (res.status == 200 || res.status == 201) {
+                    // console.log(res)
+                    setApprove("Expired")
+                    message.info("Anda sudah mencapai batas akhir pembayaran")
+                    router.back()
+                }
+            })
         } catch (error) {
-
+            if (error) {
+                console.log(error)
+            }
         }
     }
     return (
@@ -318,7 +317,7 @@ export default function Transaksi() {
                                 >
                                     <Row>
                                         <Col className="text-2xl -mt-3">
-                                            <i className="fa-solid fa-credit-card text-emerald-900"></i>
+
                                         </Col>
                                         <Col>
                                             <p className="text-md -mt-2  font-bold text-white">Transfer</p>
@@ -404,9 +403,8 @@ export default function Transaksi() {
                     <Col span={12}>
                         <Card style={{ backgroundColor: "#F2F2F2", height: "100%" }}>
                             <Row className="mt-20 mx-5">
-                                {/* <Col>
-                                    <Image src={Product1} height={100} width={130} />
-                                </Col> */}
+
+
                             </Row>
                             <Row justify="space-evenly" align="middle" >
 
@@ -423,14 +421,14 @@ export default function Transaksi() {
                                         <p className="border-2 text-pink-500  text-center text-lg">xxxx-xxxx-xxxx-xxxx</p>
                                         <p>No Rekening BRI :</p>
                                         <p className="border-2 text-pink-500  text-center text-lg">xxxx-xxxx-xxxx-xxxx</p>
+
+                                        <h1 className="text-pink-500">Batas Akhir Pembayaran Anda</h1>
+                                        <div className="text-pink-700 text-2xl ">
+                                            <Countdown date={Date.now() + 86400000} daysInHours={true} zeroPadDays={2} onComplete={() => countdown()} ></Countdown>
+                                        </div>
+
                                         <div className="mt-10">
                                             <p>Status Pembayaran Anda</p>
-                                            {/* {approve ? (
-                                                <Button color="success" >Sudah di Konfirmasi</Button>
-                                            ) : (
-
-                                                <Button type="primary" className="w-full" loading>Menunggu Pembayaran</Button>
-                                            )} */}
                                             {status()}
                                         </div>
                                         <p className="mt-10">Atau Bisa Langsung Mendatangi Kantor Kami Dengan Membawa Bukti Cetak Invoice Pembayaran ataupun Menghubungi admin maupun seller terkait.</p>

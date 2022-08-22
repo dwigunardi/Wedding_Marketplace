@@ -3,65 +3,91 @@ import {
     CreditCardOutlined,
     UserOutlined,
     FileOutlined,
+    InboxOutlined,
 } from '@ant-design/icons';
+import { useEffect, useState } from "react";
+import jwt_decode from 'jwt-decode'
+import axios from "axios";
+// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
 const { Header, Content, Sider } = Layout;
 
 
 export default function MerchantDashboard() {
-    // data bohongan
-    const data = [
-        {
-            key: 2,
-            Nama: "Ariel Winardi",
-            NomorPemesanan: 19072022,
-            tanggalBeli: "09-07-2022",
-            jumlah: 120000,
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        },
-        {
-            key: 1,
-            Nama: "Dwi Gunawan",
-            NomorPemesanan: 11072022,
-            tanggalBeli: "11-07-2022",
-            jumlah: 180000,
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        },
-        {
-            key: 3,
-            Nama: "Galuh Sudariono",
-            NomorPemesanan: 15072022,
-            tanggalBeli: "15-07-2022",
-            jumlah: 200000,
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        },
-        {
-            key: 4,
-            Nama: "Budi wicaksono",
-            email: "budi_wicaksono@gaguna.com",
-            jumlah: 0,
-            status: ["Non-Aktif"],
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        },
-        {
-            key: 5,
-            Nama: "Munawir",
-            email: "Munawir@hot.com",
-            jumlah: 0,
-            status: ["Aktif"],
-            alamat:
-                "jln. mars kelurahan merkurius kecamatan uranus kota neptunus provinsi jupiter",
-        }
-    ];
-    const totalTransaksi = data.length - 2;
-    const totalPendapatan = data.reduce((i, obj) => {
-        return i + obj.jumlah;
-    }, 0);
-    const totalCustomer = data.length;
 
+
+    const [dataUser, setDataUser] = useState([])
+    const [dataMerchant, setDataMerchant] = useState([])
+    const [dataTransaksi, setDataTransaksi] = useState([])
+    const [proudctId, setProductId] = useState([])
+
+    useEffect(() => {
+        const controller = new AbortController()
+        const getToken = localStorage.getItem("token_merchant")
+        const decode = jwt_decode(getToken)
+        axios.get(`https://project-wo.herokuapp.com/users/detail/${decode.user_id}`, {
+            signal: controller.signal,
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
+            }
+        }).then(res => {
+            if (res.status == 200 || res.status == 201) {
+                // console.log(res)
+                setDataUser(res.data.data)
+                axios.get(`https://project-wo.herokuapp.com/merchant/detail/${res.data.data.merchant[0].id}`, {
+                    signal: controller.signal,
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
+                    }
+                }).then(res => {
+                    // console.log("ini data merchant", res.data.data)
+                    if (res.status == 200 || res.status == 201) {
+                        setDataMerchant(res.data.data)
+                        setProductId(res.data.data.product)
+                        axios.get(`https://project-wo.herokuapp.com/transaction`, {
+                            signal: controller.signal,
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem("token_merchant")}`
+                            }
+                        }).then(res => {
+                            // console.log(res)
+                            if (res.status == 200 || res.status == 201) {
+                                setDataTransaksi(res.data.items)
+                            }
+
+                        })
+                    }
+
+                })
+            }
+        })
+
+
+    }, []);
+
+
+    // const totalTransaksi = dataTransaksi.length;
+    // // const totalPendapatan = data.reduce((i, obj) => {
+    // //     return i + obj.jumlah;
+    // // }, 0);
+    const totalUser = proudctId.length
+    // const totalProduct = dataProduct.length
+
+
+    // console.log(dataTransaksi)
+    function filterFind() {
+        const mapped = proudctId?.map((data) => {
+            const dataSelected = dataTransaksi.filter((e) => e.product.id == data.id)
+            return dataSelected
+        })
+        if (mapped == undefined) {
+            return undefined
+        } else if (Array.isArray(mapped)) {
+            const last = mapped.pop()
+            // console.log(last)
+            return last?.length
+        }
+    }
     const cardStyle = {
         width: 300,
         textAlign: "center",
@@ -95,44 +121,66 @@ export default function MerchantDashboard() {
                     <Col lg={{ span: 6 }} md={{ span: 6 }} sm={{ span: 20 }}
                         className="shadow-lg  hover:translate-x-2 hover: transition-all delay-300 duration-300 ease-in-out hover:scale-110">
                         <Card
-                            title="Total Pemesanan"
+                            title="Total Pembeli"
                             headStyle={cardHead2}
                             bordered={false}
                         >
                             <Row justify="space-evenly" align="middle" style={{ fontSize: '32pt' }} className="text-slate-500">
-                                <Col >{totalTransaksi}</Col>
-                                <Col ><FileOutlined /></Col>
+                                <Col >{filterFind()} </Col>
+                                <Col ><UserOutlined /></Col>
                             </Row>
                         </Card>
                     </Col>
                     <Col lg={{ span: 6 }} md={{ span: 6 }} sm={{ span: 20 }}
                         className="shadow-lg  hover:translate-x-2 hover: transition-all delay-300 duration-300 ease-in-out hover:scale-110">
                         <Card
-                            title="Total Pembayaran"
+                            title="Total product"
                             bordered={false}
                             headStyle={cardHead}
 
                         >
                             <Row justify="space-evenly" align="middle" style={{ fontSize: '32pt' }} className="text-slate-500">
-                                <Col >{totalPendapatan}</Col>
-                                <Col ><CreditCardOutlined /></Col>
+                                <Col >{proudctId.length}</Col>
+                                <Col ><InboxOutlined /></Col>
                             </Row>
                         </Card>
                     </Col>
                     <Col lg={{ span: 6 }} md={{ span: 6 }} sm={{ span: 20 }}
                         className="shadow-lg  hover:translate-x-2 hover: transition-all delay-300 duration-300 ease-in-out hover:scale-110">
                         <Card
-                            title="Total Customer"
+                            title="Total Transaksi Product"
                             headStyle={cardHead3}
                             bordered={false}
                         >
                             <Row justify="space-evenly" align="middle" style={{ fontSize: '32pt' }} className="text-slate-500">
-                                <Col >{totalCustomer}</Col>
-                                <Col ><UserOutlined /></Col>
+                                <Col >{filterFind()}</Col>
+                                <Col ><CreditCardOutlined /></Col>
                             </Row>
                         </Card>
                     </Col>
                 </Row>
+
+                {/* <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                        width={500}
+                        height={300}
+                        data={dataTransaksi}
+                        margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 5,
+                        }}
+                    >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line type="monotone" dataKey="startDate" stroke="#8884d8" activeDot={{ r: 8 }} />
+                        <Line type="monotone" dataKey="endDate" stroke="#82ca9d" />
+                    </LineChart>
+                </ResponsiveContainer> */}
             </Content >
         </>
     )
