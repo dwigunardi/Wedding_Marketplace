@@ -16,7 +16,7 @@ function getColumns(deleteModal, updateModal, imageModal) {
             title: 'User Name',
             dataIndex: 'user',
             key: 'user',
-            render: (_, record) => <a className='mx-6'> {record.user.name} </a>
+            render: (_, record) => <a className='text-center'> {record.user.name} </a>
         },
         {
             title: 'Product',
@@ -31,33 +31,42 @@ function getColumns(deleteModal, updateModal, imageModal) {
         //     render: (_, record) => <a> {record.createdAt.split("T")[0]} </a>
         // },
 
-        {
-            title: 'Mulai Tanggal Booking',
-            dataIndex: 'startDate',
-            key: 'startDate',
-            render: (_, record) => <a> {record.startDate} </a>
-        },
-        {
-            title: 'Akhir Tanggal Booking',
-            dataIndex: 'endDate',
-            key: 'endDate',
-            render: (_, record) => <a> {record.endDate} </a>
-        },
-        {
+        // {
+        //     title: 'Tanggal Booking',
+        //     dataIndex: 'startDate',
+        //     key: 'startDate',
+        //     render: (_, record) => {
+        //         return (
+        //             <>
+        //                 <Row justify='space-evenly' >
+        //                     <Col>
+        //                         <h1 className='border-b-2 border-pink-500'>Mulai tgl booking</h1>
 
+        //                         <ol>
+        //                             <li style={{ listStyleType: "circle" }}>{record?.startDate}</li>
+        //                         </ol>
+
+        //                     </Col>
+        //                     <Col>
+        //                         <h1 className='border-b-2 border-pink-500'>Akhir tgl booking</h1>
+
+        //                         <ol>
+        //                             <li style={{ listStyleType: "circle" }}>
+        //                                 {record?.endDate}
+        //                             </li>
+        //                         </ol>
+
+        //                     </Col>
+        //                 </Row>
+        //             </>
+        //         )
+        //     }
+        // },
+        {
+            title: 'address',
             dataIndex: 'address',
             key: 'address',
-            render: (_, record) => {
-                return (
-                    <>
-                        <Row>
-                            <Col span={5}>
-                                <p style={{ display: 'none', }}>{record.address}</p>
-                            </Col>
-                        </Row>
-                    </>
-                )
-            }
+
         },
         {
             title: 'Variant',
@@ -72,12 +81,12 @@ function getColumns(deleteModal, updateModal, imageModal) {
                 // console.log(data.variant.name)
                 return (
                     <>
-                        {/* <Row justify='space-evenly' >
+                        <Row justify='space-evenly' >
                             <Col>
                                 <h1 className='border-b-2 border-pink-500'>Variant Name</h1>
 
                                 <ol>
-                                    <li style={{ listStyleType: "circle" }}>{data.variant.name}</li>
+                                    <li style={{ listStyleType: "circle" }}>{data?.variant?.name}</li>
                                 </ol>
 
                             </Col>
@@ -88,13 +97,13 @@ function getColumns(deleteModal, updateModal, imageModal) {
                                     <li style={{ listStyleType: "circle" }}>
                                         Rp.
                                         {
-                                            toMoney(data.variant.price)
+                                            toMoney(data?.variant?.price)
                                         }
                                     </li>
                                 </ol>
 
                             </Col>
-                        </Row> */}
+                        </Row>
                     </>
                 )
             }
@@ -438,11 +447,13 @@ export default function KontenTransaksi() {
             }).then(res => {
                 console.log(res)
                 window.open(res.data.filename)
-                document.body.append(res.data.filename)
+                // document.body.append(res.data.filename)
 
             })
         } catch (error) {
-
+            if (error) {
+                message.error("Gagal export data")
+            }
         }
 
     }

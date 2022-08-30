@@ -81,7 +81,7 @@ export default function MerchantDashboard() {
             return dataSelected
         })
         if (mapped == undefined) {
-            return undefined
+            return 0
         } else if (Array.isArray(mapped)) {
             const last = mapped.pop()
             // console.log(last)
@@ -106,6 +106,7 @@ export default function MerchantDashboard() {
         color: "white", textAlign: "center",
         backgroundColor: "#FDD74F",
     }
+    console.log(filterFind())
     return (
         <>
             <Content

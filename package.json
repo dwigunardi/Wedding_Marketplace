@@ -27,9 +27,11 @@
     "react-countdown": "^2.3.2",
     "react-dom": "18.2.0",
     "react-highlight-words": "^0.18.0",
+    "react-pdf": "^5.7.2",
     "react-scroll-parallax": "^3.2.0",
     "react-to-pdf": "^0.0.14",
     "recharts": "^2.1.13",
+    "socket.io-client": "^4.5.1",
     "tw-elements": "^1.0.0-alpha12"
   },
   "devDependencies": {

@@ -61,9 +61,7 @@ function getColumns(deleteModal) {
                         return <Tag color="blue">{record.status}</Tag>
                     } else if (record.status === "Approved") {
                         return (<>
-                            <Link href={`/customer/transaksi/invoice/${record.id}`}>
-                                <Button style={{ color: "#4ade80", borderColor: "#4ade80", }} >Cetak Invoice</Button>
-                            </Link>
+                            <Tag color="blue">{record.status}</Tag>
                         </>)
                     } else if (record.status == "Expired") {
                         return <Tag color="volcano">{record.status}</Tag>
@@ -72,9 +70,11 @@ function getColumns(deleteModal) {
                     }
                     else if (record.status == "Declined") {
                         return <Tag color="volcano">{record.status}</Tag>
+                    } else if (record.status == "Ongoing") {
+                        return <Tag color="blue">{record.status}</Tag>
                     }
                 }
-
+                console.log(record.status)
                 return (
                     <>
                         {TagStatus()}
@@ -135,12 +135,14 @@ function getColumns(deleteModal) {
                         return (
                             <>
                                 <Space size="middle">
-                                    <Link href={`/customer/transaksi/result/${record.id}`}>
+                                    <Link href={`/customer/transaksi/invoice/${record.id}`} target="_blank">
                                         <Tooltip placement="top" title="Detail">
                                             <Button
-                                                style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
+                                                style={{ color: "#4ade80", borderColor: "#4ade80" }}
                                             >
-                                                Detail
+
+                                                Cetak Invoice
+
                                             </Button>
                                         </Tooltip>
                                     </Link>
@@ -195,11 +197,26 @@ function getColumns(deleteModal) {
                                 </Space>
                             </>
                         )
+                    } else if (record.status == "Ongoing") {
+                        return (
+                            <>
+                                <Space size="middle">
+                                    <Link href={`/customer/transaksi/invoice/${record.id}`} target="_blank">
+                                        <Tooltip placement="top" title="Detail">
+                                            <Button
+                                                style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
+                                            >
+
+                                                Cetak Invoice
+
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
+                                </Space>
+                            </>
+                        )
                     }
-
-
                 }
-
                 return (<>
 
                     {buttonStatus()}
@@ -249,11 +266,16 @@ export default function Transaksi() {
             message.error(error.message)
         }
     }
+    function dataSelected() {
+        const findData = transaksi.filter((data) => data.user.id == id)
+        return findData
+    }
     useEffect(() => {
-        getData()
 
+        getData()
+        dataSelected()
     }, []);
-    const dataSelected = transaksi.filter((data) => data.user.id == id)
+
 
     const deleteModal = (record) => {
         if (record) {
@@ -309,7 +331,7 @@ export default function Transaksi() {
 
             <Content>
                 <div className="h-max-screen h-3/4 mt-36  mb-20">
-                    <h1 className=" text-xl text-center">Your Cart Items</h1>
+                    <h1 className=" text-xl text-center">History Transaksi Anda</h1>
                     <p className="text-md mt-3 underline text-end mr-32">
                         <Link href={`/customer/landing/${id}`}>
                             <a className="text-pink-500">Back to Home</a>
@@ -324,7 +346,7 @@ export default function Transaksi() {
                         >
                             <Table
                                 columns={getColumns(deleteModal)}
-                                dataSource={dataSelected}
+                                dataSource={dataSelected()}
                                 size="large"
                                 pagination={pagination}
                                 scroll={{ y: 300 }}

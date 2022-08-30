@@ -165,6 +165,12 @@ export default function Navigasi(props) {
                                  pt-5 pb-6 px-5 text-lg ${currentRoute === "/product" ? "active" : "non-active"}`}>Product</a>
                                 </Link>
                             </li>
+                            <li className="text-pink-500 ">
+                                <Link href="/contactUs">
+                                    <a className={`text-pink-500 hover:text-white hover:bg-pink-500 
+                                 pt-5 pb-6 px-5 text-lg ${currentRoute === "/contactUs" ? "active" : "non-active"}`}>Contact Us</a>
+                                </Link>
+                            </li>
                             {/* <li className="text-pink-500 ">
                                 <Link href=""><a className='text-pink-500 hover:text-white hover:bg-pink-500 pt-5 pb-6 px-5 text-lg'>Transaksi</a></Link>
                             </li> */}

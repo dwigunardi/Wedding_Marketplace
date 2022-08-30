@@ -28,6 +28,7 @@ export default function Transaksi() {
     });
     const [approve, setApprove] = useState('')
     const [foto, setFoto] = useState('')
+    const [hitungMundur, setHitungMundur] = useState(true)
     const router = useRouter()
     const { id } = router.query;
     // console.log(id)
@@ -99,15 +100,16 @@ export default function Transaksi() {
                     // console.log(res)
                     message.success("Berhasil Submit dan tunggu approve dari Admin")
                     setApprove("Menunggu Approvement")
+                    setHitungMundur(false)
                     getData()
-                    if (approve == "Menunggu Approvement") {
-                        setTimeout(() => {
-                            message.info("Anda Sudah MengUpload Bukti Pembayaran Harap Menunggu Keputusan Admin")
-                            Router.back()
-                        }, 3000);
-                    }
-                }
 
+                }
+                if (approve == "Menunggu Approvement") {
+                    setTimeout(() => {
+                        message.info("Anda Sudah MengUpload Bukti Pembayaran Harap Menunggu Keputusan Admin")
+                        Router.back()
+                    }, 3000);
+                }
             })
 
 
@@ -423,9 +425,18 @@ export default function Transaksi() {
                                         <p className="border-2 text-pink-500  text-center text-lg">xxxx-xxxx-xxxx-xxxx</p>
 
                                         <h1 className="text-pink-500">Batas Akhir Pembayaran Anda</h1>
-                                        <div className="text-pink-700 text-2xl ">
-                                            <Countdown date={Date.now() + 86400000} daysInHours={true} zeroPadDays={2} onComplete={() => countdown()} ></Countdown>
-                                        </div>
+                                        {hitungMundur ? (
+                                            <>
+                                                <div className="text-pink-700 text-2xl ">
+                                                    <Countdown date={Date.now() + 86400000} daysInHours={true} zeroPadDays={2} onComplete={() => countdown()} ></Countdown>
+                                                </div>
+                                            </>
+                                        ) : (<>
+
+                                            <h1 className="text-pink-700 text-lg ">Selesai Membayar tunggu Approvement dari admin</h1>
+
+                                        </>)}
+
 
                                         <div className="mt-10">
                                             <p>Status Pembayaran Anda</p>
