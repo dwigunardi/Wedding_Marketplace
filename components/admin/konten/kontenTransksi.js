@@ -416,7 +416,7 @@ export default function KontenTransaksi() {
                 'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
             }
         }).then(res => {
-            // setDataUser(res.data.items)
+            setDataUser(res.data.items)
             console.log(res)
             // console.log(res.data.items)
         })
@@ -429,7 +429,7 @@ export default function KontenTransaksi() {
             }
         }).then(res => {
             console.log(res)
-            // setDataUser(res.data.items)
+            setDataUser(res.data.items)
             // console.log(res.data.items)
         })
     };

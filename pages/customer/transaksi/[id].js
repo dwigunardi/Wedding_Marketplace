@@ -70,11 +70,13 @@ function getColumns(deleteModal) {
                     }
                     else if (record.status == "Declined") {
                         return <Tag color="volcano">{record.status}</Tag>
+                    } else if (record.status == "Canceled") {
+                        return <Tag color="volcano">{record.status}</Tag>
                     } else if (record.status == "Ongoing") {
                         return <Tag color="blue">{record.status}</Tag>
                     }
                 }
-                console.log(record.status)
+                // console.log(record.status)
                 return (
                     <>
                         {TagStatus()}
@@ -87,6 +89,7 @@ function getColumns(deleteModal) {
             key: "action",
             dataIndex: "action",
             render: (_, record) => {
+                // console.log(record.status)
                 function buttonStatus() {
                     if (record.status == "Menunggu Pembayaran") {
                         return (
@@ -101,7 +104,7 @@ function getColumns(deleteModal) {
                                             </Button>
                                         </Tooltip>
                                     </Link>
-                                    <Tooltip placement="right" title="Delete">
+                                    <Tooltip placement="right" title="Cancel">
                                         <Button
                                             onClick={() => deleteModal(record.id)}
                                             type="danger"
@@ -159,6 +162,22 @@ function getColumns(deleteModal) {
                                             style={{ color: "red", borderColor: "red", width: "100px" }}
                                         >
                                             Expired
+                                        </Button>
+                                    </Tooltip>
+
+                                </Space>
+                            </>
+                        )
+                    } else if (record.status == "Canceled") {
+                        return (
+                            <>
+                                <Space size="middle">
+
+                                    <Tooltip placement="top" title="Detail">
+                                        <Button
+                                            style={{ color: "red", borderColor: "red", width: "100px" }}
+                                        >
+                                            Canceled
                                         </Button>
                                     </Tooltip>
 
@@ -289,7 +308,10 @@ export default function Transaksi() {
 
     };
     const handleOkModalDelete = () => {
-        axios.delete(`https://project-wo.herokuapp.com/transaction/delete/${modalTaskId}`, {
+        const data = {
+            status: "Canceled",
+        }
+        axios.put(`https://project-wo.herokuapp.com/transaction/edit/${modalTaskId}`, data, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
             }
