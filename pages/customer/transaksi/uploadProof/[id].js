@@ -69,7 +69,7 @@ export default function Transaksi() {
 
     async function SubmitProof() {
         try {
-
+            const id = localStorage.getItem("id_transaksi")
 
             // if (approve == "Menunggu Pembayaran") {
             //     setApprove("Menunggu Persetujuan")
@@ -134,6 +134,7 @@ export default function Transaksi() {
     };
     const onChangeFoto = async (e) => {
         try {
+            const id = localStorage.getItem("id_transaksi")
             const value = await e.file.originFileObj
             const dataForm = new FormData
             dataForm.append("transaction_proof", value)
@@ -187,6 +188,7 @@ export default function Transaksi() {
 
     const countdown = async function () {
         try {
+            const id = localStorage.getItem("id_transaksi")
             const data = {
                 status: "Expired",
             }

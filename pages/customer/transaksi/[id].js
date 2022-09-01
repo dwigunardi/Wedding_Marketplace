@@ -10,6 +10,7 @@ import Image from "next/image";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import BackButton from "../../backButton";
+import jwtDecode from "jwt-decode";
 
 
 
@@ -269,35 +270,78 @@ export default function Transaksi() {
         current: 1,
         pageSize: 5,
     });
-
+    const [itemCount, setItemCount] = useState("")
     const router = useRouter()
     const { id } = router.query;
+    function getToken() {
+        const getToken = localStorage.getItem("token_customer")
+        const decode = jwtDecode(getToken)
+        return decode.user_id
+
+    }
 
 
     async function getData(params = {}) {
         try {
             const getToken = await localStorage.getItem("token_customer")
             const decode = await jwt_decode(getToken)
-            axios.get("https://project-wo.herokuapp.com/transaction", {
+            await axios.get("https://project-wo.herokuapp.com/transaction", {
                 headers: {
                     'Authorization': `Bearer ${getToken}`
                 }
             }).then(res => {
-                // console.log(res)
+                // console.log(res.data.links, "ini pages")
                 if (res.status == 200 || res.status == 201) {
+                    setItemCount(res.data.meta.totalPages)
                     setTransaksi(res.data.items)
+                    setPagination({
+                        ...params.pagination,
+                        total: res.data.meta.itemCount,
+                        // current: 1
+                    });
                 }
             })
-            setPagination({
-                ...params.pagination,
-                // total: product.length
-            });
+
         } catch (error) {
-            message.error(error.message)
+            if (error) {
+                message.error(error.message)
+
+            }
+        }
+    }
+    async function nextData() {
+        try {
+            const getToken = await localStorage.getItem("token_customer")
+            const decode = await jwt_decode(getToken)
+            await axios.get("https://project-wo.herokuapp.com/transaction", {
+                headers: {
+                    'Authorization': `Bearer ${getToken}`
+                }
+            }).then(res => {
+                // console.log(res.data.links, "ini pages")
+                if (res.status == 200 || res.status == 201) {
+                    axios.get(res.data.links.next, {
+                        headers: {
+                            'Authorization': `Bearer ${getToken}`
+                        }
+                    }).then(result => {
+                        // setItemCount(result.data.meta.totalPages)
+                        setTransaksi(result.data.items)
+
+                    })
+
+                }
+            })
+
+        } catch (error) {
+            if (error) {
+                message.error(error.message)
+
+            }
         }
     }
     function dataSelected() {
-        const findData = transaksi.filter((data) => data.user.id == id)
+        const findData = transaksi.filter((data) => data.user.id == getToken())
         return findData
     }
     useEffect(() => {
@@ -306,7 +350,20 @@ export default function Transaksi() {
         dataSelected()
     }, []);
 
+    const handleTableChange = (e, newPagination, filters, sorter) => {
+        console.log(e)
+        if (e.current > 1) {
+            nextData()
+        } else if (e.current == 1) {
+            getData({
+                sortField: sorter.field,
+                sortOrder: sorter.order,
+                pagination: newPagination,
+                ...filters,
+            });
+        }
 
+    };
     const deleteModal = (record) => {
         if (record) {
             setModalTaskId(record);
@@ -355,7 +412,7 @@ export default function Transaksi() {
 
     //     }
     // ]
-    // console.log(dataSelected)
+    // console.log(dataSelected())
     return (
         <>
             <Layout style={{ backgroundColor: "white" }}>
@@ -383,6 +440,7 @@ export default function Transaksi() {
                                 size="large"
                                 pagination={pagination}
                                 scroll={{ y: 300 }}
+                                onChange={handleTableChange}
                             />
                         </Col>
                     </Row>

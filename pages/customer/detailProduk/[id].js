@@ -134,7 +134,7 @@ export default function ProductIdCustomer() {
                     'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
                 }
             }).then(res => {
-                console.log(res.data.data.id)
+                console.log(res)
                 if (res.status == 200 || res.status == 201) {
                     setTransaksiId(res.data.data.id)
                     setConfirmLoading(true);
