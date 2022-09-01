@@ -29,12 +29,14 @@ export default function Transaksi() {
     const [approve, setApprove] = useState('')
     const [foto, setFoto] = useState('')
     const [hitungMundur, setHitungMundur] = useState(true)
+    const [expDate, setExpDate] = useState('')
     const router = useRouter()
-    const { id } = router.query;
+    // const { id } = router.query;
     // console.log(id)
 
     async function getData(params = {}) {
         try {
+            const id = localStorage.getItem("id_transaksi")
             const getToken = await localStorage.getItem("token_customer")
             const decode = await jwt_decode(getToken)
             setUser(decode)
@@ -48,6 +50,7 @@ export default function Transaksi() {
                     setTransaksi([res.data.data])
                     setDataTransaksi(res.data.data)
                     setApprove(res.data.data.status)
+                    setExpDate((new Date(res.data.data.expDate).getTime()) - (new Date().getTime()))
                 }
             })
             setPagination({
@@ -61,7 +64,7 @@ export default function Transaksi() {
     useEffect(() => {
         getData()
 
-    }, []);
+    }, [setExpDate]);
 
 
     async function SubmitProof() {
@@ -428,7 +431,7 @@ export default function Transaksi() {
                                         {hitungMundur ? (
                                             <>
                                                 <div className="text-pink-700 text-2xl ">
-                                                    <Countdown date={Date.now() + 86400000} daysInHours={true} zeroPadDays={2} onComplete={() => countdown()} ></Countdown>
+                                                    <Countdown date={Date.now() + expDate} daysInHours={true} zeroPadDays={2} onComplete={() => countdown()} ></Countdown>
                                                 </div>
                                             </>
                                         ) : (<>
@@ -445,7 +448,7 @@ export default function Transaksi() {
                                         <p className="mt-10">Atau Bisa Langsung Mendatangi Kantor Kami Dengan Membawa Bukti Cetak Invoice Pembayaran ataupun Menghubungi admin maupun seller terkait.</p>
 
                                         <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d15864.008634277116!2d106.9394184!3d-6.2634444!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x6239e0ec7d2f5337!2sDignitas%20Academy!5e0!3m2!1sid!2sid!4v1660485665857!5m2!1sid!2sid"
-                                            style={{ width: "540px", height: "300px", border: "0" }} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                                            style={{ width: "100%", height: "300px", border: "0" }} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
                                     </Card>
 
                                 </Col>

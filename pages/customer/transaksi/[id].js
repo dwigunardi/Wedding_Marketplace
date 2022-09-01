@@ -18,7 +18,18 @@ ConfigProvider.config({
         primaryColor: '#EC4899',
     },
 });
+
+
+
+
 function getColumns(deleteModal) {
+    const router = useRouter()
+    function setItem(value) {
+        console.log(value)
+        localStorage.setItem("id_transaksi", value)
+
+        router.push(`/customer/transaksi/uploadProof/${value}`)
+    }
     return [
         {
             title: "Product name",
@@ -95,15 +106,15 @@ function getColumns(deleteModal) {
                         return (
                             <>
                                 <Space size="middle">
-                                    <Link href={`/customer/transaksi/uploadProof/${record.id}`}>
-                                        <Tooltip placement="top" title="Detail">
-                                            <Button
-                                                style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
-                                            >
-                                                Detail
-                                            </Button>
-                                        </Tooltip>
-                                    </Link>
+
+                                    <Tooltip placement="top" title="Detail">
+                                        <Button onClick={() => setItem(record.id)}
+                                            style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
+                                        >
+                                            Detail
+                                        </Button>
+                                    </Tooltip>
+
                                     <Tooltip placement="right" title="Cancel">
                                         <Button
                                             onClick={() => deleteModal(record.id)}
