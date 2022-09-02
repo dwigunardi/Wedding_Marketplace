@@ -31,8 +31,8 @@ function ProductHome() {
     const [product, setProduct] = useState([])
 
     useEffect(() => {
-        axios.get("https://project-wo.herokuapp.com/product").then(res => {
-
+        axios.get("https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=Jakarta&category=&merchant=").then(res => {
+            console.log(res)
             setProduct(res.data.items)
         })
         // return () => {
@@ -41,6 +41,10 @@ function ProductHome() {
     }, []);
     const onChange = (value) => {
         console.log(`selected ${value}`);
+        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=${value}&category=&merchant=`).then(res => {
+            console.log(res)
+            setProduct(res.data.items)
+        })
     };
 
     const onSearch = (value) => {
@@ -60,161 +64,16 @@ function ProductHome() {
                 </h1>
                 <p className="text-lg mt-3">Harga sudah termasuk biaya vendor (dekorasi, katering, etc.) dan dapat disesuaikan dengan kebutuhan</p>
             </div>
-            <div className="h-full bg-[#FFF2F5] pb-10">
-                <ul
-                    className="nav nav-tabs flex flex-col md:flex-row flex-wrap list-none border-b-0 pl-0 pt-5 mb-4 justify-center"
-                    id="tabs-tab"
-                    role="tablist"
-                >
-                    <li className="nav-item" role="presentation">
-                        <a
-                            href="#tabs-jakarta"
-                            className="
-                            
-                            block
-                            font-medium
-                            leading-tight
-                            uppercase
-                            text-pink-500
-                            border-x-0 border-t-0 border-b-2 border-pink-500 
-                            px-6
-                            py-3
-                            my-2
-                             hover:bg-pink-500 hover:text-white
-                             text-xl "
-                            id="tabs-jakarta-tab"
-                            data-bs-toggle="pill"
-                            data-bs-target="#tabs-jakarta"
-                            role="tab"
-                            aria-controls="tabs-jakarta"
-                            aria-selected="true"
-                        >
-                            Jakarta
-                        </a>
-                    </li>
-                    <li className="nav-item" role="presentation">
-                        <a
-                            href="#tabs-bogor"
-                            className="
-                            text-pink-500
-                            block
-                            font-medium
-                            
-                            leading-tight
-                            uppercase
-                            border-x-0 border-t-0 border-b-2 border-transparent
-                            px-6
-                            py-3
-                            my-2
-                            hover:text-white
-                             text-xl 
-                            hover:bg-pink-500
-                            "
-                            id="tabs-bogor-tab"
-                            data-bs-toggle="pill"
-                            data-bs-target="#tabs-bogor"
-                            role="tab"
-                            aria-controls="tabs-bogor"
-                            aria-selected="false"
-                        >
-                            Bogor
-                        </a>
-                    </li>
-                    <li className="nav-item" role="presentation">
-                        <a
-                            href="#tabs-depok"
-                            className="
-                                text-pink-500
-                                block
-                                font-medium
-                                
-                                leading-tight
-                                uppercase
-                                border-x-0 border-t-0 border-b-2 border-transparent
-                                px-6
-                                py-3
-                                my-2
-                                 hover:bg-pink-500
-                                 hover:text-white
-                                 text-xl "
-                            id="tabs-depok-tab"
-                            data-bs-toggle="pill"
-                            data-bs-target="#tabs-depok"
-                            role="tab"
-                            aria-controls="tabs-depok"
-                            aria-selected="false"
-                        >
-                            Depok
-                        </a>
-                    </li>
-                    <li className="nav-item" role="presentation">
-                        <a
-                            href="#tabs-tanggerang"
-                            className="
-                            text-pink-500
-                            block
-                            font-medium
-                            
-                            leading-tight
-                            uppercase
-                            border-x-0 border-t-0 border-b-2 border-transparent
-                            px-6
-                            py-3
-                            my-2
-                             hover:bg-pink-500
-                             hover:text-white
-                             text-xl "
-                            id="tabs-tanggerang-tab"
-                            data-bs-toggle="pill"
-                            data-bs-target="#tabs-tanggerang"
-                            role="tab"
-                            aria-controls="tabs-tanggerang"
-                            aria-selected="false"
-                        >
-                            Tanggerang
-                        </a>
-                    </li>
-                    <li className="nav-item" role="presentation">
-                        <a
-                            href="#tabs-bekasi"
-                            className="
-                            text-pink-500
-                            block
-                            font-medium
-                            
-                            leading-tight
-                            uppercase
-                            border-x-0 border-t-0 border-b-2 border-transparent
-                            px-6
-                            py-3
-                            my-2
-                             hover:bg-pink-500
-                             hover:text-white
-                             text-xl mr-5"
-                            id="tabs-bekasi-tab"
-                            data-bs-toggle="pill"
-                            data-bs-target="#tabs-bekasi"
-                            role="tab"
-                            aria-controls="tabs-bekasi"
-                            aria-selected="false"
-                        >
-                            Bekasi
-                        </a>
-                    </li>
-                </ul>
-                <div className="tab-content" id="tabs-tabContent">
-                    <div
-                        className="tab-pane fade show active"
-                        id="tabs-jakarta"
-                        role="tabpanel"
-                        aria-labelledby="tabs-jakarta-tab"
-                    >
+            <div className="h-full bg-[#FFF2F5] pb-10 mx-auto">
+                <Tabs defaultActiveKey="Jakarta" onChange={onChange} className="text-2xl text-center" size='large' centered="true">
+                    <TabPane tab="Jakarta" key="Jakarta">
+
 
 
                         {/* card product */}
 
                         <Row justify="center space-x-5">
-                            {product.slice(1, 5).map((data) => {
+                            {product.map((data) => {
 
                                 return (
                                     <>
@@ -280,40 +139,285 @@ function ProductHome() {
 
                             })}
                         </Row>
-                    </div>
-                    <div
-                        className="tab-pane fade"
-                        id="tabs-bogor"
-                        role="tabpanel"
-                        aria-labelledby="tabs-bogor-tab"
-                    >
-                        Tab 2 content
-                    </div>
-                    <div
-                        className="tab-pane fade"
-                        id="tabs-depok"
-                        role="tabpanel"
-                        aria-labelledby="tabs-bogor-tab"
-                    >
-                        Tab 3 content
-                    </div>
-                    <div
-                        className="tab-pane fade"
-                        id="tabs-tanggerang"
-                        role="tabpanel"
-                        aria-labelledby="tabs-tanggerang-tab"
-                    >
-                        Tab 4 content
-                    </div>
-                    <div
-                        className="tab-pane fade"
-                        id="tabs-bekasi"
-                        role="tabpanel"
-                        aria-labelledby="tabs-bekasi-tab"
-                    >
-                        Tab 5 content
-                    </div>
-                </div>
+                    </TabPane>
+                    <TabPane tab="Bogor" key="Bogor">
+                        <Row justify="center space-x-5">
+                            {product.map((data) => {
+
+                                return (
+                                    <>
+                                        <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
+
+                                            <div className="rounded-lg shadow-lg bg-white ">
+                                                <Link href={`/customer/detailProduk/${data.id}`} data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                                    <a>
+                                                        <Image
+                                                            className="rounded-t-lg"
+                                                            loader={() => data.image}
+                                                            priority={true}
+                                                            unoptimized={true}
+                                                            src={`https://project-wo.herokuapp.com/product/image/${data.image}`}
+                                                            alt=""
+                                                            width={150}
+                                                            height={100}
+                                                            layout='responsive'
+                                                        />
+                                                    </a>
+
+                                                </Link>
+                                                <div className="p-6">
+                                                    <h5 className="text-gray-900 text-xl font-medium mb-2">{data.name}</h5>
+                                                    <p className="text-gray-700 text-base mb-4">
+
+
+                                                        <Row justify='space-between'>
+                                                            <Col>
+                                                                <h1>Variant Name</h1>
+                                                                {data.variant[0].name}
+                                                                {/* {data.variant.map((v) => {
+                                                                    return (
+                                                                        <>
+                                                                            <p>
+                                                                                {v.name}
+                                                                            </p>
+                                                                        </>
+                                                                    )
+                                                                })} */}
+                                                            </Col>
+                                                            <Col>
+                                                                <h1>Variant Price</h1>
+                                                                Rp.{toMoney(data.variant[0].price)}
+                                                                {/* {data.variant.map((v) => {
+                                                                    return (
+                                                                        <>
+                                                                            <p>
+                                                                                {v.price}
+                                                                            </p>
+                                                                        </>
+                                                                    )
+                                                                })} */}
+                                                            </Col>
+                                                        </Row>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </>
+                                )
+
+                            })}
+                        </Row>
+                    </TabPane>
+                    <TabPane tab="Depok" key="Depok">
+                        <Row justify="center space-x-5">
+                            {product.map((data) => {
+
+                                return (
+                                    <>
+                                        <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
+
+                                            <div className="rounded-lg shadow-lg bg-white ">
+                                                <Link href={`/customer/detailProduk/${data.id}`} data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                                    <a>
+                                                        <Image
+                                                            className="rounded-t-lg"
+                                                            loader={() => data.image}
+                                                            priority={true}
+                                                            unoptimized={true}
+                                                            src={`https://project-wo.herokuapp.com/product/image/${data.image}`}
+                                                            alt=""
+                                                            width={150}
+                                                            height={100}
+                                                            layout='responsive'
+                                                        />
+                                                    </a>
+
+                                                </Link>
+                                                <div className="p-6">
+                                                    <h5 className="text-gray-900 text-xl font-medium mb-2">{data.name}</h5>
+                                                    <p className="text-gray-700 text-base mb-4">
+
+
+                                                        <Row justify='space-between'>
+                                                            <Col>
+                                                                <h1>Variant Name</h1>
+                                                                {data.variant[0].name}
+                                                                {/* {data.variant.map((v) => {
+                                                                    return (
+                                                                        <>
+                                                                            <p>
+                                                                                {v.name}
+                                                                            </p>
+                                                                        </>
+                                                                    )
+                                                                })} */}
+                                                            </Col>
+                                                            <Col>
+                                                                <h1>Variant Price</h1>
+                                                                Rp.{toMoney(data.variant[0].price)}
+                                                                {/* {data.variant.map((v) => {
+                                                                    return (
+                                                                        <>
+                                                                            <p>
+                                                                                {v.price}
+                                                                            </p>
+                                                                        </>
+                                                                    )
+                                                                })} */}
+                                                            </Col>
+                                                        </Row>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </>
+                                )
+
+                            })}
+                        </Row>
+                    </TabPane>
+                    <TabPane tab="Tanggerang" key="Tanggerang">
+                        <Row justify="center space-x-5">
+                            {product.map((data) => {
+
+                                return (
+                                    <>
+                                        <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
+
+                                            <div className="rounded-lg shadow-lg bg-white ">
+                                                <Link href={`/customer/detailProduk/${data.id}`} data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                                    <a>
+                                                        <Image
+                                                            className="rounded-t-lg"
+                                                            loader={() => data.image}
+                                                            priority={true}
+                                                            unoptimized={true}
+                                                            src={`https://project-wo.herokuapp.com/product/image/${data.image}`}
+                                                            alt=""
+                                                            width={150}
+                                                            height={100}
+                                                            layout='responsive'
+                                                        />
+                                                    </a>
+
+                                                </Link>
+                                                <div className="p-6">
+                                                    <h5 className="text-gray-900 text-xl font-medium mb-2">{data.name}</h5>
+                                                    <p className="text-gray-700 text-base mb-4">
+
+
+                                                        <Row justify='space-between'>
+                                                            <Col>
+                                                                <h1>Variant Name</h1>
+                                                                {data.variant[0].name}
+                                                                {/* {data.variant.map((v) => {
+                                                                    return (
+                                                                        <>
+                                                                            <p>
+                                                                                {v.name}
+                                                                            </p>
+                                                                        </>
+                                                                    )
+                                                                })} */}
+                                                            </Col>
+                                                            <Col>
+                                                                <h1>Variant Price</h1>
+                                                                Rp.{toMoney(data.variant[0].price)}
+                                                                {/* {data.variant.map((v) => {
+                                                                    return (
+                                                                        <>
+                                                                            <p>
+                                                                                {v.price}
+                                                                            </p>
+                                                                        </>
+                                                                    )
+                                                                })} */}
+                                                            </Col>
+                                                        </Row>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </>
+                                )
+
+                            })}
+                        </Row>
+                    </TabPane>
+                    <TabPane tab="Bekasi" key="Bekasi">
+                        <Row justify="center space-x-5">
+                            {product.map((data) => {
+
+                                return (
+                                    <>
+                                        <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
+
+                                            <div className="rounded-lg shadow-lg bg-white ">
+                                                <Link href={`/customer/detailProduk/${data.id}`} data-mdb-ripple="true" data-mdb-ripple-color="light">
+                                                    <a>
+                                                        <Image
+                                                            className="rounded-t-lg"
+                                                            loader={() => data.image}
+                                                            priority={true}
+                                                            unoptimized={true}
+                                                            src={`https://project-wo.herokuapp.com/product/image/${data.image}`}
+                                                            alt=""
+                                                            width={150}
+                                                            height={100}
+                                                            layout='responsive'
+                                                        />
+                                                    </a>
+
+                                                </Link>
+                                                <div className="p-6">
+                                                    <h5 className="text-gray-900 text-xl font-medium mb-2">{data.name}</h5>
+                                                    <p className="text-gray-700 text-base mb-4">
+
+
+                                                        <Row justify='space-between'>
+                                                            <Col>
+                                                                <h1>Variant Name</h1>
+                                                                {data.variant[0].name}
+                                                                {/* {data.variant.map((v) => {
+                                                                    return (
+                                                                        <>
+                                                                            <p>
+                                                                                {v.name}
+                                                                            </p>
+                                                                        </>
+                                                                    )
+                                                                })} */}
+                                                            </Col>
+                                                            <Col>
+                                                                <h1>Variant Price</h1>
+                                                                Rp.{toMoney(data.variant[0].price)}
+                                                                {/* {data.variant.map((v) => {
+                                                                    return (
+                                                                        <>
+                                                                            <p>
+                                                                                {v.price}
+                                                                            </p>
+                                                                        </>
+                                                                    )
+                                                                })} */}
+                                                            </Col>
+                                                        </Row>
+
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </Col>
+                                    </>
+                                )
+
+                            })}
+                        </Row>
+                    </TabPane>
+
+                </Tabs>
 
 
             </div>

@@ -208,7 +208,7 @@ export default function ContentProduct() {
                                 <CardProductPage product={product} />
                                 <Row justify="center" align="middle" style={{ height: "160px" }}>
                                     <Col span={6}>
-                                        <Pagination defaultCurrent={1} total={meta.itemCount} onChange={onChangePaginate} defaultPageSize={8} />
+                                        <Pagination defaultCurrent={1} total={meta.itemCount} onChange={onChangePaginate} />
                                     </Col>
                                 </Row>
                             </Col>

@@ -177,7 +177,7 @@ export default function Login() {
                                 </div>
 
                                 <div className="flex items-center justify-between pb-6">
-                                    <p className="mb-0 mr-2">Tidak punya akun? <Link href="/auth/landingOpsi"><a className="text-pink-500">Daftar disini</a></Link></p>
+                                    <div className="mb-0 mr-2">Tidak punya akun? <Link href="/auth/landingOpsi"><a className="text-pink-500">Daftar disini</a></Link></div>
 
                                 </div>
                             </form>

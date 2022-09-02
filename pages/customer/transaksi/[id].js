@@ -23,7 +23,7 @@ ConfigProvider.config({
 
 
 
-function getColumns(deleteModal) {
+function getColumns(deleteModal, hapusModal) {
     const router = useRouter()
     function setItem(value) {
         console.log(value)
@@ -169,11 +169,11 @@ function getColumns(deleteModal) {
                             <>
                                 <Space size="middle">
 
-                                    <Tooltip placement="top" title="Detail">
-                                        <Button
+                                    <Tooltip placement="top" title="Hapus">
+                                        <Button onClick={() => hapusModal(record.id)}
                                             style={{ color: "red", borderColor: "red", width: "100px" }}
                                         >
-                                            Expired
+                                            Hapus
                                         </Button>
                                     </Tooltip>
 
@@ -187,9 +187,16 @@ function getColumns(deleteModal) {
 
                                     <Tooltip placement="top" title="Detail">
                                         <Button
+                                            style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
+                                        >
+                                            Detail
+                                        </Button>
+                                    </Tooltip>
+                                    <Tooltip placement="top" title="Hapus">
+                                        <Button onClick={() => hapusModal(record.id)}
                                             style={{ color: "red", borderColor: "red", width: "100px" }}
                                         >
-                                            Canceled
+                                            Hapus
                                         </Button>
                                     </Tooltip>
 
@@ -203,12 +210,18 @@ function getColumns(deleteModal) {
 
                                     <Tooltip placement="top" title="Detail">
                                         <Button
-                                            style={{ color: "red", borderColor: "red", width: "100px" }}
+                                            style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
                                         >
                                             Declined
                                         </Button>
                                     </Tooltip>
-
+                                    <Tooltip placement="top" title="Hapus">
+                                        <Button onClick={() => hapusModal(record.id)}
+                                            style={{ color: "red", borderColor: "red", width: "100px" }}
+                                        >
+                                            Hapus
+                                        </Button>
+                                    </Tooltip>
                                 </Space>
                             </>
                         )
@@ -225,6 +238,13 @@ function getColumns(deleteModal) {
                                             </Button>
                                         </Tooltip>
                                     </Link>
+                                    <Tooltip placement="top" title="Hapus">
+                                        <Button onClick={() => hapusModal(record.id)}
+                                            style={{ color: "red", borderColor: "red", width: "100px" }}
+                                        >
+                                            Hapus
+                                        </Button>
+                                    </Tooltip>
                                 </Space>
                             </>
                         )
@@ -264,6 +284,8 @@ export default function Transaksi() {
     const [visible, setVisible] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
     const [modalTaskId, setModalTaskId] = useState('');
+    const [visibleDua, setVisibleDua] = useState(false);
+    const [modalTaskIdDua, setModalTaskIdDua] = useState('');
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [transaksi, setTransaksi] = useState([])
     const [pagination, setPagination] = useState({
@@ -375,6 +397,17 @@ export default function Transaksi() {
 
 
     };
+    const hapusModal = (record) => {
+        if (record) {
+            setModalTaskIdDua(record);
+            setVisibleDua(true);
+
+        } else {
+            setVisibleDua(false)
+        }
+
+
+    };
     const handleOkModalDelete = () => {
         const data = {
             status: "Canceled",
@@ -396,10 +429,29 @@ export default function Transaksi() {
         }, 2000);
         // location.reload()
     };
+    const handleOkModalHapus = () => {
+        axios.delete(`https://project-wo.herokuapp.com/transaction/delete/${modalTaskIdDua}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
+            console.log(res)
+            getData()
+        })
+
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setVisibleDua(false);
+            setConfirmLoading(false);
+        }, 2000);
+        // location.reload()
+    };
 
     const handleCancel = () => {
         console.log('Clicked cancel button');
         setVisible(false);
+        setVisibleDua(false)
     };
     // const dataTransaksi = [
     //     {
@@ -435,7 +487,7 @@ export default function Transaksi() {
                             xs={{ span: 24 }}
                         >
                             <Table
-                                columns={getColumns(deleteModal)}
+                                columns={getColumns(deleteModal, hapusModal)}
                                 dataSource={dataSelected()}
                                 size="large"
                                 pagination={pagination}
@@ -452,6 +504,15 @@ export default function Transaksi() {
                         onCancel={handleCancel}
                     >
                         <p className='text-pink-500'>Apakah anda yakin akan Membatalkan ?</p>
+                    </Modal>
+                    <Modal
+                        title="Konfirmasi Pengahapusan"
+                        visible={visibleDua}
+                        onOk={handleOkModalHapus}
+                        confirmLoading={confirmLoading}
+                        onCancel={handleCancel}
+                    >
+                        <p className='text-pink-500'>Apakah anda yakin akan Menghapus ?</p>
                     </Modal>
                 </div>
             </Content>
