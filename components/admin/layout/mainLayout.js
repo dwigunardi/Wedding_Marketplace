@@ -15,14 +15,14 @@ ConfigProvider.config({
         primaryColor: '#EC4899',
     },
 });
-function MainLayout({ children }) {
+export default function MainLayout({ children }) {
     const router = useRouter()
     useEffect(() => {
         const getToken = localStorage.getItem('token_admin')
-        if (!getToken || jwt_decode(getToken).role != 'Admin') {
+        // const decode = jwt_decode(getToken)
+        if (!getToken) {
             message.error("Anda belom login dan tidak berhak mengakses")
-            Router.back()
-            return
+            router.push("/auth/login")
         }
     }, []);
     return (
@@ -53,5 +53,3 @@ function MainLayout({ children }) {
 
     );
 }
-
-export default MainLayout;

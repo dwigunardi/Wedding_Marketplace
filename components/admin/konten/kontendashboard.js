@@ -24,7 +24,10 @@ export default function ContentDashBoard() {
     useEffect(() => {
         const controller = new AbortController()
         const getToken = localStorage.getItem("token_admin")
-        const decode = jwt_decode(getToken)
+        if (getToken) {
+            const decode = jwt_decode(getToken)
+        }
+
         axios.get("https://project-wo.herokuapp.com/users", {
             signal: controller.signal,
             headers: {

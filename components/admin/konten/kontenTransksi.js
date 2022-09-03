@@ -1,15 +1,15 @@
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input, Modal, Select, message } from 'antd';
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input, Modal, Select, message, DatePicker } from 'antd';
 import { EyeOutlined, DeleteOutlined, EditOutlined, CheckOutlined, CloseOutlined, PrinterOutlined } from '@ant-design/icons';
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import qs from 'qs'
 import Highlighter from "react-highlight-words";
-
+import * as moment from 'moment'
 const { Header, Content, Sider } = Layout;
 const { Search } = Input;
 const { Option } = Select;
-
+const { RangePicker } = DatePicker
 function getColumns(deleteModal, updateModal, imageModal, hapusModal) {
     return [
         {
@@ -235,9 +235,9 @@ export default function KontenTransaksi() {
     const [modalTextTiga, setModalTextTiga] = useState('Content of the modal');
     const [modalTaskIdTiga, setModalTaskIdTiga] = useState('');
 
-
-
-
+    //date picker
+    const [fromDate, setFromDate] = useState('')
+    const [toDate, setToDate] = useState('')
 
     const searchInput = useRef(null);
 
@@ -455,7 +455,11 @@ export default function KontenTransaksi() {
         // location.reload()
     };
 
-
+    const handleDatePicker = (data) => {
+        console.log(data)
+        setFromDate(moment(data[0]._d).format('YYYY-MM-DD'))
+        setToDate(moment(data[1]._d).format('YYYY-MM-DD'))
+    }
 
     const handleCancel = () => {
         console.log('Clicked cancel button');
@@ -495,7 +499,7 @@ export default function KontenTransaksi() {
 
     async function ExportXl() {
         try {
-            await axios.get("https://project-wo.herokuapp.com/transaction/export/data", {
+            await axios.get(`https://project-wo.herokuapp.com/transaction/export/data?from=${fromDate}&to=${toDate}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
                 }
@@ -523,7 +527,7 @@ export default function KontenTransaksi() {
                         <AutoComplete
                             dropdownMatchSelectWidth={252}
                             style={{
-                                width: 300,
+                                width: 280,
                             }}
                             options={options}
                             onSelect={onSelect}
@@ -534,9 +538,8 @@ export default function KontenTransaksi() {
                         </AutoComplete>
 
                     </Col>
-                    <Col lg={{ span: 4, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }} >
-
-                        <Select
+                    <Col lg={{ span: 4, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }} offset={1}>
+                        <div>Filter : <Select
                             defaultValue="All"
                             style={{
                                 width: 150,
@@ -553,7 +556,17 @@ export default function KontenTransaksi() {
                             <Option value="Expired">Expired</Option>
                             <Option value="Decline">Decline</Option>
 
-                        </Select>
+                        </Select></div>
+
+                    </Col>
+                    <Col span={7}>
+                        <div>Filter Print : <RangePicker
+                            format="YYYY-MM-DD"
+                            onChange={handleDatePicker}
+                        //   onOk={onOk}
+                        />
+
+                        </div>
                     </Col>
                     <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
 

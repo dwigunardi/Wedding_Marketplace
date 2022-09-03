@@ -29,27 +29,32 @@ const NavbarAdmin = () => {
     async function validate() {
         try {
             const token = await localStorage.getItem('token_admin')
-            const decode = await jwt_decode(token)
-            const user = decode.username
-            const roleId = decode.role
-            // console.log(decode);
-            if (user) {
-                setUsername(user)
-
-            } else {
-                setUsername(null)
-            }
             if (token) {
-                setLogged(true)
-            } else {
-                setLogged(false)
+                const decode = await jwt_decode(token)
+                const user = decode.username
+                const roleId = decode.role
+                if (user) {
+                    setUsername(user)
+
+                } else {
+                    setUsername(null)
+                }
+                if (token) {
+                    setLogged(true)
+                } else {
+                    setLogged(false)
+                }
+                if (roleId) {
+                    setRole(roleId)
+                }
             }
-            if (roleId) {
-                setRole(roleId)
-            }
+
+            // console.log(decode);
 
         } catch (error) {
-
+            if (error) {
+                message.info("error")
+            }
         }
     }
 
