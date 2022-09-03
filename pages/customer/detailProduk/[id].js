@@ -5,8 +5,8 @@ import FooterCustomer from "../../../components/footer";
 import Navigasi from "../../../components/navigasi";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { Col, Row, Space, Layout, Select, ConfigProvider, Collapse, message, Form, Input, DatePicker, Modal, Rate, Button } from "antd";
-import { ShoppingCartOutlined, BookOutlined, ShopOutlined, AppstoreOutlined, PlusCircleOutlined, StarFilled, FrownFilled } from "@ant-design/icons";
+import { Col, Row, Space, Layout, Select, ConfigProvider, Collapse, message, Form, Input, DatePicker, Modal, Rate, Button, Tooltip, Slider } from "antd";
+import { ShoppingCartOutlined, BookOutlined, ShopOutlined, AppstoreOutlined, PlusCircleOutlined, StarFilled, FrownFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import { useRouter, Router } from "next/router";
 import Image from "next/image";
 import cardImg1 from '../../../public/Image/card-product/aminta-hotel.webp'
@@ -125,12 +125,13 @@ export default function ProductIdCustomer() {
             }
         }).then(res => {
             console.log(res)
-            getReview()
+
         })
 
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
+            getReview()
             setVisibleDua(false);
             setConfirmLoading(false);
         }, 2000);
@@ -224,7 +225,20 @@ export default function ProductIdCustomer() {
             dua: twoStar,
             satu: oneStar
         }
-        return arrBintang
+        const rumusKepuasan = arrBintang.lima + arrBintang.empat / dataReview.length * 100
+
+        return (<>
+            <div>
+
+                <h1 className="text-center text-lg">{rumusKepuasan.toString().slice(0, 2)}% Pembeli merasa puas
+                    <Tooltip title="Dihitung dari jumlah rating positif (bintang 4 dan 5) di bagi dengan total rating">
+                        <span className="ml-3 mb-5">
+                            <ExclamationCircleOutlined />
+                        </span>
+                    </Tooltip>
+                </h1>
+
+            </div></>)
     }
 
 
@@ -238,7 +252,95 @@ export default function ProductIdCustomer() {
             })
             const jumlah = hitungTotalBintang / rumus
             const aksi = jumlah.toString().slice(0, 3)
-            return <div className="text-5xl"><StarFilled style={{ color: "#ffc400" }} />{aksi}</div>
+            const fiveStar = dataReview.filter((data) => data.star == 5).length
+            const fourStar = dataReview.filter((data) => data.star == 4).length
+            const thirdStar = dataReview.filter((data) => data.star == 3).length
+            const twoStar = dataReview.filter((data) => data.star == 2).length
+            const oneStar = dataReview.filter((data) => data.star == 1).length
+            return ((<>
+                <div className="text-5xl text-center mx-2 text-pink-500">
+                    <StarFilled style={{ color: "#ffc400", marginBottom: "10px", marginRight: "10px" }} />{aksi}/
+                    <span className="text-lg text-gray-500">5.0</span>
+                </div>
+                {getStar()}
+                <p className="text-center text-gray-500">{hitungTotalBintang} rating dari {dataReview.length} Ulasan</p>
+                <Row className="max-w-3/4 text-center" justify="center" align="middle">
+                    <Col>
+                        <StarFilled style={{ color: "#ffc400", marginBottom: "10px", }} /> 5
+
+
+
+
+                    </Col>
+                    <Col span={10}>
+                        <div className="ml-5">
+                            <Slider defaultValue={fiveStar} max={5} disabled={true} />
+
+
+
+                        </div>
+                    </Col>
+                    <Col offset={1}>
+                        <p>{fiveStar}</p>
+
+
+
+
+                    </Col>
+                </Row>
+                <Row className="max-w-3/4 text-center" justify="center" align="middle">
+                    <Col>
+                        <StarFilled style={{ color: "#ffc400", marginBottom: "10px", }} /> 4
+                    </Col>
+                    <Col span={10}>
+                        <div className="ml-5">
+                            <Slider defaultValue={fourStar} max={5} disabled={true} />
+                        </div>
+                    </Col>
+                    <Col offset={1}>
+                        <p>{fourStar}</p>
+                    </Col>
+                </Row>
+                <Row className="max-w-3/4 text-center" justify="center" align="middle">
+                    <Col>
+                        <StarFilled style={{ color: "#ffc400", marginBottom: "10px", }} /> 3
+                    </Col>
+                    <Col span={10}>
+                        <div className="ml-5">
+                            <Slider defaultValue={thirdStar} max={5} disabled={true} />
+                        </div>
+                    </Col>
+                    <Col offset={1}>
+                        <p>{thirdStar}</p>
+                    </Col>
+                </Row>
+                <Row className="max-w-3/4 text-center" justify="center" align="middle">
+                    <Col>
+                        <StarFilled style={{ color: "#ffc400", marginBottom: "10px", }} /> 2
+                    </Col>
+                    <Col span={10}>
+                        <div className="ml-5">
+                            <Slider defaultValue={twoStar} max={5} disabled={true} />
+                        </div>
+                    </Col>
+                    <Col offset={1}>
+                        <p>{twoStar}</p>
+                    </Col>
+                </Row>
+                <Row className="max-w-3/4 text-center" justify="center" align="middle">
+                    <Col>
+                        <StarFilled style={{ color: "#ffc400", marginBottom: "10px", }} /> 1
+                    </Col>
+                    <Col span={10}>
+                        <div className="ml-5">
+                            <Slider defaultValue={oneStar} max={5} disabled={true} />
+                        </div>
+                    </Col>
+                    <Col offset={1}>
+                        <p>{oneStar}</p>
+                    </Col>
+                </Row>
+            </>))
         } else {
             return <div className="text-center text-2xl text-red-600"><FrownFilled /><p>Product ini Belom memiliki review</p></div>
         }
@@ -470,7 +572,7 @@ export default function ProductIdCustomer() {
                     </Col>
                 </Row>
                 <Button type="primary" icon={<PlusCircleOutlined />} onClick={showUlasan}>Berikan Ulasan</Button>
-                <div className="h-72 overflow-auto">
+                <div className="h-96 overflow-auto">
                     <Row justify="space-between">
                         <Col span={11}>
                             {dataReview.slice(0, 5).map((data) => {
@@ -492,7 +594,7 @@ export default function ProductIdCustomer() {
                                                         height={48}
                                                         alt=""
                                                     /> </>)}
-                                                <p>{data.createdAt.slice(0, 10)}</p>
+                                                <p>{data.createdAt?.slice(0, 10)}</p>
                                                 <h1>{data.user.name}</h1>
                                                 <p className="text-sm text-grey-300">product : {data.product.name}</p>
                                             </div>
@@ -508,8 +610,9 @@ export default function ProductIdCustomer() {
                         <Col span={11}>
                             <div className="h-full ">
                                 <h1 className="text-center text-2xl text-pink-500 sticky top-0">Rating Keseluruhan</h1>
-                                {hitungReview()}
-
+                                <div className="sticky top-10 mx-auto">
+                                    {hitungReview()}
+                                </div>
                             </div>
                         </Col>
                     </Row>
