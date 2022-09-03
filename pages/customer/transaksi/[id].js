@@ -1,6 +1,6 @@
 import FooterCustomer from "../../../components/footer";
 import Navigasi from "../../../components/navigasi";
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, Select, Upload, message, ConfigProvider } from "antd";
+import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, Input, Modal, Form, Select, Upload, message, ConfigProvider, Rate } from "antd";
 import { EditOutlined, EyeOutlined, DeleteOutlined, PlusOutlined, UploadOutlined, MinusCircleOutlined, } from '@ant-design/icons';
 import { Content } from "antd/lib/layout/layout";
 import React, { useEffect, useState } from "react";
@@ -23,8 +23,9 @@ ConfigProvider.config({
 
 
 
-function getColumns(deleteModal, hapusModal) {
+function getColumns(deleteModal, hapusModal, reviewModal) {
     const router = useRouter()
+
     function setItem(value) {
         console.log(value)
         localStorage.setItem("id_transaksi", value)
@@ -226,18 +227,21 @@ function getColumns(deleteModal, hapusModal) {
                             </>
                         )
                     } else if (record.status == "Selesai") {
+
                         return (
                             <>
                                 <Space size="middle">
-                                    <Link href={`/customer/transaksi/selesai/${record.id}`}>
-                                        <Tooltip placement="top" title="Detail">
+
+                                    <Tooltip placement="top" title="Review">
+                                        <Link href={`/customer/transaksi/selesai/${record.id}`} >
                                             <Button
                                                 style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
                                             >
                                                 Detail
                                             </Button>
-                                        </Tooltip>
-                                    </Link>
+                                        </Link>
+                                    </Tooltip>
+
                                     <Tooltip placement="top" title="Hapus">
                                         <Button onClick={() => hapusModal(record.id)}
                                             style={{ color: "red", borderColor: "red", width: "100px" }}
@@ -286,6 +290,8 @@ export default function Transaksi() {
     const [modalTaskId, setModalTaskId] = useState('');
     const [visibleDua, setVisibleDua] = useState(false);
     const [modalTaskIdDua, setModalTaskIdDua] = useState('');
+    const [visibleTiga, setVisibleTiga] = useState(false);
+    const [modalTaskIdTiga, setModalTaskIdTiga] = useState('');
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [transaksi, setTransaksi] = useState([])
     const [pagination, setPagination] = useState({
@@ -294,6 +300,7 @@ export default function Transaksi() {
     });
     const [itemCount, setItemCount] = useState("")
     const router = useRouter()
+    const [form] = Form.useForm();
     const { id } = router.query;
     function getToken() {
         const getToken = localStorage.getItem("token_customer")
@@ -408,6 +415,17 @@ export default function Transaksi() {
 
 
     };
+    const reviewModal = (record) => {
+        if (record) {
+            setModalTaskIdTiga(record);
+            setVisibleTiga(true);
+
+        } else {
+            setVisibleTiga(false)
+        }
+
+
+    };
     const handleOkModalDelete = () => {
         const data = {
             status: "Canceled",
@@ -447,11 +465,39 @@ export default function Transaksi() {
         }, 2000);
         // location.reload()
     };
+    const handleModalReview = () => {
+        const getForm = form.getFieldValue()
+        // console.log(modalTaskIdTiga)
+        const data = {
+            user_id: modalTaskIdTiga.user?.id,
+            product_id: modalTaskIdTiga.product?.id,
+            star: getForm.rate,
+            message: getForm.message,
+        }
+        console.log(getForm)
+        axios.post(`https://project-wo.herokuapp.com/review`, data, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
+            console.log(res)
+            getData()
+        })
+
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setVisibleTiga(false);
+            setConfirmLoading(false);
+        }, 2000);
+        // location.reload()
+    };
 
     const handleCancel = () => {
         console.log('Clicked cancel button');
         setVisible(false);
         setVisibleDua(false)
+        setVisibleTiga(false)
     };
     // const dataTransaksi = [
     //     {
@@ -487,7 +533,7 @@ export default function Transaksi() {
                             xs={{ span: 24 }}
                         >
                             <Table
-                                columns={getColumns(deleteModal, hapusModal)}
+                                columns={getColumns(deleteModal, hapusModal, reviewModal)}
                                 dataSource={dataSelected()}
                                 size="large"
                                 pagination={pagination}
@@ -513,6 +559,29 @@ export default function Transaksi() {
                         onCancel={handleCancel}
                     >
                         <p className='text-pink-500'>Apakah anda yakin akan Menghapus ?</p>
+                    </Modal>
+                    <Modal
+                        title="Berikan Review"
+                        visible={visibleTiga}
+                        onOk={handleModalReview}
+                        confirmLoading={confirmLoading}
+                        onCancel={handleCancel}
+                    >
+                        <Form
+                            name="basic"
+                            form={form}
+                            initialValues={{
+                                remember: true,
+                            }}
+                            autoComplete="off"
+                        >
+                            <Form.Item name="rate" label="Rate">
+                                <Rate />
+                            </Form.Item>
+                            <Form.Item name={"message"} label="Komen">
+                                <Input.TextArea />
+                            </Form.Item>
+                        </Form>
                     </Modal>
                 </div>
             </Content>

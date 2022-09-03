@@ -5,16 +5,15 @@ import FooterCustomer from "../../../components/footer";
 import Navigasi from "../../../components/navigasi";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
-import { Col, Row, Space, Layout, Select, ConfigProvider, Collapse, message, Form, Input, DatePicker, Modal } from "antd";
-import { ShoppingCartOutlined, BookOutlined, ShopOutlined, AppstoreOutlined } from "@ant-design/icons";
+import { Col, Row, Space, Layout, Select, ConfigProvider, Collapse, message, Form, Input, DatePicker, Modal, Rate, Button } from "antd";
+import { ShoppingCartOutlined, BookOutlined, ShopOutlined, AppstoreOutlined, PlusCircleOutlined, StarFilled, FrownFilled } from "@ant-design/icons";
 import { useRouter, Router } from "next/router";
 import Image from "next/image";
 import cardImg1 from '../../../public/Image/card-product/aminta-hotel.webp'
 import { Content } from "antd/lib/layout/layout";
 import Link from "next/link";
-
-
-
+import placeholder from "../../../public/Image/img-placeholder.png"
+import StickyBox from "react-sticky-box";
 ConfigProvider.config({
     theme: {
         primaryColor: '#EC4899',
@@ -22,30 +21,60 @@ ConfigProvider.config({
 });
 const { Panel } = Collapse;
 const { Option } = Select;
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
+
 export default function ProductIdCustomer() {
 
 
     const { Header, Footer, Sider, Content } = Layout;
     const [form] = Form.useForm();
+    const [formDua] = Form.useForm();
     const [product, setProduct] = useState([])
     const [variant, setVariant] = useState([])
     const [userId, setUserId] = useState('')
     const [transaksiId, setTransaksiId] = useState('')
     const [harga, setHarga] = useState(false)
     const [visible, setVisible] = useState(false);
+    const [visibleDua, setVisibleDua] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
     const [startDate, setStartDate] = useState('')
     const [endDate, setEndDate] = useState('')
     const [address, setAddress] = useState('')
-
+    const [fotoProfil, setFotoProfil] = useState(false)
+    const [dataReview, setDataReview] = useState([])
+    const [bintang, setBintang] = useState(
+        {
+            lima: "",
+            empat: "",
+            tiga: "",
+            dua: "",
+            satu: "",
+        }
+    )
     const router = useRouter();
     const { id } = router.query;
+
+
+
+    const dataSelected = product.find((data) => data.id == id);
+    const selectedVariant = dataSelected?.variant[0]
+    const handleChange = (value) => {
+        // console.log(`selected ${value}`);
+        const selectedVariant = dataSelected?.variant?.find(d => d.id == value)
+        setHarga(true)
+        setVariant(selectedVariant);
+
+    };
+    function getReview() {
+        axios.get(`https://project-wo.herokuapp.com/review/product/${id}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
+            console.log(res)
+            setDataReview(res.data.data)
+        })
+    }
     useEffect(() => {
 
         if (localStorage.getItem("token_customer") === null) {
@@ -65,20 +94,8 @@ export default function ProductIdCustomer() {
             // setVariant(res.data.items.variant)
         })
 
-
+        getReview()
     }, []);
-
-
-    const dataSelected = product.find((data) => data.id == id);
-    const selectedVariant = dataSelected?.variant[0]
-    const handleChange = (value) => {
-        // console.log(`selected ${value}`);
-        const selectedVariant = dataSelected?.variant?.find(d => d.id == value)
-        setHarga(true)
-        setVariant(selectedVariant);
-
-    };
-
     const onChange = (key) => {
         console.log(key);
     };
@@ -87,9 +104,42 @@ export default function ProductIdCustomer() {
         setVisible(true);
 
     };
+    const showUlasan = () => {
+        setVisibleDua(true)
+    }
+    const handleModalReview = () => {
+        const getForm = formDua.getFieldValue()
+        // console.log(modalTaskIdTiga)
+        const getToken = localStorage.getItem("token_customer")
+        const decode = jwt_decode(getToken)
+        const data = {
+            user_id: decode.user_id,
+            product_id: dataSelected?.id,
+            star: getForm.rate,
+            message: getForm.message,
+        }
+        console.log(getForm)
+        axios.post(`https://project-wo.herokuapp.com/review`, data, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+            }
+        }).then(res => {
+            console.log(res)
+            getReview()
+        })
+
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            setVisibleDua(false);
+            setConfirmLoading(false);
+        }, 2000);
+        // location.reload()
+    };
     const handleCancel = () => {
         console.log('Clicked cancel button');
         setVisible(false);
+        setVisibleDua(false)
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
@@ -160,21 +210,57 @@ export default function ProductIdCustomer() {
     const decSep = ",";
     // format to money
     const toMoney = (num) => { return (Math.round(num * 100) / 100).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,').replace(/[,.]/g, function (m) { return m === ',' ? thouSep : decSep; }) };
+    // console.log(dataSelected);
+    function getStar() {
+        const fiveStar = dataReview.filter((data) => data.star == 5).length
+        const fourStar = dataReview.filter((data) => data.star == 4).length
+        const thirdStar = dataReview.filter((data) => data.star == 3).length
+        const twoStar = dataReview.filter((data) => data.star == 2).length
+        const oneStar = dataReview.filter((data) => data.star == 1).length
+        const arrBintang = {
+            lima: fiveStar,
+            empat: fourStar,
+            tiga: thirdStar,
+            dua: twoStar,
+            satu: oneStar
+        }
+        return arrBintang
+    }
+
+
+    function hitungReview() {
+        if (dataReview.some(item => item.star == 1 || 2 || 3 || 4 || 5)) {
+            const rumus = dataReview.length
+            const hitungTotalBintang = dataReview.map((data) => {
+                return data.star
+            }).reduce((prev, curent) => {
+                return prev + curent
+            })
+            const jumlah = hitungTotalBintang / rumus
+            const aksi = jumlah.toString().slice(0, 3)
+            return <div className="text-5xl"><StarFilled style={{ color: "#ffc400" }} />{aksi}</div>
+        } else {
+            return <div className="text-center text-2xl text-red-600"><FrownFilled /><p>Product ini Belom memiliki review</p></div>
+        }
+
+    }
+    console.log(hitungReview())
     return (
         <>
             <Layout style={{ backgroundColor: "white" }}>
                 <Navigasi idTransaksi={transaksiId} />
             </Layout>
-            <Content className="h-3/4 mt-20 p-10">
+            <Content className="h-full mt-20 p-10 ">
                 <Row justify="space-evenly">
-                    <Col span="8" >
+                    <Col span="8" className="border-2 border-gray-200 shadow-md">
                         <Image loader={() => dataSelected?.image}
                             src={`https://project-wo.herokuapp.com/product/image/${dataSelected?.image}`}
                             priority={true}
                             unoptimized={true}
                             width={450}
                             height={350} />
-                        <p className="text-base font-semibold mt-2 text-justify">
+                        <h1 className="text-lg text-pink-500 mx-5">Deskripsi Product</h1>
+                        <p className="text-base font-semibold mt-2 text-justify mx-5">
                             {dataSelected?.description}
                         </p>
                     </Col>
@@ -234,7 +320,7 @@ export default function ProductIdCustomer() {
                             <p className="text-pink-500 text-xl">{dataSelected?.availability}</p>
                         </div>
                     </Col>
-                    <Col span="8">
+                    <Col span="8" className="sticky top-0">
                         <Collapse accordion >
                             <Panel header="Wedding Planner & MC" key="1" >
                                 <ol style={{ listStyleType: "circle", }} className="ml-5">
@@ -299,11 +385,7 @@ export default function ProductIdCustomer() {
                                 </ol>
                             </Panel>
                         </Collapse>
-
                         <div className="mt-20">
-
-
-
                             <button
                                 type="button"
                                 onClick={showModal}
@@ -314,8 +396,6 @@ export default function ProductIdCustomer() {
                                 <BookOutlined className="mr-2 mb-2 text-xl" />
                                 <Space className="text-sm mt-2">Book Now</Space>
                             </button>
-
-
                         </div>
                     </Col>
                 </Row>
@@ -382,6 +462,84 @@ export default function ProductIdCustomer() {
                     </Form.Item> */}
                     </Form>
                 </Modal>
+
+                <Row justify="center" className=" my-5">
+                    <Col>
+                        <h1 className="text-2xl text-pink-500 mt-5">Ulasan Pilihan</h1>
+                        <p className="text-sm text-grey-200">Menampilkan 5 dari {dataReview.length} Ulasan</p>
+                    </Col>
+                </Row>
+                <Button type="primary" icon={<PlusCircleOutlined />} onClick={showUlasan}>Berikan Ulasan</Button>
+                <div className="h-72 overflow-auto">
+                    <Row justify="space-between">
+                        <Col span={11}>
+                            {dataReview.slice(0, 5).map((data) => {
+                                return (<>
+                                    <Row justify="start" className=" border-2 mt-5 border-pink-500 ">
+                                        <Col span={11}>
+                                            <div className="p-5 ">
+                                                <div className="my-5">
+                                                    <Rate disabled defaultValue={data.star} />
+                                                </div>
+                                                {fotoProfil ? (<>  <Image src={placeholder}
+                                                    width={48} height={48} /></>) : (<>  <Image
+                                                        className="rounded-t-lg"
+                                                        loader={() => data.user.image}
+                                                        priority={true}
+                                                        unoptimized={true}
+                                                        src={`https://project-wo.herokuapp.com/product/image/${data.user.image}`}
+                                                        width={48}
+                                                        height={48}
+                                                        alt=""
+                                                    /> </>)}
+                                                <p>{data.createdAt.slice(0, 10)}</p>
+                                                <h1>{data.user.name}</h1>
+                                                <p className="text-sm text-grey-300">product : {data.product.name}</p>
+                                            </div>
+                                        </Col>
+                                        <Col span={11} className="mt-10">
+                                            <h1 className="text-2xl text-pink-500">Ulasan</h1>
+                                            <p className="text-md mt-2 text-gray-600 text-ellipsis overflow-hidden ...">{data.message}</p>
+                                        </Col>
+                                    </Row>
+                                </>)
+                            })}
+                        </Col>
+                        <Col span={11}>
+                            <div className="h-full ">
+                                <h1 className="text-center text-2xl text-pink-500 sticky top-0">Rating Keseluruhan</h1>
+                                {hitungReview()}
+
+                            </div>
+                        </Col>
+                    </Row>
+
+                </div>
+                <Modal
+                    title="Berikan Ulasan Anda"
+                    visible={visibleDua}
+                    onOk={handleModalReview}
+                    confirmLoading={confirmLoading}
+                    onCancel={handleCancel}
+
+                >
+                    <Form
+                        name="basic"
+                        form={formDua}
+                        initialValues={{
+                            remember: true,
+                        }}
+                        autoComplete="off"
+                    >
+                        <Form.Item name="rate" label="Rate">
+                            <Rate />
+                        </Form.Item>
+                        <Form.Item name={"message"} label="Komen">
+                            <Input.TextArea wrap="true" />
+                        </Form.Item>
+                    </Form>
+                </Modal>
+
             </Content>
 
             <FooterCustomer />
