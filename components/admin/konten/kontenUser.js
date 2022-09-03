@@ -1,4 +1,4 @@
-import { Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input, Modal, Select } from 'antd';
+import { DatePicker, Space, Table, Tag, Button, Layout, Row, Col, Tooltip, AutoComplete, Input, Modal, Select, message } from 'antd';
 import { EyeOutlined, DeleteOutlined, PrinterOutlined } from '@ant-design/icons';
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
@@ -6,7 +6,9 @@ import axios from "axios";
 import qs from 'qs'
 import Highlighter from "react-highlight-words";
 import { setRequestMeta } from 'next/dist/server/request-meta';
+import * as moment from 'moment'
 
+const { RangePicker } = DatePicker
 const { Header, Content, Sider } = Layout;
 const { Search } = Input;
 const { Option } = Select;
@@ -93,6 +95,8 @@ export default function KontenUsers() {
     const [modalTaskId, setModalTaskId] = useState('');
     const [meta, setMeta] = useState('')
 
+    const [fromDate, setFromDate] = useState('')
+    const [toDate, setToDate] = useState('')
 
     const searchInput = useRef(null);
 
@@ -125,7 +129,9 @@ export default function KontenUsers() {
             });
 
         } catch (error) {
-
+            if (error) {
+                message.info("ada error")
+            }
         }
     }
     const handleTableChange = (newPagination, filters, sorter) => {
@@ -137,6 +143,11 @@ export default function KontenUsers() {
         });
     };
 
+    const handleDatePicker = (data) => {
+        console.log(data, "ini date")
+        setFromDate(moment(data[0]._d).format('YYYY-MM-DD'))
+        setToDate(moment(data[1]._d).format('YYYY-MM-DD'))
+    }
 
 
     const showModal = (record) => {
@@ -201,7 +212,7 @@ export default function KontenUsers() {
 
     async function ExportXl() {
         try {
-            await axios.get("https://project-wo.herokuapp.com/users/export/data", {
+            await axios.get(`https://project-wo.herokuapp.com/users/export/data?from=${fromDate}&to=${toDate}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
                 }
@@ -209,7 +220,10 @@ export default function KontenUsers() {
                 window.open(res.data.filename)
             })
         } catch (error) {
-
+            if (error) {
+                console.log(error)
+                message.info("ada error")
+            }
         }
 
     }
@@ -219,7 +233,7 @@ export default function KontenUsers() {
             <Content>
                 <h1 className='mt-4 ml-14 text-2xl'>Table User</h1>
                 <Row className='mt-4 ' justify='space-between'>
-                    <Col lg={{ span: 10, offset: 2 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
+                    <Col lg={{ span: 5, offset: 2 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
                         <AutoComplete
                             dropdownMatchSelectWidth={252}
                             style={{
@@ -234,15 +248,8 @@ export default function KontenUsers() {
                         </AutoComplete>
 
                     </Col>
-                    <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
-
-                        <Button type='primary' onClick={ExportXl}
-                            style={{ color: "white", width: "150px", height: "40px", borderRadius: "20px", fontSize: "18px" }}
-                            icon={<PrinterOutlined style={{ fontSize: "20px" }} />}>Print</Button>
-                    </Col>
-                    <Col lg={{ span: 4, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }} >
-
-                        <Select
+                    <Col lg={{ span: 4, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }} offset={1}>
+                        <div>Filter : <Select
                             defaultValue="All"
                             style={{
                                 width: 110,
@@ -257,7 +264,25 @@ export default function KontenUsers() {
                                 Merchant
                             </Option>
                         </Select>
+                        </div>
+
                     </Col>
+                    <Col span={7}>
+                        <div>Filter Print : <RangePicker
+                            format="YYYY-MM-DD"
+                            onChange={handleDatePicker}
+                        //   onOk={onOk}
+                        />
+
+                        </div>
+                    </Col>
+                    <Col lg={{ span: 5, }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 24 }}>
+
+                        <Button type='primary' onClick={ExportXl}
+                            style={{ color: "white", width: "150px", height: "40px", borderRadius: "20px", fontSize: "18px" }}
+                            icon={<PrinterOutlined style={{ fontSize: "20px" }} />}>Print</Button>
+                    </Col>
+
                 </Row>
                 <Row justify="center" align="middle" style={{ overflow: "auto" }}>
 
