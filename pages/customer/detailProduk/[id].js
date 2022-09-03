@@ -602,7 +602,7 @@ export default function ProductIdCustomer() {
                         <Col span={11}>
                             {dataReview.slice(0, 5).map((data) => {
                                 return (<>
-                                    <Row justify="start" className=" border-2 mt-5 border-pink-500 " key={data.id}>
+                                    <Row justify="start" className=" border-2 ml-5 mt-5 border-pink-500 " key={data.id}>
                                         <Col span={11}>
                                             <div className="p-5 ">
                                                 <div className="my-5">

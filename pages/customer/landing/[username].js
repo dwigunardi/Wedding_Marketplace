@@ -19,7 +19,7 @@ export default function LandingCustomer(props) {
     let [role, setRole] = useState('')
 
     const { username } = router.query;
-    console.log(props)
+    // console.log(props)
 
     useEffect(() => {
         const getToken = localStorage.getItem('token_customer')

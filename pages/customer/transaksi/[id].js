@@ -10,7 +10,7 @@ import Image from "next/image";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import BackButton from "../../backButton";
-import jwtDecode from "jwt-decode";
+
 
 
 
@@ -231,17 +231,32 @@ function getColumns(deleteModal, hapusModal, reviewModal) {
                         return (
                             <>
                                 <Space size="middle">
-
-                                    <Tooltip placement="top" title="Review">
+                                    <Link href={`/customer/transaksi/invoice/${record.id}`} target="_blank">
+                                        <Tooltip placement="top" title="Kasih Ulasan Produk">
+                                            <Button
+                                                style={{ color: "#4ade80", borderColor: "#4ade80", }}
+                                            >
+                                                Cetak Invoice
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
+                                    <Tooltip placement="top" title="Detail">
                                         <Link href={`/customer/transaksi/selesai/${record.id}`} >
                                             <Button
                                                 style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
                                             >
-                                                Detail
-                                            </Button>
+                                                Detail                                            </Button>
                                         </Link>
                                     </Tooltip>
-
+                                    <Link href={`/customer/detailProduk/${record.product.id}`} target="_blank">
+                                        <Tooltip placement="top" title="Kasih Ulasan Produk">
+                                            <Button
+                                                style={{ color: "#4ade80", borderColor: "#4ade80", }}
+                                            >
+                                                Review
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
                                     <Tooltip placement="top" title="Hapus">
                                         <Button onClick={() => hapusModal(record.id)}
                                             style={{ color: "red", borderColor: "red", width: "100px" }}
@@ -256,14 +271,21 @@ function getColumns(deleteModal, hapusModal, reviewModal) {
                         return (
                             <>
                                 <Space size="middle">
-                                    <Link href={`/customer/transaksi/invoice/${record.id}`} target="_blank">
-                                        <Tooltip placement="top" title="Detail">
+                                    <Link href={`/customer/detailProduk/${record.product.id}`} target="_blank">
+                                        <Tooltip placement="top" title="Kasih Ulasan Produk">
                                             <Button
-                                                style={{ color: "#4ade80", borderColor: "#4ade80", width: "100px" }}
+                                                style={{ color: "#4ade80", borderColor: "#4ade80", }}
                                             >
-
+                                                Review
+                                            </Button>
+                                        </Tooltip>
+                                    </Link>
+                                    <Link href={`/customer/transaksi/invoice/${record.id}`} target="_blank">
+                                        <Tooltip placement="top" title="Cetak">
+                                            <Button
+                                                style={{ color: "#4ade80", borderColor: "#4ade80", }}
+                                            >
                                                 Cetak Invoice
-
                                             </Button>
                                         </Tooltip>
                                     </Link>
@@ -302,24 +324,19 @@ export default function Transaksi() {
     const router = useRouter()
     const [form] = Form.useForm();
     const { id } = router.query;
-    function getToken() {
-        const getToken = localStorage.getItem("token_customer")
-        const decode = jwtDecode(getToken)
-        return decode.user_id
 
-    }
 
 
     async function getData(params = {}) {
         try {
             const getToken = await localStorage.getItem("token_customer")
-            const decode = await jwt_decode(getToken)
-            await axios.get("https://project-wo.herokuapp.com/transaction", {
+
+            await axios.get("https://project-wo.herokuapp.com/transaction?page=1&limit=100", {
                 headers: {
                     'Authorization': `Bearer ${getToken}`
                 }
             }).then(res => {
-                // console.log(res.data.links, "ini pages")
+                // console.log(res.data, "ini pages")
                 if (res.status == 200 || res.status == 201) {
                     setItemCount(res.data.meta.totalPages)
                     setTransaksi(res.data.items)
@@ -333,8 +350,8 @@ export default function Transaksi() {
 
         } catch (error) {
             if (error) {
-                message.error(error.message)
-
+                message.error("anda belom login dan tidak berhak mengakses")
+                router.push('/auth/login')
             }
         }
     }
@@ -369,15 +386,24 @@ export default function Transaksi() {
             }
         }
     }
+    function ambilToken() {
+        const getToken = localStorage.getItem("token_customer")
+        if (getToken) {
+            const decode = jwt_decode(getToken)
+            return decode.user_id
+        }
+    }
     function dataSelected() {
-        const findData = transaksi.filter((data) => data.user.id == getToken())
+        const getToken = localStorage.getItem("token_customer")
+        const decode = jwt_decode(getToken)
+        const findData = transaksi.filter((data) => data.user.id == decode.user_id)
         return findData
     }
     useEffect(() => {
 
         getData()
         dataSelected()
-    }, []);
+    }, [transaksi]);
 
     const handleTableChange = (e, newPagination, filters, sorter) => {
         console.log(e)
@@ -401,8 +427,6 @@ export default function Transaksi() {
         } else {
             setVisible(false)
         }
-
-
     };
     const hapusModal = (record) => {
         if (record) {
@@ -412,8 +436,6 @@ export default function Transaksi() {
         } else {
             setVisibleDua(false)
         }
-
-
     };
     const reviewModal = (record) => {
         if (record) {
@@ -423,8 +445,6 @@ export default function Transaksi() {
         } else {
             setVisibleTiga(false)
         }
-
-
     };
     const handleOkModalDelete = () => {
         const data = {
@@ -481,12 +501,12 @@ export default function Transaksi() {
             }
         }).then(res => {
             console.log(res)
-            getData()
         })
 
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
+            getData()
             setVisibleTiga(false);
             setConfirmLoading(false);
         }, 2000);
@@ -510,7 +530,7 @@ export default function Transaksi() {
 
     //     }
     // ]
-    // console.log(dataSelected())
+    // console.log(transaksi)
     return (
         <>
             <Layout style={{ backgroundColor: "white" }}>

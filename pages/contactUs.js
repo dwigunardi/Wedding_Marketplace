@@ -23,9 +23,20 @@ export default function ContactUs() {
                     <p className='text-center text-lg font-bold my-2'>Kami akan Memastikan untuk Menjawab segala Pertanyaan ataupun Kendala Anda</p>
                     <p className='text-center text-lg font-bold my-2'>Selama itu masih bersangkutan dengan website kami</p>
                     <Row justify='center' align='middle' className='py-4'>
-                        <Col> <WhatsAppOutlined style={{ color: "#25D366" }} className='text-5xl mx-2' /> </Col>
+                        <Col>
+                            <WhatsAppOutlined style={{ color: "#25D366" }} className='text-2xl mx-2' />
 
-                        <Col> <a href='https://wa.me/+6285724763231' target={"_blank"} className=' text-lg font-bold my-2 mx-auto'>Dwi Gunardi Meinaki</a></Col>
+                        </Col>
+
+                        <Col>
+                            <a href='https://wa.me/+6285724763231' target={"_blank"} className=' text-lg font-bold my-2 mx-auto'>Admin Sahin : 1</a>
+                        </Col>
+
+                    </Row>
+                    <Row justify='center' align='middle' className='mb-5'>
+                        <Col> <WhatsAppOutlined style={{ color: "#25D366" }} className='text-2xl mx-2' /></Col>
+
+                        <Col><a href='https://wa.me/+6281213741626' target={"_blank"} className=' text-lg font-bold my-2 mx-auto'>Admin Sahin : 2</a></Col>
 
                     </Row>
 

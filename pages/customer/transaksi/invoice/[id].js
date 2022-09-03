@@ -81,9 +81,10 @@ export default function Invoice() {
 
     return (
         <>
+
             <div className="w-3/4 mx-auto">
                 <div ref={componentRef}>
-                    <Row justify="center" className="pt-10" >
+                    <Row justify="center" className="pt-5" >
                         <Col span={10}>
 
                             {/* <h1 className="text-3xl italic font-extrabold tracking-widest text-indigo-500">
@@ -99,29 +100,27 @@ export default function Invoice() {
                             </p>
                         </Col>
                     </Row>
-                    <Row justify="space-between">
+                    <Row justify="space-between" className="w-full">
                         <Col>
-                            <div className="p-2">
-
-                                <div className="p-2 border-l-2 border-pink-200">
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="w-6 h-6 text-pink-600 mx-auto"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        stroke="currentColor"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
-                                        />
-                                    </svg>
-                                    <span className="text-sm text-center">www.Sahin.com</span>
-                                </div>
-
+                            {/* <div className="p-2"> */}
+                            <div className="p-2 border-l-2 border-pink-200">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="w-6 h-6 text-pink-600 mx-auto"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                                    />
+                                </svg>
+                                <span className="text-sm text-center">www.Sahin.com</span>
                             </div>
+                            {/* </div> */}
                         </Col>
                         <Col>
                             <div className="p-2">
@@ -210,7 +209,7 @@ export default function Invoice() {
                                     Email : {merchantSelected?.email}
                                 </li>
                                 <li>
-                                    No Telp : {merchantSelected?.no_telp}
+                                    No Telp : +62{merchantSelected?.no_telp}
                                 </li>
                             </ul>
                         </Col>
@@ -231,17 +230,17 @@ export default function Invoice() {
                                 </thead>
                                 <tbody className="bg-white">
                                     <tr className="whitespace-nowrap">
-                                        <td className="px-6 py-4 text-sm text-pink-500">1</td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-2 text-sm text-pink-500">1</td>
+                                        <td className="px-6 py-2">
                                             <div className="text-sm text-pink-900">
                                                 {data?.product?.name}
                                             </div>
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-2">
                                             <div className="text-sm text-pink-500">{data?.variant?.name}</div>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-pink-500">{data?.product?.location}</td>
-                                        <td className="px-6 py-4 text-pink-500">Rp. {toMoney(data?.total_price)}</td>
+                                        <td className="px-6 py-2 text-sm text-pink-500">{data?.product?.location}</td>
+                                        <td className="px-6 py-2 text-pink-500">Rp. {toMoney(data?.total_price)}</td>
                                     </tr>
 
 
@@ -266,7 +265,7 @@ export default function Invoice() {
                             </table>
                         </div>
                     </div>
-                    <div className="flex justify-between p-4">
+                    <div className="flex justify-between p-2">
                         <div>
                             <h3 className="text-xl">Terms And Condition :</h3>
                             <ul className="text-xs list-disc list-inside">
@@ -284,23 +283,29 @@ export default function Invoice() {
                                 </li>
                             </ul>
                         </div>
-                        <div className="p-4">
+                        <div className="p-2">
                             <h1 className="text-lg ml-7">Signature</h1>
-                            <Image src={signature} width={150} height={100} priority />
+                            <Image src={signature} width={150} height={75} priority />
                         </div>
                     </div>
                     <div className="w-full h-0.5 bg-pink-500" />
-                    <div className="p-4">
+                    <div className="p-2">
                         <div className="flex items-center justify-center">
                             Thank you very much for doing business with us.
                         </div>
-
                     </div>
+
                 </div>
-                <button onClick={handlePrint} className="inline-block w-20 px-6 py-2.5 bg-pink-500 text-white font-medium text-xs leading-tight uppercase rounded-lg shadow-md 
-                                    hover:bg-white hover:text-pink-500 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg 
-                                    transition duration-150 ease-in-out  mb-3 float-right mr-20">Print</button>
             </div>
+            <Row justify="start" className="h-full float-right mr-10  sticky bottom-10">
+                <Col>
+                    <button onClick={handlePrint} className="inline-block w-32 px-6 py-2.5 bg-pink-500 text-white font-medium text-xs leading-tight uppercase rounded-lg shadow-md 
+                                    hover:bg-white hover:text-pink-500 hover:shadow-lg focus:shadow-lg focus:outline-none focus:ring-0 active:shadow-lg 
+                                    transition duration-150 ease-in-out  mb-3 ">
+                        Print
+                    </button>
+                </Col>
+            </Row>
         </>
     )
 }

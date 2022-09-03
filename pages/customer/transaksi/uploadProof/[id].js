@@ -10,6 +10,7 @@ import Image from "next/image";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import Countdown from "react-countdown";
+import BackButton from "../../../backButton";
 
 ConfigProvider.config({
     theme: {
@@ -31,6 +32,7 @@ export default function Transaksi() {
     const [hitungMundur, setHitungMundur] = useState(true)
     const [expDate, setExpDate] = useState('')
     const router = useRouter()
+    const [cekSubmit, setCekSubmit] = useState(false)
     // const { id } = router.query;
     // console.log(id)
 
@@ -45,7 +47,7 @@ export default function Transaksi() {
                     'Authorization': `Bearer ${getToken}`
                 }
             }).then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.status == 200 || res.status == 201) {
                     setTransaksi([res.data.data])
                     setDataTransaksi(res.data.data)
@@ -58,13 +60,17 @@ export default function Transaksi() {
                 // total: product.length
             });
         } catch (error) {
-            message.error(error.message)
+            if (error) {
+                message.error("anda belom login dan tidak berhak mengakses")
+                router.push("/auth/login")
+            }
+
         }
     }
     useEffect(() => {
         getData()
 
-    }, [setExpDate]);
+    }, []);
 
 
     async function SubmitProof() {
@@ -105,22 +111,48 @@ export default function Transaksi() {
                     setApprove("Menunggu Approvement")
                     setHitungMundur(false)
                     getData()
-
+                    setCekSubmit(true)
                 }
-                if (approve == "Menunggu Approvement") {
-                    setTimeout(() => {
-                        message.info("Anda Sudah MengUpload Bukti Pembayaran Harap Menunggu Keputusan Admin")
-                        Router.back()
-                    }, 3000);
-                }
+                // if (approve == "Menunggu Approvement") {
+                //     setTimeout(() => {
+                //         message.info("Anda Sudah MengUpload Bukti Pembayaran Harap Menunggu Keputusan Admin")
+                //         Router.back()
+                //     }, 3000);
+                // }
             })
-
-
         } catch (error) {
             if (error) {
                 message.info(error.message)
             }
         }
+    }
+    function hapusIdTr() {
+        const getTokenId = localStorage.getItem("id_transaksi")
+        if (getTokenId) {
+            localStorage.removeItem("id_transaksi")
+            Router.back()
+        }
+    }
+    function submitUlang() {
+        if (approve == "Menunggu Approvement") {
+            const id = localStorage.getItem("id_transaksi")
+            const data = {
+                status: "Menunggu Pembayaran",
+            }
+            axios.put(`https://project-wo.herokuapp.com/transaction/edit/${id}`, data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
+                }
+            }).then(res => {
+                if (res.status == 200 || res.status == 201) {
+                    setApprove("Menunggu Pembayaran")
+                    setCekSubmit(false)
+                }
+            })
+        } else (
+            setCekSubmit(true)
+        )
     }
     const onFinish = (values) => {
         console.log('Success:', values);
@@ -135,7 +167,7 @@ export default function Transaksi() {
     const onChangeFoto = async (e) => {
         try {
             const id = localStorage.getItem("id_transaksi")
-            const value = await e.file.originFileObj
+            const value = e.file.originFileObj
             const dataForm = new FormData
             dataForm.append("transaction_proof", value)
             setFoto(value)
@@ -150,7 +182,9 @@ export default function Transaksi() {
                 }
             })
         } catch (error) {
-
+            if (error) {
+                message.error("gagal upload file")
+            }
         }
 
 
@@ -235,7 +269,7 @@ export default function Transaksi() {
                                             <td className="text-sm text-gray-900 font-light  py-4 whitespace-nowrap">
                                                 {transaksi.map((data) => {
                                                     return (
-                                                        data.user.no_telp
+                                                        `+62${data.user.no_telp}`
                                                     )
                                                 })}
                                             </td>
@@ -358,10 +392,10 @@ export default function Transaksi() {
 
                                                 onChange={handleChange}
                                             >
-                                                <Option value="Bca : xxxx-xxxx-xxxx-xxxx">Bca : xxxx-xxxx-xxxx-xxxx</Option>
-                                                <Option value="Mandiri : xxxx-xxxx-xxxx-xxxx">Mandiri : xxxx-xxxx-xxxx-xxxx</Option>
-                                                <Option value="BNI : xxxx-xxxx-xxxx-xxxx">BNI : xxxx-xxxx-xxxx-xxxx</Option>
-                                                <Option value="BRI : xxxx-xxxx-xxxx-xxxx">BRI : xxxx-xxxx-xxxx-xxxx</Option>
+                                                <Option value="Bca : 1426-0981-6542-8821">Bca : 1426-0981-6542-8821 a.n Dwi gm</Option>
+                                                <Option value="Mandiri : 3254-1266-4423-9978">Mandiri : 3254-1266-4423-9978 a.n Dwi gm</Option>
+                                                <Option value="BNI : 8732-6712-9832-6675">BNI : 8732-6712-9832-6675 a.n Ariel a</Option>
+                                                <Option value="BRI : 6521-5543-1234-7777">BRI : 6521-5543-1234-7777 a.n Ariel a</Option>
                                             </Select>
                                         </Form.Item>
 
@@ -381,7 +415,7 @@ export default function Transaksi() {
                             </Col>
 
                             <Row justify="space-evenly" className="ml-14 mt-20">
-                                <Col span={8}>
+                                <Col span={5}>
                                     <Link href={`/customer/landing/${user.user_id}`}>
                                         <a
                                             className="inline-block  text-pink-500 underline font-small text-sm leading-tight transition duration-150 ease-in-out"
@@ -391,17 +425,27 @@ export default function Transaksi() {
                                         </a>
                                     </Link>
                                 </Col>
-                                <Col span={8}>
-                                    <Button
-                                        type="primary"
-                                        onClick={() => SubmitProof()}
-                                        className="inline-block px-8 py-2 bg-pink-500 text-white text-md leading-tight shadow-md hover:bg-pink-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
-                                    >
-                                        Submit Proof
-                                    </Button>
-                                    <Button onClick={() => <Invoice></Invoice>}>
+                                <Col span={12}>
+                                    {cekSubmit ? (<>
+                                        <Button type='primary' onClick={() => hapusIdTr()}>Kembali</Button>
+                                        <Button
+                                            type="primary"
+                                            onClick={() => submitUlang()}
+                                            className="inline-block ml-6 px-8 py-2 bg-pink-500 text-white text-md leading-tight shadow-md hover:bg-pink-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
+                                        >
+                                            Submit Ulang
+                                        </Button>
+                                    </>) : (
+                                        <>
+                                            <Button
+                                                type="primary"
+                                                onClick={() => SubmitProof()}
+                                                className="inline-block px-8 py-2 bg-pink-500 text-white text-md leading-tight shadow-md hover:bg-pink-700 hover:shadow-lg focus:bg-emerald-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-emerald-800 active:shadow-lg transition duration-150 ease-in-out"
+                                            >
+                                                Submit Proof
+                                            </Button>
+                                        </>)}
 
-                                    </Button>
                                 </Col>
                             </Row>
 
@@ -421,13 +465,13 @@ export default function Transaksi() {
                                     >
                                         <h1 className="text-pink-500 text-start  mt-5">Transfer ke salah satu No. Rekening di Bawah :</h1>
                                         <p>No Rekening BCA :</p>
-                                        <p className="border-2 text-pink-500  text-center text-lg">xxxx-xxxx-xxxx-xxxx</p>
+                                        <p className="border-2 text-pink-500  text-center text-base">BCA : 1426-0981-6542-8821 a.n Dwi gm</p>
                                         <p>No Rekening Mandiri :</p>
-                                        <p className="border-2 text-pink-500  text-center text-lg">xxxx-xxxx-xxxx-xxxx</p>
+                                        <p className="border-2 text-pink-500  text-center text-base">Mandiri : 3254-1266-4423-9978 a.n Dwi gm</p>
                                         <p>No Rekening BNI :</p>
-                                        <p className="border-2 text-pink-500  text-center text-lg">xxxx-xxxx-xxxx-xxxx</p>
+                                        <p className="border-2 text-pink-500  text-center text-base">BNI : 8732-6712-9832-6675 a.n Ariel a</p>
                                         <p>No Rekening BRI :</p>
-                                        <p className="border-2 text-pink-500  text-center text-lg">xxxx-xxxx-xxxx-xxxx</p>
+                                        <p className="border-2 text-pink-500  text-center text-base">BRI : 6521-5543-1234-7777 a.n Ariel a</p>
 
                                         <h1 className="text-pink-500">Batas Akhir Pembayaran Anda</h1>
                                         {hitungMundur ? (

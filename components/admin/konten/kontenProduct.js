@@ -254,10 +254,13 @@ export default function ProductContent() {
             console.log(res)
             console.log(pagination)
         })
-        getData()
+
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
+            getData({
+                pagination,
+            })
             setVisible(false);
             setConfirmLoading(false);
         }, 2000);
