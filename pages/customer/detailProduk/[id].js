@@ -35,6 +35,7 @@ export default function ProductIdCustomer() {
     const [harga, setHarga] = useState(false)
     const [visible, setVisible] = useState(false);
     const [visibleDua, setVisibleDua] = useState(false);
+    const [visibleTiga, setVisibleTiga] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
     const [startDate, setStartDate] = useState('')
@@ -42,21 +43,15 @@ export default function ProductIdCustomer() {
     const [address, setAddress] = useState('')
     const [fotoProfil, setFotoProfil] = useState(false)
     const [dataReview, setDataReview] = useState([])
-    const [bintang, setBintang] = useState(
-        {
-            lima: "",
-            empat: "",
-            tiga: "",
-            dua: "",
-            satu: "",
-        }
-    )
+    const [notel, setNotel] = useState('')
     const router = useRouter();
     const { id } = router.query;
 
 
 
     const dataSelected = product.find((data) => data.id == id);
+
+    // console.log(dataSelected?.merchant)
     const selectedVariant = dataSelected?.variant[0]
     const handleChange = (value) => {
         // console.log(`selected ${value}`);
@@ -71,10 +66,11 @@ export default function ProductIdCustomer() {
                 'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
             }
         }).then(res => {
-            console.log(res)
+            // console.log(res)
             setDataReview(res.data.data)
         })
     }
+
     useEffect(() => {
 
         if (localStorage.getItem("token_customer") === null) {
@@ -85,8 +81,11 @@ export default function ProductIdCustomer() {
             setUserId(decode.user_id)
         }
         axios.get("https://project-wo.herokuapp.com/product").then(res => {
-            setProduct(res.data.items)
-            console.log(res.data)
+            if (res.status == 200 || res.status == 201) {
+                setProduct(res.data.items)
+                // console.log(res.data)
+            }
+
             // for (let i = 0; i < res.data.items.length; i++) {
             //     setVariant([res.data.items[i].variant])
             //     // console.log(res.data.items[i].variant)
@@ -104,6 +103,16 @@ export default function ProductIdCustomer() {
         setVisible(true);
 
     };
+    function getMerchant(value) {
+        axios.get(`https://project-wo.herokuapp.com/merchant/detail/${value}`).then(res => {
+            // console.log(res, "ini get merhcant")
+            setNotel(res.data.data.no_telp)
+        })
+    }
+    const showMerchant = (value) => {
+        setVisibleTiga(true)
+        getMerchant(value)
+    }
     const showUlasan = () => {
         setVisibleDua(true)
     }
@@ -118,13 +127,13 @@ export default function ProductIdCustomer() {
             star: getForm.rate,
             message: getForm.message,
         }
-        console.log(getForm)
+        // console.log(getForm)
         axios.post(`https://project-wo.herokuapp.com/review`, data, {
             headers: {
                 'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
             }
         }).then(res => {
-            console.log(res)
+            // console.log(res)
 
         })
 
@@ -141,12 +150,13 @@ export default function ProductIdCustomer() {
         console.log('Clicked cancel button');
         setVisible(false);
         setVisibleDua(false)
+        setVisibleTiga(false)
     };
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
     const onChangeStartDate = (e) => {
-        console.log(e._d)
+        // console.log(e._d)
         const value = e?._d
         setStartDate(value)
     }
@@ -480,9 +490,25 @@ export default function ProductIdCustomer() {
                         <div className="mt-5">
 
                             <Row justify='start' align='middle'>
+
                                 <Col> <WhatsAppOutlined style={{ color: "#25D366" }} className='text-xl mx-2' /> </Col>
 
-                                <Col> <a href='https://wa.me/+6285724763231' target={"_blank"} className=' text-lg font-bold mx-auto'><span>Hubungi : </span>{dataSelected?.merchant.name}</a></Col>
+                                {/* <Modal
+                                        title="Hubungi Merchant"
+                                        visible={visibleTiga}
+                                        // onOk={submitTransaksi}
+                                        // confirmLoading={confirmLoading}
+                                        footer={[<Button key="back" onClick={handleCancel}>
+                                            Return
+                                        </Button>]}
+                                    >
+                                        <WhatsAppOutlined style={{ color: "#25D366" }} className='text-xl mx-2' />
+                                        <a href={`https://wa.me/+62${dataSelected?.merchant?.no_telp}`} target={"_blank"} className=' text-lg font-bold mx-auto'>
+                                            <span>Hubungi : </span>{dataSelected?.merchant.name}</a>
+                                    </Modal> */}
+
+
+                                <Col> <a href={`https://wa.me/+62${dataSelected?.merchant?.no_telp}`} target={"_blank"} className=' text-lg font-bold mx-auto'><span>Hubungi : </span>{dataSelected?.merchant.name}</a></Col>
 
                             </Row>
                         </div>
