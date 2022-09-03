@@ -756,7 +756,7 @@ export default function MerchantProduct() {
                                             },
                                         ]}
                                     >
-                                        <Input.TextArea autoSize={{ minRows: 3, maxRows: 5 }} />
+                                        <Input.TextArea autoSize={{ minRows: 3, maxRows: 5 }} wrap="true" />
                                     </Form.Item>
                                     <Form.Item
                                         label="Status"

@@ -6,7 +6,7 @@ import Navigasi from "../../../components/navigasi";
 import axios from "axios";
 import jwt_decode from "jwt-decode";
 import { Col, Row, Space, Layout, Select, ConfigProvider, Collapse, message, Form, Input, DatePicker, Modal, Rate, Button, Tooltip, Slider } from "antd";
-import { ShoppingCartOutlined, BookOutlined, ShopOutlined, AppstoreOutlined, PlusCircleOutlined, StarFilled, FrownFilled, ExclamationCircleOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined, BookOutlined, ShopOutlined, AppstoreOutlined, PlusCircleOutlined, StarFilled, FrownFilled, ExclamationCircleOutlined, WhatsAppOutlined } from "@ant-design/icons";
 import { useRouter, Router } from "next/router";
 import Image from "next/image";
 import cardImg1 from '../../../public/Image/card-product/aminta-hotel.webp'
@@ -86,7 +86,7 @@ export default function ProductIdCustomer() {
         }
         axios.get("https://project-wo.herokuapp.com/product").then(res => {
             setProduct(res.data.items)
-            // console.log(res.data)
+            console.log(res.data)
             // for (let i = 0; i < res.data.items.length; i++) {
             //     setVariant([res.data.items[i].variant])
             //     // console.log(res.data.items[i].variant)
@@ -185,7 +185,7 @@ export default function ProductIdCustomer() {
                     'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
                 }
             }).then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.status == 200 || res.status == 201) {
                     setTransaksiId(res.data.data.id)
                     setConfirmLoading(true);
@@ -250,6 +250,7 @@ export default function ProductIdCustomer() {
             }).reduce((prev, curent) => {
                 return prev + curent
             })
+
             const jumlah = hitungTotalBintang / rumus
             const aksi = jumlah.toString().slice(0, 3)
             const fiveStar = dataReview.filter((data) => data.star == 5).length
@@ -267,25 +268,14 @@ export default function ProductIdCustomer() {
                 <Row className="max-w-3/4 text-center" justify="center" align="middle">
                     <Col>
                         <StarFilled style={{ color: "#ffc400", marginBottom: "10px", }} /> 5
-
-
-
-
                     </Col>
                     <Col span={10}>
                         <div className="ml-5">
                             <Slider defaultValue={fiveStar} max={5} disabled={true} />
-
-
-
                         </div>
                     </Col>
                     <Col offset={1}>
                         <p>{fiveStar}</p>
-
-
-
-
                     </Col>
                 </Row>
                 <Row className="max-w-3/4 text-center" justify="center" align="middle">
@@ -346,7 +336,7 @@ export default function ProductIdCustomer() {
         }
 
     }
-    console.log(hitungReview())
+    // console.log(hitungReview())
     return (
         <>
             <Layout style={{ backgroundColor: "white" }}>
@@ -362,7 +352,7 @@ export default function ProductIdCustomer() {
                             width={450}
                             height={350} />
                         <h1 className="text-lg text-pink-500 mx-5">Deskripsi Product</h1>
-                        <p className="text-base font-semibold mt-2 text-justify mx-5">
+                        <p className="text-base font-semibold mt-2 text-justify mx-5 text-ellipsis overflow-hidden ...">
                             {dataSelected?.description}
                         </p>
                     </Col>
@@ -487,7 +477,16 @@ export default function ProductIdCustomer() {
                                 </ol>
                             </Panel>
                         </Collapse>
-                        <div className="mt-20">
+                        <div className="mt-5">
+
+                            <Row justify='start' align='middle'>
+                                <Col> <WhatsAppOutlined style={{ color: "#25D366" }} className='text-xl mx-2' /> </Col>
+
+                                <Col> <a href='https://wa.me/+6285724763231' target={"_blank"} className=' text-lg font-bold mx-auto'><span>Hubungi : </span>{dataSelected?.merchant.name}</a></Col>
+
+                            </Row>
+                        </div>
+                        <div className="mt-10">
                             <button
                                 type="button"
                                 onClick={showModal}
@@ -571,13 +570,13 @@ export default function ProductIdCustomer() {
                         <p className="text-sm text-grey-200">Menampilkan 5 dari {dataReview.length} Ulasan</p>
                     </Col>
                 </Row>
-                <Button type="primary" icon={<PlusCircleOutlined />} onClick={showUlasan}>Berikan Ulasan</Button>
+                <Button type="primary" icon={<PlusCircleOutlined />} onClick={showUlasan} className="ml-5">Berikan Ulasan</Button>
                 <div className="h-96 overflow-auto">
                     <Row justify="space-between">
                         <Col span={11}>
                             {dataReview.slice(0, 5).map((data) => {
                                 return (<>
-                                    <Row justify="start" className=" border-2 mt-5 border-pink-500 ">
+                                    <Row justify="start" className=" border-2 mt-5 border-pink-500 " key={data.id}>
                                         <Col span={11}>
                                             <div className="p-5 ">
                                                 <div className="my-5">

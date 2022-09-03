@@ -27,11 +27,13 @@ export default function DetailCustomer() {
         try {
             const getToken = localStorage.getItem("token_customer")
             const decode = jwt_decode(getToken)
+            // console.log(decode.user_id)
             const getData = await axios.get(`https://project-wo.herokuapp.com/users/detail/${decode.user_id}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token_customer")}`
                 }
             }).then(response => {
+                console.log(response)
                 if (response.status == 200 || response.status == 201) {
                     setDataUser(response.data.data)
                     setMyRole(response.data.data.role)

@@ -66,7 +66,7 @@ export default function ContentProduct() {
     const [options, setOptions] = useState([]);
 
     useEffect(() => {
-        axios.get("https://project-wo.herokuapp.com/product/").then(res => {
+        axios.get("https://project-wo.herokuapp.com/product").then(res => {
             console.log(res)
             setProduct(res.data.items)
             setMeta(res.data.meta)
@@ -208,7 +208,7 @@ export default function ContentProduct() {
                                 <CardProductPage product={product} />
                                 <Row justify="center" align="middle" style={{ height: "160px" }}>
                                     <Col span={6}>
-                                        <Pagination defaultCurrent={1} total={meta.itemCount} onChange={onChangePaginate} />
+                                        <Pagination defaultCurrent={meta.currentPage} total={meta.totalItems} pageSize={20} onChange={onChangePaginate} />
                                     </Col>
                                 </Row>
                             </Col>

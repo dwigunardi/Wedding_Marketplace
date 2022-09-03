@@ -1,4 +1,4 @@
-import { Col, Row, Card, Button, Form, Input, Space, Modal, Upload } from "antd";
+import { Col, Row, Card, Button, Form, Input, Space, Modal, Upload, message } from "antd";
 import {
     InboxOutlined, UploadOutlined, EyeTwoTone,
     EyeInvisibleOutlined
@@ -35,7 +35,7 @@ export default function detailMerchantId() {
     const [form] = Form.useForm();
     const [formUpdate] = Form.useForm()
 
-    useEffect(() => {
+    function getUser() {
         const getToken = localStorage.getItem("token_merchant")
         const decode = jwt_decode(getToken)
         setToken(getToken)
@@ -51,6 +51,10 @@ export default function detailMerchantId() {
                 setMyRole(response.data.data.role)
             }
         })
+    }
+    useEffect(() => {
+
+        getUser()
 
     }, [])
 
@@ -60,8 +64,8 @@ export default function detailMerchantId() {
         name: dataUser.name,
         username: dataUser.username,
         email: dataUser.email,
-        no_telp: dataUser.no_telp,
-        createdAt: dataUser.createdAt,
+        no_telp: "+62" + dataUser.no_telp,
+        createdAt: dataUser.createdAt?.slice(0, 10),
         image: dataUser.image
     })
 
@@ -73,8 +77,8 @@ export default function detailMerchantId() {
             name: dataUser.name,
             username: dataUser.username,
             email: dataUser.email,
-            no_telp: dataUser.no_telp,
-            createdAt: dataUser.createdAt,
+            no_telp: "+62" + dataUser.no_telp,
+            createdAt: dataUser.createdAt?.slice(0, 10),
             image: dataUser.image
         })
         // console.log(data)
@@ -96,10 +100,12 @@ export default function detailMerchantId() {
             })
             setConfirmLoading(true);
             setTimeout(() => {
+                getUser()
                 setVisible(false);
                 setConfirmLoading(false);
             }, 2000);
             // location.reload()
+
         } catch (error) {
 
         }
@@ -124,8 +130,9 @@ export default function detailMerchantId() {
                     }
                 )
                 .then((res) => {
-                    // message.success("berhasil Upload File")
+                    message.success("berhasil Upload File")
                     // onChangeImage(res.data.data.filename)
+                    getUser()
                     console.log(res)
                 });
         } catch (e) {
@@ -223,20 +230,23 @@ export default function detailMerchantId() {
                     <Row justify="center" align="middle" className='mt-6 ' >
                         <Col lg={{ span: 16 }} sm={{ span: 20 }}>
                             <div className="rounded-lg shadow-lg bg-white ">
-                                <Row justify="center" align="middle">
-                                    <Col>
-                                        <a href="#!" className="mx-20">
-                                            <Image
-                                                className="rounded-t-lg"
-                                                loader={() => orig}
-                                                src={orig}
-                                                width={150}
-                                                height={150}
-                                                alt=""
-                                                priority={true}
-                                                unoptimized={true}
-                                            />
-                                        </a>
+                                <Row justify="center" align="middle" className="p-5">
+                                    <Col span={5}>
+
+                                        <Image
+                                            className="rounded-t-lg"
+                                            loader={() => dataUser.image}
+                                            src={`https://project-wo.herokuapp.com/product/image/${dataUser.image}`}
+                                            width={150}
+                                            height={150}
+                                            alt=""
+                                            priority={true}
+                                            unoptimized={true}
+                                        />
+                                        <Upload customRequest={(args) => uploadHandler(args)} multiple={false} showUploadList={false}>
+                                            <Button icon={<UploadOutlined />}>Upload Photo</Button>
+                                        </Upload>
+
                                         <br />
 
                                     </Col>
@@ -256,6 +266,7 @@ export default function detailMerchantId() {
                                         // onFinish={onFinish}
                                         onFinishFailed={onFinishFailed}
                                         autoComplete="off"
+                                        disabled={true}
                                     >
                                         <Form.Item
                                             label="Name"
@@ -308,24 +319,16 @@ export default function detailMerchantId() {
                                             </Button>
                                         </Form.Item>
 
-                                        <Form.Item
-                                            wrapperCol={{
-                                                offset: 3,
-                                                span: 16,
-                                            }}
-                                        >
-                                            <Space>
-                                                <Button htmlType="button" onClick={onReset}>
-                                                    Reset
-                                                </Button>
-                                                <Button htmlType="button" onClick={showModal}>
-                                                    Update
-                                                </Button>
-                                                <BackButton />
-                                            </Space>
-                                        </Form.Item>
                                     </Form>
-
+                                    <Space className="ml-20">
+                                        <Button htmlType="button" onClick={onReset}>
+                                            Reset
+                                        </Button>
+                                        <Button htmlType="button" onClick={showModal}>
+                                            Update
+                                        </Button>
+                                        <BackButton />
+                                    </Space>
                                     {/* modal update */}
                                     <Modal
                                         title="Update Data"
@@ -393,6 +396,12 @@ export default function detailMerchantId() {
                                                 <Upload customRequest={(args) => uploadHandler(args)} multiple={false}>
                                                     <Button icon={<UploadOutlined />}>Click to Upload</Button>
                                                 </Upload>
+                                            </Form.Item>
+                                            <Form.Item
+                                                name="password"
+                                                label="Ganti Password"
+                                            >
+                                                <Input.Password iconRender={(visible) => (visible ? <EyeTwoTone style={{ color: "pink" }} /> : <EyeInvisibleOutlined style={{ color: "pink" }} />)} />
                                             </Form.Item>
                                         </Form>
 

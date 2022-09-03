@@ -1,7 +1,7 @@
 import Background from "../../public/Image/banner-wed-5.png"
 import Image from "next/image"
 import Logo from "../../public/Image/sahin-love.png"
-import { Col, Row, Grid, Layout, message, Upload, Button, Checkbox, Form, Input } from "antd"
+import { Col, Row, Grid, Layout, message, Upload, Button, Checkbox, Form, Input, InputNumber } from "antd"
 import "antd/dist/antd.css"
 import "tailwindcss/tailwind.css"
 import Link from "next/link"
@@ -49,8 +49,9 @@ export default function MerchantRegis() {
     }
 
     const onChangeNotel = (e) => {
-        const value = e.target.value
-        setNotel(value)
+        // const value = e.target.value
+        // console.log(e)
+        setNotel(e)
     }
 
     const onChangeImage = (e) => {
@@ -189,11 +190,20 @@ export default function MerchantRegis() {
                                     />
                                 </div>
                                 <div className="mb-4">
-                                    <input
+                                    {/* <input
                                         type="text"
                                         className="form-control block w-full px-3 py-1.5 text-base font-normal text-gray-700
                                     bg-white bg-clip-padding border border-solid border-pink-300 rounded transition 
                                     ease-in-out m-0 focus:text-pink-700 focus:bg-white focus:border-pink-600 focus:outline-none"
+                                       
+                                    /> */}
+                                    <InputNumber
+                                        prefix="+62"
+                                        style={{
+                                            width: '100%',
+                                        }}
+                                        type={"number"}
+                                        controls={false}
                                         value={no_telp} onChange={onChangeNotel}
                                         placeholder="Masukan No Telepon Anda"
                                     />

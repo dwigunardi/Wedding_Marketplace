@@ -10,7 +10,7 @@ const { Header, Content, Sider } = Layout;
 const { Search } = Input;
 const { Option } = Select;
 
-function getColumns(deleteModal, updateModal, imageModal) {
+function getColumns(deleteModal, updateModal, imageModal, hapusModal) {
     return [
         {
             title: 'User Name',
@@ -66,7 +66,14 @@ function getColumns(deleteModal, updateModal, imageModal) {
             title: 'address',
             dataIndex: 'address',
             key: 'address',
+            render: (_, record) => {
 
+                return (
+                    <>
+                        <p className='text-sm text-gray-500 text-ellipsis overflow-hidden ...'>{record.address}</p>
+                    </>
+                )
+            }
         },
         {
             title: 'Variant',
@@ -177,6 +184,15 @@ function getColumns(deleteModal, updateModal, imageModal) {
                         >
                         </Button>
                     </Tooltip>
+                    <Tooltip placement="right" title="Delete">
+                        <Button
+                            onClick={() => hapusModal(record.id)}
+                            type="danger"
+                            icon={<DeleteOutlined />}
+                            danger={true}
+                        >
+                        </Button>
+                    </Tooltip>
 
                 </Space>
             ),
@@ -200,9 +216,12 @@ export default function KontenTransaksi() {
     const [loadingDua, setLoadingDua] = useState(false);
     let [imageUrl, setImageUrl] = useState('')
 
-    //state modal delete
+    //state modal decline
     const [visible, setVisible] = useState(false);
     const [modalTaskId, setModalTaskId] = useState('');
+    //state modal decline
+    const [visibleHapus, setVisibleHapus] = useState(false);
+    const [modalTaskIdHapus, setModalTaskIdHapus] = useState('');
 
     //state modal update
     const [visibleDua, setVisibleDua] = useState(false);
@@ -264,7 +283,7 @@ export default function KontenTransaksi() {
 
 
 
-    //start delete modal
+    //start decline modal
 
     const deleteModal = (record) => {
         if (record) {
@@ -307,8 +326,43 @@ export default function KontenTransaksi() {
         // location.reload()
     };
 
-    //akhir delete modal
+    //akhir Decline modal
 
+    //start delete modal
+
+    const hapusModal = (record) => {
+        if (record) {
+            setModalTaskIdHapus(record);
+            setVisibleHapus(true);
+
+        } else {
+            setVisibleHapus(false)
+        }
+
+
+    };
+    const handleOkModalHapus = async () => {
+
+        // console.log(data)
+        await axios.delete(`https://project-wo.herokuapp.com/transaction/delete/${modalTaskIdHapus}`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem("token_admin")}`,
+                "content-type": "application/json"
+            }
+        }).then(res => {
+            console.log(res)
+        })
+        setModalText('The modal will be closed after two seconds');
+        setConfirmLoading(true);
+        setTimeout(() => {
+            validate()
+            setVisibleHapus(false);
+            setConfirmLoading(false);
+        }, 2000);
+        // location.reload()
+    };
+
+    //akhir delete modal
     //start update modal
     const onChangeFoto = (e) => {
         const value = e.target.files[0]
@@ -408,6 +462,7 @@ export default function KontenTransaksi() {
         setVisible(false);
         setVisibleDua(false);
         setVisibleTiga(false)
+        setVisibleHapus(false)
     };
 
     const onSearch = function (value) {
@@ -511,7 +566,7 @@ export default function KontenTransaksi() {
 
                     <Col lg={{ span: 20 }} md={{ span: 22 }} className="mt-2">
                         <Table
-                            columns={getColumns(deleteModal, updateModal, imageModal)}
+                            columns={getColumns(deleteModal, updateModal, imageModal, hapusModal)}
                             // scroll={{
                             //     y: 270,
                             // }}
@@ -522,13 +577,22 @@ export default function KontenTransaksi() {
                             onChange={handleTableChange}
                         />
                         <Modal
-                            title="Konfirmasi Penghapusan"
+                            title="Konfirmasi Decline"
                             visible={visible}
                             onOk={handleOkModalDelete}
                             confirmLoading={confirmLoading}
                             onCancel={handleCancel}
                         >
                             <p className='text-pink-500'>Apakah anda yakin akan menolak transaksi ini ?</p>
+                        </Modal>
+                        <Modal
+                            title="Konfirmasi Penghapusan"
+                            visible={visibleHapus}
+                            onOk={handleOkModalHapus}
+                            confirmLoading={confirmLoading}
+                            onCancel={handleCancel}
+                        >
+                            <p className='text-pink-500'>Apakah anda yakin akan Mengahpus transaksi ini ?</p>
                         </Modal>
                         <Modal
                             title="Konfirmasi Approve Data"

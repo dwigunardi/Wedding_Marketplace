@@ -73,7 +73,7 @@ function ProductHome() {
                         {/* card product */}
 
                         <Row justify="center space-x-5">
-                            {product.map((data) => {
+                            {product.slice(0, 4).map((data) => {
 
                                 return (
                                     <>
@@ -142,7 +142,7 @@ function ProductHome() {
                     </TabPane>
                     <TabPane tab="Bogor" key="Bogor">
                         <Row justify="center space-x-5">
-                            {product.map((data) => {
+                            {product.slice(0, 4).map((data) => {
 
                                 return (
                                     <>
@@ -211,7 +211,7 @@ function ProductHome() {
                     </TabPane>
                     <TabPane tab="Depok" key="Depok">
                         <Row justify="center space-x-5">
-                            {product.map((data) => {
+                            {product.slice(0, 4).map((data) => {
 
                                 return (
                                     <>
@@ -280,7 +280,7 @@ function ProductHome() {
                     </TabPane>
                     <TabPane tab="Tanggerang" key="Tanggerang">
                         <Row justify="center space-x-5">
-                            {product.map((data) => {
+                            {product.slice(0, 4).map((data) => {
 
                                 return (
                                     <>
@@ -349,11 +349,11 @@ function ProductHome() {
                     </TabPane>
                     <TabPane tab="Bekasi" key="Bekasi">
                         <Row justify="center space-x-5">
-                            {product.map((data) => {
+                            {product.slice(0, 4).map((data) => {
 
                                 return (
                                     <>
-                                        <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5">
+                                        <Col lg={{ span: 5 }} md={{ span: 5 }} sm={{ span: 10 }} xs={{ span: 10 }} className="pt-5" key={data.id}>
 
                                             <div className="rounded-lg shadow-lg bg-white ">
                                                 <Link href={`/customer/detailProduk/${data.id}`} data-mdb-ripple="true" data-mdb-ripple-color="light">
@@ -373,7 +373,7 @@ function ProductHome() {
 
                                                 </Link>
                                                 <div className="p-6">
-                                                    <h5 className="text-gray-900 text-xl font-medium mb-2">{data.name}</h5>
+                                                    <h5 className="text-gray-900 text-xl font-medium mb-2 text-ellipsis overflow-hidden ...">{data.name}</h5>
                                                     <p className="text-gray-700 text-base mb-4">
 
 

@@ -5,6 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import qs from 'qs'
 import Highlighter from "react-highlight-words";
+import { setRequestMeta } from 'next/dist/server/request-meta';
 
 const { Header, Content, Sider } = Layout;
 const { Search } = Input;
@@ -90,7 +91,7 @@ export default function KontenUsers() {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [modalText, setModalText] = useState('Content of the modal');
     const [modalTaskId, setModalTaskId] = useState('');
-
+    const [meta, setMeta] = useState('')
 
 
     const searchInput = useRef(null);
@@ -107,7 +108,7 @@ export default function KontenUsers() {
     async function validate(params = {}) {
         try {
 
-            const getUsers = await axios.get("https://project-wo.herokuapp.com/users", {
+            const getUsers = await axios.get("https://project-wo.herokuapp.com/users?limit=1000", {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem("token_admin")}`
                 }
@@ -115,11 +116,12 @@ export default function KontenUsers() {
             ).then(response => {
                 if (response.status == 200 || response.status == 201) {
                     setDataUser(response.data.items)
+                    setMeta(response.data.meta)
                 }
             })
             setPagination({
                 ...params.pagination,
-                total: dataUser.length
+                total: meta.totalItems
             });
 
         } catch (error) {
@@ -158,10 +160,11 @@ export default function KontenUsers() {
             console.log(res)
 
         })
-        validate()
+
         setModalText('The modal will be closed after two seconds');
         setConfirmLoading(true);
         setTimeout(() => {
+            validate()
             setVisible(false);
             setConfirmLoading(false);
         }, 2000);

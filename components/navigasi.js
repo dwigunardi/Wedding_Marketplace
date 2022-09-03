@@ -35,7 +35,7 @@ export default function Navigasi(props) {
             const decode = jwt_decode(token)
             const user = decode.username
             const id = decode.user_id
-            // console.log(decode);
+            // console.log(id);
             if (user) {
                 setUsername(user)
 

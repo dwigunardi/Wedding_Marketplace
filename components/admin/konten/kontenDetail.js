@@ -203,23 +203,22 @@ export default function detail() {
                 <Row justify="center" align="middle" className='mt-6 ' >
                     <Col lg={{ span: 16 }} sm={{ span: 20 }}>
                         <div className="rounded-lg shadow-lg bg-white ">
-                            <Row justify="center" align="middle">
-                                <Col>
-                                    <a href="#!" className="mx-20">
-                                        <Image
-                                            className="rounded-t-lg"
-                                            loader={() => dataUser.image}
-                                            priority={true}
-                                            unoptimized={true}
-                                            src={`https://project-wo.herokuapp.com/product/image/${dataUser.image}`}
-                                            width={150}
-                                            height={150}
-                                            alt=""
-                                        />
-                                    </a>
+                            <Row justify="center" align="middle" className="p-5">
+                                <Col span={5}>
+
+                                    <Image
+                                        className="rounded-t-lg"
+                                        loader={() => dataUser.image}
+                                        priority={true}
+                                        unoptimized={true}
+                                        src={`https://project-wo.herokuapp.com/product/image/${dataUser.image}`}
+                                        width={150}
+                                        height={150}
+                                        alt=""
+                                    />
 
                                     <Upload customRequest={(args) => uploadHandler(args)} multiple={false} showUploadList={false}>
-                                        <Button icon={<UploadOutlined />}></Button>
+                                        <Button icon={<UploadOutlined />}>Click to upload</Button>
                                     </Upload>
 
                                     <br />
@@ -239,7 +238,7 @@ export default function detail() {
                                     }}
                                     // onFinish={onFinish}
                                     onFinishFailed={onFinishFailed}
-
+                                    disabled={true}
                                     autoComplete="off"
 
                                 >
@@ -314,25 +313,18 @@ export default function detail() {
                                         </Button>
                                     </Form.Item>
 
-                                    <Form.Item
-                                        wrapperCol={{
-                                            offset: 3,
-                                            span: 16,
-                                        }}
-                                    >
-                                        <Space>
 
-                                            <BackButton />
-                                            <Button htmlType="button" onClick={onReset}>
-                                                Reset
-                                            </Button>
-                                            <Button htmlType="button" onClick={showModal}>
-                                                Update
-                                            </Button>
-                                        </Space>
-                                    </Form.Item>
                                 </Form>
+                                <Space className="ml-10">
 
+                                    <BackButton />
+                                    <Button htmlType="button" onClick={onReset}>
+                                        Reset
+                                    </Button>
+                                    <Button htmlType="button" onClick={showModal}>
+                                        Update
+                                    </Button>
+                                </Space>
                                 {/* modal update */}
                                 <Modal
                                     title="Update Data"

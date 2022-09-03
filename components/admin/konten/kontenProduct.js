@@ -185,6 +185,7 @@ export default function ProductContent() {
         current: 1,
         pageSize: 5,
     });
+    const [meta, setMeta] = useState("")
     let [imageUrl, setImageUrl] = useState('')
     //state modal delete
     const [visible, setVisible] = useState(false);
@@ -202,9 +203,11 @@ export default function ProductContent() {
 
     async function getData(params = {}) {
         try {
-            await axios.get("https://project-wo.herokuapp.com/product").then(result => {
+            await axios.get("https://project-wo.herokuapp.com/product?limit=100").then(result => {
                 if (result.status == 200) {
+                    console.log(result)
                     setProduct(result.data.items)
+                    setMeta(result.data.meta)
 
                 } else {
                     window.alert("data tidak ada harap menambahkan data")
@@ -213,7 +216,7 @@ export default function ProductContent() {
             })
             setPagination({
                 ...params.pagination,
-                total: product.length
+                total: meta.totaItems
             });
         } catch (error) {
 
@@ -224,7 +227,6 @@ export default function ProductContent() {
         getData({
             pagination,
         })
-
         const getToken = localStorage.getItem("token_admin")
         const decode = jwt_decode(getToken)
         setToken(decode)
@@ -296,15 +298,15 @@ export default function ProductContent() {
         setVisibleTiga(false)
     };
     const onSearch = (value) => {
-        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=${value}&location=&category=&merchant=`).then(res => {
+        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=200&search=${value}&location=&category=&merchant=`).then(res => {
             setProduct(res.data.items)
             // console.log(res.data.items)
         })
     };
 
     const onSelect = (value) => {
-        // console.log('onSelect', value);
-        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=20&search=&location=${value}&category=&merchant=`).then(res => {
+        console.log('onSelect', value);
+        axios.get(`https://project-wo.herokuapp.com/product/search/product?page=1&limit=200&search=&location=${value}&category=&merchant=`).then(res => {
             setProduct(res.data.items)
             // console.log(res.data.items)
         })
