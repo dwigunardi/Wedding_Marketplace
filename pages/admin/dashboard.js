@@ -1,11 +1,15 @@
-import NavbarAdmin from "./layoutHeader"
+import ContentDashBoard from "../../components/admin/konten/kontendashboard"
+import MainLayout from "../../components/admin/layout/mainLayout"
 
 
 function Dashboard() {
 
     return (
         <>
-            <NavbarAdmin />
+            <MainLayout>
+                <ContentDashBoard />
+            </MainLayout>
+
         </>
     )
 }
